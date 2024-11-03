@@ -61,6 +61,7 @@ public class Main extends JFrame {
         button2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // 추후에 게임 화면 창 제작 시 추가될 코드는 여기에.............
+                new Play();
                 dispose(); // 현재 창 닫기
             }
         });
