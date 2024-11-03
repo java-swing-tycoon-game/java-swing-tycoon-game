@@ -33,19 +33,19 @@ public class Main extends JFrame {
 
         // 버튼 1 설정 (게임방법)
         JButton button1 = new JButton(buttonImage1);
-        button1.setBounds(750, 400, buttonImage1.getIconWidth(), buttonImage1.getIconHeight());
+        button1.setBounds(412, 400, buttonImage1.getIconWidth(), buttonImage1.getIconHeight());
         button1.setBorderPainted(false); // 버튼 테두리 제거
         button1.setContentAreaFilled(false); // 버튼 배경 제거
 
         // 버튼 2 설정 (게임시작)
         JButton button2 = new JButton(buttonImage2);
-        button2.setBounds(750, 500, buttonImage2.getIconWidth(), buttonImage2.getIconHeight());
+        button2.setBounds(412, 500, buttonImage2.getIconWidth(), buttonImage2.getIconHeight());
         button2.setBorderPainted(false);
         button2.setContentAreaFilled(false);
 
         // 버튼 3 설정 (스토리)
         JButton button3 = new JButton(buttonImage3);
-        button3.setBounds(750, 600, buttonImage3.getIconWidth(), buttonImage3.getIconHeight());
+        button3.setBounds(412, 600, buttonImage3.getIconWidth(), buttonImage3.getIconHeight());
         button3.setBorderPainted(false);
         button3.setContentAreaFilled(false);
 
