@@ -24,7 +24,7 @@ public class Main extends JFrame {
 
         ImageIcon titleImage = new ImageIcon("assets/img/title.png"); // 타이틀
         JLabel titleImageLabel = new JLabel(titleImage);
-        titleImageLabel.setBounds(-55, 0, getWidth(), 350);
+        titleImageLabel.setBounds(-100, -50, getWidth(), 350);
 
         // 버튼 이미지
         ImageIcon buttonImage1 = new ImageIcon("assets/img/howtoplayButton.png");
