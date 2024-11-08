@@ -1,48 +1,37 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 public class Main extends JFrame {
+    private JLabel bgImageLabel, imageLabel1, titleImageLabel;
+    private JButton button1, button2, button3;
+
     Main() {
         setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다");
         setSize(1038, 805);
+        getContentPane().setBackground(Color.decode("#e3f6ff")); // 전체 배경색 맞추기 (하늘색으로)
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(null); // 레이아웃 널로 설정 --> 위치 지정 마음대로
+        setLayout(null);
 
-        // 메인 화면 이미지 + 타이틀
-        ImageIcon bgImage = new ImageIcon("assets/img/mainBackground.png"); // 배경
-        JLabel bgImageLabel = new JLabel(bgImage);
-        bgImageLabel.setBounds(0, 0, bgImage.getIconWidth(), bgImage.getIconHeight());
+        // 메인 배경
+        bgImageLabel = new JLabel(new ImageIcon("assets/img/mainBackground.png"));
 
-        ImageIcon image1 = new ImageIcon("assets/img/main1.png"); // 이미지1
-        JLabel imageLabel1 = new JLabel(image1);
-        imageLabel1.setBounds(0, 0, image1.getIconWidth(), image1.getIconHeight());
+        // 메인 이미지
+        imageLabel1 = new JLabel(new ImageIcon("assets/img/main1.png"));
 
-        ImageIcon titleImage = new ImageIcon("assets/img/title.png"); // 타이틀
-        JLabel titleImageLabel = new JLabel(titleImage);
-        titleImageLabel.setBounds(-30, -70, titleImage.getIconWidth(), titleImage.getIconHeight());
+        // 타이틀
+        titleImageLabel = new JLabel(new ImageIcon("assets/img/title.png"));
 
-        // 버튼 이미지
-        ImageIcon buttonImage1 = new ImageIcon("assets/img/howtoplayButton.png");
-        ImageIcon buttonImage2 = new ImageIcon("assets/img/gamestartButton.png");
-        ImageIcon buttonImage3 = new ImageIcon("assets/img/storyButton.png");
+        // 버튼
+        button1 = new JButton(new ImageIcon("assets/img/howtoplayButton.png"));
+        button1.setBorderPainted(false);
+        button1.setContentAreaFilled(false);
 
-        // 버튼 1 설정 (게임방법)
-        JButton button1 = new JButton(buttonImage1);
-        button1.setBounds(412, 455, buttonImage1.getIconWidth(), buttonImage1.getIconHeight());
-        button1.setBorderPainted(false); // 버튼 테두리 제거
-        button1.setContentAreaFilled(false); // 버튼 배경 제거
-
-        // 버튼 2 설정 (게임시작)
-        JButton button2 = new JButton(buttonImage2);
-        button2.setBounds(412, 555, buttonImage2.getIconWidth(), buttonImage2.getIconHeight());
+        button2 = new JButton(new ImageIcon("assets/img/gamestartButton.png"));
         button2.setBorderPainted(false);
         button2.setContentAreaFilled(false);
 
-        // 버튼 3 설정 (스토리)
-        JButton button3 = new JButton(buttonImage3);
-        button3.setBounds(412, 655, buttonImage3.getIconWidth(), buttonImage3.getIconHeight());
+        button3 = new JButton(new ImageIcon("assets/img/storyButton.png"));
         button3.setBorderPainted(false);
         button3.setContentAreaFilled(false);
 
@@ -57,7 +46,6 @@ public class Main extends JFrame {
         // 게임시작 버튼 클릭 시 이벤트
         button2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // 추후에 게임 화면 창 제작 시 추가될 코드는 여기에.............
                 new Play();
                 dispose(); // 현재 창 닫기
             }
@@ -71,7 +59,6 @@ public class Main extends JFrame {
             }
         });
 
-        // 프레임에 이미지 추가
         add(titleImageLabel);
         add(button1);
         add(button2);
@@ -79,7 +66,39 @@ public class Main extends JFrame {
         add(imageLabel1);
         add(bgImageLabel);
 
+        addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent e) {
+                componentPositions();   // 각 컴포넌트 크기랑 위치
+            }
+        });
+
         setVisible(true);
+    }
+
+    private void componentPositions() {
+        int width = getWidth();
+        int height = getHeight();
+
+        // 비율로 따지기
+        double widthRatio = width / 1038.0;
+        double heightRatio = height / 805.0;
+
+        // 배경 이미지 위치랑 크기
+        bgImageLabel.setBounds(0, 0, width, height);
+        imageLabel1.setBounds(0, 0, width, height);
+
+        // 타이틀 위치랑 크기
+        int titleWidth = (int) (titleImageLabel.getIcon().getIconWidth() * widthRatio);
+        int titleHeight = (int) (titleImageLabel.getIcon().getIconHeight() * heightRatio);
+        titleImageLabel.setBounds((width - titleWidth) / 2, (int) (-50 * heightRatio), titleWidth, titleHeight);
+
+        // 버튼 위치랑 크기 (어차피 버튼 3개 크기 다 같음)
+        int buttonWidth = (int) (button1.getIcon().getIconWidth() * widthRatio);
+        int buttonHeight = (int) (button1.getIcon().getIconHeight() * heightRatio);
+
+        button1.setBounds((width - buttonWidth) / 2, (int) (455 * heightRatio), buttonWidth, buttonHeight);
+        button2.setBounds((width - buttonWidth) / 2, (int) (555 * heightRatio), buttonWidth, buttonHeight);
+        button3.setBounds((width - buttonWidth) / 2, (int) (655 * heightRatio), buttonWidth, buttonHeight);
     }
 
     public static void main(String[] args) {
