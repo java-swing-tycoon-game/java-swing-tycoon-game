@@ -1,30 +1,27 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Main extends JFrame {
     Main() {
-        setTitle("Main");
-        setSize(1024, 805);
+        setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다");
+        setSize(1038, 805);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null); // 레이아웃 널로 설정 --> 위치 지정 마음대로
 
         // 메인 화면 이미지 + 타이틀
         ImageIcon bgImage = new ImageIcon("assets/img/mainBackground.png"); // 배경
         JLabel bgImageLabel = new JLabel(bgImage);
-        bgImageLabel.setBounds(0, 0, getWidth(), bgImage.getIconHeight());
+        bgImageLabel.setBounds(0, 0, bgImage.getIconWidth(), bgImage.getIconHeight());
 
         ImageIcon image1 = new ImageIcon("assets/img/main1.png"); // 이미지1
         JLabel imageLabel1 = new JLabel(image1);
-        imageLabel1.setBounds(0, 0, getWidth(), image1.getIconHeight());
-
-        ImageIcon image2 = new ImageIcon("assets/img/main2.png"); // 이미지2
-        JLabel imageLabel2 = new JLabel(image2);
-        imageLabel2.setBounds(0, 0, getWidth(), image2.getIconHeight());
+        imageLabel1.setBounds(0, 0, image1.getIconWidth(), image1.getIconHeight());
 
         ImageIcon titleImage = new ImageIcon("assets/img/title.png"); // 타이틀
         JLabel titleImageLabel = new JLabel(titleImage);
-        titleImageLabel.setBounds(-100, -50, getWidth(), titleImage.getIconHeight());
+        titleImageLabel.setBounds(-30, -70, titleImage.getIconWidth(), titleImage.getIconHeight());
 
         // 버튼 이미지
         ImageIcon buttonImage1 = new ImageIcon("assets/img/howtoplayButton.png");
@@ -33,19 +30,19 @@ public class Main extends JFrame {
 
         // 버튼 1 설정 (게임방법)
         JButton button1 = new JButton(buttonImage1);
-        button1.setBounds(412, 450, buttonImage1.getIconWidth(), buttonImage1.getIconHeight());
+        button1.setBounds(412, 455, buttonImage1.getIconWidth(), buttonImage1.getIconHeight());
         button1.setBorderPainted(false); // 버튼 테두리 제거
         button1.setContentAreaFilled(false); // 버튼 배경 제거
 
         // 버튼 2 설정 (게임시작)
         JButton button2 = new JButton(buttonImage2);
-        button2.setBounds(412, 550, buttonImage2.getIconWidth(), buttonImage2.getIconHeight());
+        button2.setBounds(412, 555, buttonImage2.getIconWidth(), buttonImage2.getIconHeight());
         button2.setBorderPainted(false);
         button2.setContentAreaFilled(false);
 
         // 버튼 3 설정 (스토리)
         JButton button3 = new JButton(buttonImage3);
-        button3.setBounds(412, 650, buttonImage3.getIconWidth(), buttonImage3.getIconHeight());
+        button3.setBounds(412, 655, buttonImage3.getIconWidth(), buttonImage3.getIconHeight());
         button3.setBorderPainted(false);
         button3.setContentAreaFilled(false);
 
@@ -80,7 +77,6 @@ public class Main extends JFrame {
         add(button2);
         add(button3);
         add(imageLabel1);
-        add(imageLabel2);
         add(bgImageLabel);
 
         setVisible(true);

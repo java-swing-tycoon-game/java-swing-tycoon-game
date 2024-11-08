@@ -9,38 +9,53 @@ public class Play extends JFrame {
         showBackground();
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1024, 768);
+        setSize(1038, 805);
         setVisible(true);
     }
 
     void showBackground()
     {
-        // 배경 이미지
-        JLabel bgImage = new JLabel(new ImageIcon("assets/img/edge.png"));
-        setContentPane(bgImage);
-        bgImage.setLayout(new BorderLayout());
+        // 겹칠 패널 생성
+        JLayeredPane layeredPane = new JLayeredPane();
+        layeredPane.setOpaque(false);
+        layeredPane.setLayout(null);  // null 레이아웃으로 절대 위치 설정 가능
 
-        // 맵 이미지
-        JPanel mapPanel = new JPanel();
-        mapPanel.setOpaque(false);
-        mapPanel.setSize(958,667);
+        // mapPanel을 layeredPane에 추가
+        JPanel map = showMap();
+        map.setBounds(0, 0, 1024, 768);
+        layeredPane.add(map, Integer.valueOf(0));
 
-        JLabel mapImage = new JLabel(new ImageIcon("assets/img/map.png"));
+        // top 패널을 layeredPane에 추가
+        JPanel top = showTop();
+        top.setBounds(65, 0, 900, 100); // 위치와 크기를 설정하여 mapPanel과 겹치도록 설정
+        layeredPane.add(top, Integer.valueOf(100));  // 위쪽 레이어
 
-        mapPanel.add(mapImage);
-        bgImage.add(mapPanel, BorderLayout.CENTER);
+        // bottom 패널을 layeredPane에 추가
+        JPanel bottom = showBottom();
+        bottom.setBounds(65, 700, 900, 100); // 위치와 크기를 설정하여 mapPanel과 겹치도록 설정
+        layeredPane.add(bottom, Integer.valueOf(100));  // 위쪽 레이어
 
-        showTop();
-        showBottom();
+        add(layeredPane, BorderLayout.CENTER);
     }
 
-    void showTop()
+    JPanel showMap()
+    {
+        JPanel mapPanel = new JPanel();
+        mapPanel.setOpaque(false);
+        mapPanel.setLayout(new BorderLayout());
+
+        ImageIcon map = new ImageIcon("assets/img/map.png");
+        mapPanel.add(new JLabel(map), BorderLayout.CENTER);
+
+        return mapPanel;
+    }
+
+    JPanel showTop()
     {
         //상단 패널
         JPanel top = new JPanel();
         top.setOpaque(false);
         top.setLayout(new BorderLayout());
-        top.setBorder(BorderFactory.createEmptyBorder(0 , 50, 0 , 50));
 
         // 데이
         JPanel dayPanel = new JPanel();
@@ -64,16 +79,15 @@ public class Play extends JFrame {
         top.add(dayPanel, BorderLayout.WEST);
         top.add(itemPanel, BorderLayout.EAST);
 
-        add(top, BorderLayout.NORTH);
+        return top;
     }
 
-    void showBottom()
+    JPanel showBottom()
     {
         // 하단 패널
         JPanel bottom = new JPanel();
         bottom.setOpaque(false);
         bottom.setLayout(new BorderLayout());
-        bottom.setBorder(BorderFactory.createEmptyBorder(0 , 50, 0 , 50));
 
         // 시간
         JPanel timePanel = new JPanel();
@@ -105,6 +119,6 @@ public class Play extends JFrame {
         bottom.add(timePanel, BorderLayout.WEST);
         bottom.add(coinPanel, BorderLayout.EAST);
 
-        add(bottom, BorderLayout.SOUTH);
+        return bottom;
     }
 }
