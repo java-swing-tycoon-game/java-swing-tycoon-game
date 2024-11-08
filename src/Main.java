@@ -90,7 +90,7 @@ public class Main extends JFrame {
         // 타이틀 위치랑 크기
         int titleWidth = (int) (titleImageLabel.getIcon().getIconWidth() * widthRatio);
         int titleHeight = (int) (titleImageLabel.getIcon().getIconHeight() * heightRatio);
-        titleImageLabel.setBounds((width - titleWidth) / 2, (int) (-50 * heightRatio), titleWidth, titleHeight);
+        titleImageLabel.setBounds((width - titleWidth) / 10, (int) (-50 * heightRatio), titleWidth, titleHeight);
 
         // 버튼 위치랑 크기 (어차피 버튼 3개 크기 다 같음)
         int buttonWidth = (int) (button1.getIcon().getIconWidth() * widthRatio);
