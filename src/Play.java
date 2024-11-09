@@ -1,3 +1,5 @@
+import Player.Move;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -24,6 +26,12 @@ public class Play extends JFrame {
         JPanel map = showMap();
         map.setBounds(0, 0, 1024, 768);
         layeredPane.add(map, Integer.valueOf(0));
+
+        // Move 객체 추가
+        Move move = new Move();
+        move.setBounds(0, 0, 1024, 768);  // Move 객체 위치 설정
+        layeredPane.add(move, Integer.valueOf(2));  // map 위에 오도록 우선순위 설정
+
 
         // top 패널을 layeredPane에 추가
         JPanel top = showTop();
