@@ -1,9 +1,15 @@
-import Player.Move;
-
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class Play extends JFrame {
+    private JLabel timeBarLabel; // 시간바
+    private Timer dayTimer; // 각 데이의 타이머
+    private int realTime = 60;  // 각 데이를 60초로 설정 (일단 임시로.. 데이 증가하면 여기를 같이 수정하면 될듯)
+
+    private int coinAmount = 500;  // 초기 코인 금액
+
     Play() {
         setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다");
 
@@ -27,12 +33,6 @@ public class Play extends JFrame {
         map.setBounds(0, 0, 1024, 768);
         layeredPane.add(map, Integer.valueOf(0));
 
-        // Move 객체 추가
-        Move move = new Move();
-        move.setBounds(0, 0, 1024, 768);  // Move 객체 위치 설정
-        layeredPane.add(move, Integer.valueOf(2));  // map 위에 오도록 우선순위 설정
-
-
         // top 패널을 layeredPane에 추가
         JPanel top = showTop();
         top.setBounds(65, 0, 900, 100); // 위치와 크기를 설정하여 mapPanel과 겹치도록 설정
@@ -44,6 +44,8 @@ public class Play extends JFrame {
         layeredPane.add(bottom, Integer.valueOf(100));  // 위쪽 레이어
 
         add(layeredPane, BorderLayout.CENTER);
+
+        startDayTimer();  // 타이머
     }
 
     JPanel showMap()
@@ -103,7 +105,7 @@ public class Play extends JFrame {
         timePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         JLabel time = new JLabel(new ImageIcon("assets/img/time.png"));
-        JLabel timeBar = new JLabel(new ImageIcon("assets/img/timeBar.png"));
+        timeBarLabel = new JLabel(new ImageIcon("assets/img/timeBar.png"));
 
         // 코인
         JPanel coinPanel = new JPanel();
@@ -113,13 +115,16 @@ public class Play extends JFrame {
         JLabel coin = new JLabel(new ImageIcon("assets/img/coin.png"));
         JLabel coinImage = new JLabel(new ImageIcon("assets/img/coinImage.png"));
         coinImage.setBorder(BorderFactory.createEmptyBorder(0 , 10, 0 , 0));
+
+        // 코인 텍스트 확인 부분
         Font font = new Font("궁서", Font.BOLD, 30);
-        JLabel coinTxt = new JLabel("x 1 만원");
+        // JLabel coinTxt = new JLabel("x 1 만원");   // 예시
+        JLabel coinTxt = new JLabel("x " + coinAmount + "만원");  // 코인 금액 표시
         coinTxt.setFont(font);
         coinTxt.setBorder(BorderFactory.createEmptyBorder(0 , 10, 0 , 0));
 
         timePanel.add(time);
-        timePanel.add(timeBar);
+        timePanel.add(timeBarLabel);
         coinPanel.add(coin);
         coinPanel.add(coinImage);
         coinPanel.add(coinTxt);
@@ -128,5 +133,51 @@ public class Play extends JFrame {
         bottom.add(coinPanel, BorderLayout.EAST);
 
         return bottom;
+    }
+
+    // 타임 관련 함수들..
+    void startDayTimer() {
+        dayTimer = new Timer(1000, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                realTime--;
+                updateTimeBar();  // 시간바 업데이트
+
+                // 타이머 종료
+                if (realTime <= 0) {
+                    dayTimer.stop();  // 타이머 중지
+                    resetDay();
+                }
+            }
+        });
+        dayTimer.start();
+    }
+
+    // 하단 시간바 크기 조정
+    void updateTimeBar() {
+        int newWidth = (int) (400 * (realTime / 60.0)); // 60초 기준
+
+        // 시간바 이미지 크기 조절
+        ImageIcon resizedTimeBar = new ImageIcon(new ImageIcon("assets/img/timeBar.png")
+                .getImage().getScaledInstance(newWidth, timeBarLabel.getHeight(), Image.SCALE_SMOOTH));
+        timeBarLabel.setIcon(resizedTimeBar);  // 줄어든 시간바 업데이트
+        timeBarLabel.repaint();  // 시간바 나타내기
+    }
+
+    // 데이 다시 60초로 리셋
+    void resetDay() {
+        realTime = 60;
+        startDayTimer();  // 타이머 다시 시작
+    }
+
+    // 코인 금액 변경될 때 함수
+    void updateCoinAmount(int amount) {
+        coinAmount += amount;  // 코인 금액 +/-
+        JLabel coinTxt = (JLabel) ((JPanel) ((BorderLayout) getContentPane().getLayout()).getLayoutComponent(BorderLayout.EAST)).getComponent(2);  // coinTxt를 찾아서
+
+        coinTxt.setText("x " + coinAmount + "만원");  // 코인 금액 업데이트
+    }
+
+    public static void main(String[] args) {
+        new Play();
     }
 }
