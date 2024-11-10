@@ -32,7 +32,7 @@ public class Play extends JFrame {
         move.setBounds(0, 0, 1024, 768);  // Move 객체 위치 설정
         layeredPane.add(move, Integer.valueOf(2));  // map 위에 오도록 우선순위 설정
 
-
+        
         // top 패널을 layeredPane에 추가
         JPanel top = showTop();
         top.setBounds(65, 0, 900, 100); // 위치와 크기를 설정하여 mapPanel과 겹치도록 설정
