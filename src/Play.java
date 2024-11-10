@@ -35,6 +35,11 @@ public class Play extends JFrame {
         map.setBounds(0, 0, 1024, 768);
         layeredPane.add(map, Integer.valueOf(0));
 
+        Npc npc = new Npc();
+        npc.setBounds(0, 0, 1024, 768);
+        npc.setOpaque(false);
+        layeredPane.add(npc, Integer.valueOf(2));  // map 위에 오도록 우선순위 설정
+
         // Move 객체 추가
         Move move = new Move();
         move.setBounds(0, 0, 1024, 768);  // Move 객체 위치 설정
