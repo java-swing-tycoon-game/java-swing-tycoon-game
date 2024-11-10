@@ -1,11 +1,13 @@
 package Player;
 
 import javax.swing.*;
+import Deco.Deco;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 
 public class Move extends JPanel {
     // 캐릭터의 현재 좌표
@@ -20,6 +22,7 @@ public class Move extends JPanel {
     private final int MOVE_SPEED = 5;
 
     private Image characterImg;
+    private boolean hasReachedTarget = false;
 
     public Move() {
         characterImg = new ImageIcon("assets/img/playerCharacter.png").getImage();
@@ -32,20 +35,30 @@ public class Move extends JPanel {
                 // 클릭 위치를 목표 위치로 설정
                 targetX = e.getX();
                 targetY = e.getY();
+                hasReachedTarget = false;
             }
         });
+
+   
 
         Timer timer = new Timer(15, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 moveCharacter();
                 repaint(); // 화면 갱신
+                if (!hasReachedTarget && characterX >= 500 && characterX <= 600 && characterY >= 50 && characterY <= 200) {
+                    new Deco();
+                    hasReachedTarget = true; // 창을 연 이후에는 플래그 설정
+                }
             }
         });
         timer.start();
     }
 
+
+
     private void moveCharacter() {
+
         // 현재 위치가 목표 위치와 다를 경우 이동
         if (characterX != targetX || characterY != targetY) {
             int dx = targetX - characterX;
@@ -59,6 +72,8 @@ public class Move extends JPanel {
                 characterX += (int) (MOVE_SPEED * dx / distance);
                 characterY += (int) (MOVE_SPEED * dy / distance);
             }
+
+
         }
     }
 
@@ -73,5 +88,7 @@ public class Move extends JPanel {
         int imageX = characterX - characterImg.getWidth(null) / 2;
         int imageY = characterY - characterImg.getHeight(null) / 2;
         g2d.drawImage(characterImg, imageX, imageY, null);
+
+        
     }
 }
