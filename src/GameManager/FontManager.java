@@ -10,9 +10,9 @@ public class FontManager {
     /////////// 폰트 관련 ///////////
     private static Map<String, Font> fontCache = new HashMap<>();
     // 폰트 로드
-    public static Font loadFont() {
+    public static Font loadFont(float size) {
         // 캐시에서 폰트가 이미 로드되었는지 확인
-        String cacheKey = "assets/font/ChangwonDangamAsac-Bold_0712.ttf" + ":" + 18f;
+        String cacheKey = "assets/font/ChangwonDangamAsac-Bold_0712.ttf" + ":" + size;
         if (fontCache.containsKey(cacheKey)) {
             return fontCache.get(cacheKey);
         }
@@ -21,7 +21,7 @@ public class FontManager {
         try {
             // 폰트 파일 로드
             customFont = Font.createFont(Font.TRUETYPE_FONT, new File("assets/font/ChangwonDangamAsac-Bold_0712.ttf"));
-            customFont = customFont.deriveFont(18f); // 폰트 크기 설정
+            customFont = customFont.deriveFont(size); // 폰트 크기 설정
 
             // 폰트를 캐시
             fontCache.put(cacheKey, customFont);
