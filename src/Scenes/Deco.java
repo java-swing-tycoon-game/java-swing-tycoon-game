@@ -1,4 +1,4 @@
-package Deco;
+package Scenes;
 
 import javax.swing.*;
 import java.awt.*;
