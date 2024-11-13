@@ -1,3 +1,5 @@
+package Scenes;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -5,7 +7,7 @@ import java.awt.event.ActionListener;
 
 public class Howto extends JFrame {
     public Howto() {
-        setTitle("How to Play");
+        setTitle("How to Scenes.Play");
         setSize(1024, 768);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(null);
