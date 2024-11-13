@@ -51,7 +51,7 @@ public class Deco extends JFrame {
     }
 
     private void loadCustomFont() {
-        customFont = FontManager.loadFont();
+        customFont = FontManager.loadFont(18);
         UIManager.put("Label.font", customFont);
         UIManager.put("Button.font", customFont);
     }

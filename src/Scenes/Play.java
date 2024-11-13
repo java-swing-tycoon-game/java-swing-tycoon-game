@@ -2,6 +2,7 @@ package Scenes;
 
 import Character.Move;
 import Character.Npc;
+import GameManager.FontManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -146,8 +147,7 @@ public class Play extends JFrame {
         coinImage.setBorder(BorderFactory.createEmptyBorder(0 , 10, 0 , 0));
 
         // 코인 텍스트 확인 부분
-        Font font = new Font("궁서", Font.BOLD, 30);
-        // JLabel coinTxt = new JLabel("x 1 만원");   // 예시
+        Font font = FontManager.loadFont(30);
         JLabel coinTxt = new JLabel("x " + coinAmount + "만원");  // 코인 금액 표시
         coinTxt.setFont(font);
         coinTxt.setBorder(BorderFactory.createEmptyBorder(0 , 10, 0 , 0));
