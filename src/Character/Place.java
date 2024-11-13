@@ -1,6 +1,5 @@
-package Player;
+package Character;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public class Place {
