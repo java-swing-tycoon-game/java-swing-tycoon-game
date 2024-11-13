@@ -2,8 +2,7 @@ package Deco;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
+import GameManager.FontManager;
 
 public class Deco extends JFrame {
     private Image backgroundImage;
@@ -52,19 +51,9 @@ public class Deco extends JFrame {
     }
 
     private void loadCustomFont() {
-        try {
-            File fontFile = new File("assets/font/ChangwonDangamAsac-Bold_0712.ttf");
-            customFont = Font.createFont(Font.TRUETYPE_FONT, fontFile).deriveFont(18f);
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(customFont);
-
-            UIManager.put("Label.font", customFont);
-            UIManager.put("Button.font", customFont);
-        } catch (IOException | FontFormatException e) {
-            e.printStackTrace();
-            System.out.println("폰트 로드 실패, 기본 폰트를 사용합니다.");
-            customFont = new Font("Arial", Font.PLAIN, 18);
-        }
+        customFont = FontManager.loadFont();
+        UIManager.put("Label.font", customFont);
+        UIManager.put("Button.font", customFont);
     }
 
     public void execute() {

@@ -1,3 +1,5 @@
+package Scenes;
+
 import Character.Move;
 import Character.Npc;
 

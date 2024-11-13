@@ -1,3 +1,5 @@
+package Scenes;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
@@ -44,7 +46,7 @@ public class Main extends JFrame {
         // 게임방법 버튼 클릭 시 이벤트
         button1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new Howto(); // Howto.java 창 열기
+                new Howto(); // Scenes.Howto.java 창 열기
                 dispose(); // 현재 창 닫기
             }
         });
@@ -60,7 +62,7 @@ public class Main extends JFrame {
         // 스토리 버튼 클릭 시 이벤트
         button3.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new Story(); // Story.java 창 열기
+                new Story(); // Scenes.Story.java 창 열기
                 dispose(); // 현재 창 닫기
             }
         });

@@ -1,10 +1,12 @@
+package Scenes;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Story extends JFrame {
     Story() {
-        setTitle("Story");
+        setTitle("Scenes.Story");
         setSize(1024, 768);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
