@@ -1,4 +1,5 @@
-import Player.Move;
+import Character.Move;
+import Character.Npc;
 
 import javax.swing.*;
 import java.awt.*;
