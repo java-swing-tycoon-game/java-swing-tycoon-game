@@ -12,9 +12,6 @@ public class Main extends JFrame {
     public static Font customFont;
 
     Main() {
-
-        loadCustomFont();
-
         setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다");
         setSize(1038, 805);
         getContentPane().setBackground(Color.decode("#e3f6ff")); // 전체 배경색 맞추기 (하늘색으로)
@@ -22,10 +19,10 @@ public class Main extends JFrame {
         setLayout(null);
 
         // 메인 배경
-        bgImageLabel = new JLabel(new ImageIcon("assets/img/mainBackground.png"));
+        bgImageLabel = new JLabel(new ImageIcon("assets/img/main/mainBackground.png"));
 
         // 메인 이미지
-        imageLabel1 = new JLabel(new ImageIcon("assets/img/mainImg.png"));
+        imageLabel1 = new JLabel(new ImageIcon("assets/img/main/mainImg.png"));
 
         // 타이틀
         titleImageLabel = new JLabel(new ImageIcon("assets/img/title.png"));
@@ -67,12 +64,6 @@ public class Main extends JFrame {
             }
         });
 
-        if (customFont != null) {
-            titleImageLabel.setFont(customFont);
-            button1.setFont(customFont);
-            button2.setFont(customFont);
-            button3.setFont(customFont);
-        }
         add(titleImageLabel);
         add(button1);
         add(button2);
@@ -87,23 +78,6 @@ public class Main extends JFrame {
         });
 
         setVisible(true);
-    }
-
-
-    private void loadCustomFont() {
-        try {
-            File fontFile = new File("assets/font/ChangwonDangamAsac-Bold_0712.ttf");
-            customFont = Font.createFont(Font.TRUETYPE_FONT, fontFile).deriveFont(18f);
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(customFont);
-
-            UIManager.put("Label.font", customFont);
-            UIManager.put("Button.font", customFont);
-        } catch (IOException | FontFormatException e) {
-            e.printStackTrace();
-            System.out.println("폰트 로드 실패, 기본 폰트를 사용합니다.");
-            customFont = new Font("Arial", Font.PLAIN, 18);
-        }
     }
 
     private void componentPositions() {
