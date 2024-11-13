@@ -25,21 +25,21 @@ public class Main extends JFrame {
         bgImageLabel = new JLabel(new ImageIcon("assets/img/mainBackground.png"));
 
         // 메인 이미지
-        imageLabel1 = new JLabel(new ImageIcon("assets/img/main1.png"));
+        imageLabel1 = new JLabel(new ImageIcon("assets/img/mainImg.png"));
 
         // 타이틀
         titleImageLabel = new JLabel(new ImageIcon("assets/img/title.png"));
 
         // 버튼
-        button1 = new JButton(new ImageIcon("assets/img/howtoplayButton.png"));
+        button1 = new JButton(new ImageIcon("assets/img/main/howtoplayButton.png"));
         button1.setBorderPainted(false);
         button1.setContentAreaFilled(false);
 
-        button2 = new JButton(new ImageIcon("assets/img/gamestartButton.png"));
+        button2 = new JButton(new ImageIcon("assets/img/main/gamestartButton.png"));
         button2.setBorderPainted(false);
         button2.setContentAreaFilled(false);
 
-        button3 = new JButton(new ImageIcon("assets/img/storyButton.png"));
+        button3 = new JButton(new ImageIcon("assets/img/main/storyButton.png"));
         button3.setBorderPainted(false);
         button3.setContentAreaFilled(false);
 
@@ -121,7 +121,7 @@ public class Main extends JFrame {
         // 타이틀 위치랑 크기
         int titleWidth = (int) (titleImageLabel.getIcon().getIconWidth() * widthRatio);
         int titleHeight = (int) (titleImageLabel.getIcon().getIconHeight() * heightRatio);
-        titleImageLabel.setBounds((width - titleWidth) / 10, (int) (-50 * heightRatio), titleWidth, titleHeight);
+        titleImageLabel.setBounds((width - titleWidth) / 10 - 30, (int) (-50 * heightRatio), titleWidth, titleHeight);
 
         // 버튼 위치랑 크기 (어차피 버튼 3개 크기 다 같음)
         int buttonWidth = (int) (button1.getIcon().getIconWidth() * widthRatio);
