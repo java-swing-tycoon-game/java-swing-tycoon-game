@@ -10,8 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Play extends JFrame {
-    private JLabel timeBarLabel, timerBg, basicTimeBar; // 시간바
-    private ImageIcon timerBgImg;
+    private JLabel timeBarLabel, basicTimeBar, time; // 시간바
+    private JPanel timePanel;
     private Timer dayTimer; // 각 데이의 타이머
     private int realTime = 60;  // 각 데이를 60초로 설정 (일단 임시로.. 데이 증가하면 여기를 같이 수정하면 될듯)
 
@@ -117,25 +117,24 @@ public class Play extends JFrame {
         bottom.setLayout(new BorderLayout());
 
         // 시간
-        JPanel timePanel = new JPanel();
+        timePanel = new JPanel();
         timePanel.setOpaque(false);
-        // timePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         timePanel.setLayout(null);  // 시간바 겹치게 하기 위함
 
-        JLabel time = new JLabel(new ImageIcon("assets/img/time.png"));
-        time.setBounds(0, 0, time.getIcon().getIconWidth(), time.getIcon().getIconHeight());  // TIME 이미지 위치 설정
+        time = new JLabel(new ImageIcon("assets/img/time.png"));
+        time.setBounds(-2, 9, time.getIcon().getIconWidth(), time.getIcon().getIconHeight());  // TIME 이미지
 
-        timeBarLabel = new JLabel(new ImageIcon("assets/img/timeBar.png"));
+        // 초기 시간바 크기 설정
+        int initialWidth = 440;  // 초기 너비 400 고정
+        ImageIcon timeBarIcon = new ImageIcon("assets/img/timeBar.png");
+
+        timeBarLabel = new JLabel(new ImageIcon(timeBarIcon.getImage().getScaledInstance(initialWidth, timeBarIcon.getIconHeight(), Image.SCALE_SMOOTH)));
+        timeBarLabel.setBounds(time.getIcon().getIconWidth() + 2, 15, initialWidth, timeBarLabel.getIcon().getIconHeight());
+
         basicTimeBar = new JLabel(new ImageIcon("assets/img/basicTimeBar.png"));
+        basicTimeBar.setBounds(time.getIcon().getIconWidth() + 2, 10, 440, basicTimeBar.getIcon().getIconHeight());
 
-        basicTimeBar.setBounds(time.getIcon().getIconWidth(), 10, 441, basicTimeBar.getIcon().getIconHeight());  // 기본 시간바 위치 설정
-        timeBarLabel.setBounds(time.getIcon().getIconWidth(), 10, 441, timeBarLabel.getIcon().getIconHeight());  // 줄어드는 시간바 위치 설정
-
-        timePanel.setPreferredSize(new Dimension(441, timeBarLabel.getIcon().getIconHeight()));
-
-        timePanel.add(time);            // TIME 이미지 추가
-        timePanel.add(basicTimeBar);    // 기본 시간바 추가
-        timePanel.add(timeBarLabel);    // 줄어드는 시간바 추가
+        timePanel.setPreferredSize(new Dimension(initialWidth, timeBarLabel.getHeight()));
 
         // 코인
         JPanel coinPanel = new JPanel();
@@ -152,14 +151,16 @@ public class Play extends JFrame {
         coinTxt.setFont(font);
         coinTxt.setBorder(BorderFactory.createEmptyBorder(0 , 10, 0 , 0));
 
+        // timePanel 관련 요소들 추가하기
         timePanel.add(time);
         timePanel.add(timeBarLabel);
         timePanel.add(basicTimeBar);
+        bottom.add(timePanel, BorderLayout.WEST);
+
+        // coin 머시깽이들
         coinPanel.add(coin);
         coinPanel.add(coinImage);
         coinPanel.add(coinTxt);
-
-        bottom.add(timePanel, BorderLayout.WEST);
         bottom.add(coinPanel, BorderLayout.EAST);
 
         return bottom;
@@ -184,18 +185,24 @@ public class Play extends JFrame {
 
     // 하단 시간바 크기 조정
     void updateTimeBar() {
-        int newWidth = (int) (441 * (realTime / 60.0)); // 60초 기준
+        int newWidth = (int) (440 * (realTime / 60.0)); // 60초 기준으로 시간바 너비 계산
 
-        // 시간바 이미지 크기 조절
+        // 시간바 이미지를 줄어든 크기로 설정
         ImageIcon resizedTimeBar = new ImageIcon(new ImageIcon("assets/img/timeBar.png")
                 .getImage().getScaledInstance(newWidth, timeBarLabel.getHeight(), Image.SCALE_SMOOTH));
-        timeBarLabel.setIcon(resizedTimeBar);  // 줄어든 시간바 업데이트
-        // 시간바 위치를 왼쪽에 고정
-        timeBarLabel.setBounds(0, 0, newWidth, timeBarLabel.getHeight());
+        timeBarLabel.setIcon(resizedTimeBar);
 
-        timeBarLabel.repaint();
-        // basicTimeBar.repaint();
+        // timePanel이랑 기본 시간바 크기는 고정 back으로 고정시켜두기
+        basicTimeBar.setBounds(time.getIcon().getIconWidth() + 2, 10, 440, basicTimeBar.getIcon().getIconHeight());
+        timePanel.setPreferredSize(new Dimension(440 + time.getIcon().getIconWidth(), timePanel.getHeight()));
+
+        // timeBarLabel 위치 고정하고 너비만 조정
+        timeBarLabel.setBounds(time.getIcon().getIconWidth() + 2, 15, newWidth, timeBarLabel.getHeight());
+
+        timePanel.revalidate(); // 컴포넌트들 재배치하는 거
+        timePanel.repaint();
     }
+
 
 
     // 데이 다시 60초로 리셋
