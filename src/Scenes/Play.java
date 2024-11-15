@@ -1,6 +1,6 @@
 package Scenes;
 
-import Character.Move;
+import Character.Player;
 import Character.Npc;
 import GameManager.FontManager;
 
@@ -45,10 +45,10 @@ public class Play extends JFrame {
         npc.setOpaque(false);
         layeredPane.add(npc, Integer.valueOf(2));  // map 위에 오도록 우선순위 설정
 
-        // Move 객체 추가
-        Move move = new Move();
-        move.setBounds(0, 0, 1024, 768);  // Move 객체 위치 설정
-        layeredPane.add(move, Integer.valueOf(2));  // map 위에 오도록 우선순위 설정
+        // Player 객체 추가
+        Player player = new Player();
+        player.setBounds(0, 0, 1024, 768);
+        layeredPane.add(player, Integer.valueOf(2));
 
         // top 패널을 layeredPane에 추가
         JPanel top = showTop();
