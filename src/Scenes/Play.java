@@ -3,6 +3,7 @@ package Scenes;
 import Character.Player;
 import Character.Npc;
 import GameManager.FontManager;
+import Items.LightStick; // lightStick 클래스 (응원봉 사용시 realTime 증가)
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,11 +15,12 @@ public class Play extends JFrame {
     private JPanel timePanel;
     private Timer dayTimer; // 각 데이의 타이머
     private int realTime = 60;  // 각 데이를 60초로 설정 (일단 임시로.. 데이 증가하면 여기를 같이 수정하면 될듯)
-
     private int coinAmount = 500;  // 초기 코인 금액
+    private LightStick LStick;  // 응원봉 객체
 
     Play() {
         setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다");
+        LStick = new LightStick();  // 응원봉 객체 생성
 
         setLayout(new BorderLayout());
         showBackground();
@@ -102,6 +104,20 @@ public class Play extends JFrame {
         itemCircle.setBorder(BorderFactory.createEmptyBorder(0 , 10, 0 , 0));
         itemPanel.add(item);
         itemPanel.add(itemCircle);
+
+        // lightStick
+        ImageIcon lightStickIcon = new ImageIcon("assets/img/lightStick.png");
+        JLabel lightStickLabel = new JLabel(new ImageIcon(
+                lightStickIcon.getImage().getScaledInstance(40, 60, Image.SCALE_SMOOTH)));
+        lightStickLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+        itemPanel.add(lightStickLabel);
+
+        // 클릭 이벤트 추가
+        lightStickLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                useLightStick(); // lightStick 사용
+            }
+        });
 
         top.add(dayPanel, BorderLayout.WEST);
         top.add(itemPanel, BorderLayout.EAST);
@@ -203,8 +219,6 @@ public class Play extends JFrame {
         timePanel.repaint();
     }
 
-
-
     // 데이 다시 60초로 리셋
     void resetDay() {
         realTime = 60;
@@ -219,6 +233,16 @@ public class Play extends JFrame {
         // coinTxt를 찾아서 getComponent()이벤트를 발생한 컴포넌트 반환하기 (인덱스 2: coinTxt)
 
         coinTxt.setText("x " + coinAmount + "만원");  // 코인 금액 업데이트
+    }
+
+    // lightStick 추가했을 때 타이머 변동
+    void useLightStick() {
+        if (realTime + LStick.getTimeIncrease() <= 60) { // 최대 60초 = realTime으로 정해둔 거
+            LStick.use();
+            realTime += LStick.getTimeIncrease();
+            updateTimeBar();
+        }
+        else realTime = 60;
     }
 
     public static void main(String[] args) {
