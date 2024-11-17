@@ -2,8 +2,10 @@ package Scenes;
 
 import Character.Player;
 import Character.Npc;
+import Character.Move;
 import GameManager.FontManager;
 import Items.LightStick; // lightStick 클래스 (응원봉 사용시 realTime 증가)
+import Items.Tshirt;    // Tshirt 클래스 (티셔츠 착용시 캐릭터 이동 속도 증가)
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,13 +16,19 @@ public class Play extends JFrame {
     private JLabel timeBarLabel, basicTimeBar, time; // 시간바
     private JPanel timePanel;
     private Timer dayTimer; // 각 데이의 타이머
+
     private int realTime = 60;  // 각 데이를 60초로 설정 (일단 임시로.. 데이 증가하면 여기를 같이 수정하면 될듯)
     private int coinAmount = 500;  // 초기 코인 금액
+
     private LightStick LStick;  // 응원봉 객체
+    private Tshirt tshirt; // 티셔츠 객체
+    private Move characterMove; // 캐릭터 이동 객체
 
     Play() {
         setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다");
         LStick = new LightStick();  // 응원봉 객체 생성
+        tshirt = new Tshirt();  // 티셔츠 객체 생성
+        characterMove = new Move(); // 캐릭터 이동 객체 초기화
 
         setLayout(new BorderLayout());
         showBackground();
@@ -105,19 +113,36 @@ public class Play extends JFrame {
         itemPanel.add(item);
         itemPanel.add(itemCircle);
 
-        // lightStick
+        /*// 응원봉
         ImageIcon lightStickIcon = new ImageIcon("assets/img/lightStick.png");
         JLabel lightStickLabel = new JLabel(new ImageIcon(
-                lightStickIcon.getImage().getScaledInstance(40, 60, Image.SCALE_SMOOTH)));
+                lightStickIcon.getImage().getScaledInstance(50, 70, Image.SCALE_SMOOTH)));
         lightStickLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
         itemPanel.add(lightStickLabel);
 
-        // 클릭 이벤트 추가
+        // 응원봉 클릭 이벤트 추가
         lightStickLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent e) {
-                useLightStick(); // lightStick 사용
+                useLStick(); // 응원봉 사용
+                System.out.println("응원봉 효과 적용: 타이머 증가");    // 확인용
             }
         });
+
+        // 티셔츠
+        ImageIcon tshirtIcon = new ImageIcon("assets/img/tshirt.png");
+        JLabel tshirtLabel = new JLabel(new ImageIcon(
+                tshirtIcon.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH)));
+        tshirtLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+        itemPanel.add(tshirtLabel);
+
+        // 티셔츠 클릭 이벤트 추가
+        tshirtLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                tshirt.tshirtEffect(characterMove); // 티셔츠 효과 적용
+                System.out.println("티셔츠 효과 적용: 속도 증가"); // 확인용
+                System.out.println("현재 캐릭터 속도: " + characterMove.getMoveSpeed()); // 현재 속도 확인용
+            }
+        });*/
 
         top.add(dayPanel, BorderLayout.WEST);
         top.add(itemPanel, BorderLayout.EAST);
@@ -235,8 +260,8 @@ public class Play extends JFrame {
         coinTxt.setText("x " + coinAmount + "만원");  // 코인 금액 업데이트
     }
 
-    // lightStick 추가했을 때 타이머 변동
-    void useLightStick() {
+    // 응원봉 추가했을 때 타이머 변동
+    void useLStick() {
         if (realTime + LStick.getTimeIncrease() <= 60) { // 최대 60초 = realTime으로 정해둔 거
             LStick.use();
             realTime += LStick.getTimeIncrease();

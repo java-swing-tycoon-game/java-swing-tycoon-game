@@ -15,5 +15,6 @@ public class LightStick {
 
     public void use() {
         totalTime += timeIncrease; // 응원봉 사용 시 누적 시간
+        System.out.println("응원봉 사용.. 캐릭터 이동 속도: " + totalTime);
     }
 }
