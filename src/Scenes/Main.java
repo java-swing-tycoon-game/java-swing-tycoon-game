@@ -10,7 +10,6 @@ import java.awt.event.*;
 public class Main extends JFrame {
     private JLabel bgImageLabel, imageLabel1, titleImageLabel;
     private JButton button1, button2, button3;
-    public static Font customFont;
 
     Main() {
         setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다");
