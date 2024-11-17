@@ -33,9 +33,9 @@ public class Place {
         places.add(new Place((int) 902.5, (int) 417.5, (int) 22.5, 880, 500));  // 아이템5
         places.add(new Place((int) 962.5, (int) 437.5, (int) 22.5, 930, 520));  // 아이템6
 
-        places.add(new Place(285, 245, 75, 310, 260));  // 장소1
-        places.add(new Place(525, 175, 75, 550, 210));  // 장소2
-        places.add(new Place(775, 245, 75, 890, 250));  // 장소3
+        places.add(new Place(285, 245, 75, 300, 220));  // 장소1
+        places.add(new Place(525, 175, 75, 525, 175));  // 장소2
+        places.add(new Place(775, 245, 75, 790, 250));  // 장소3
 
         return places;
     }

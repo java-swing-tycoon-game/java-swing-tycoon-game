@@ -1,3 +1,5 @@
+package Scenes;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
@@ -11,9 +13,6 @@ public class Main extends JFrame {
     public static Font customFont;
 
     Main() {
-
-        loadCustomFont();
-
         setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다");
         setSize(1038, 805);
         getContentPane().setBackground(Color.decode("#e3f6ff")); // 전체 배경색 맞추기 (하늘색으로)
@@ -21,31 +20,31 @@ public class Main extends JFrame {
         setLayout(null);
 
         // 메인 배경
-        bgImageLabel = new JLabel(new ImageIcon("assets/img/mainBackground.png"));
+        bgImageLabel = new JLabel(new ImageIcon("assets/img/main/mainBackground.png"));
 
         // 메인 이미지
-        imageLabel1 = new JLabel(new ImageIcon("assets/img/main1.png"));
+        imageLabel1 = new JLabel(new ImageIcon("assets/img/main/mainImg.png"));
 
         // 타이틀
         titleImageLabel = new JLabel(new ImageIcon("assets/img/title.png"));
 
         // 버튼
-        button1 = new JButton(new ImageIcon("assets/img/howtoplayButton.png"));
+        button1 = new JButton(new ImageIcon("assets/img/main/howtoplayButton.png"));
         button1.setBorderPainted(false);
         button1.setContentAreaFilled(false);
 
-        button2 = new JButton(new ImageIcon("assets/img/gamestartButton.png"));
+        button2 = new JButton(new ImageIcon("assets/img/main/gamestartButton.png"));
         button2.setBorderPainted(false);
         button2.setContentAreaFilled(false);
 
-        button3 = new JButton(new ImageIcon("assets/img/storyButton.png"));
+        button3 = new JButton(new ImageIcon("assets/img/main/storyButton.png"));
         button3.setBorderPainted(false);
         button3.setContentAreaFilled(false);
 
         // 게임방법 버튼 클릭 시 이벤트
         button1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new Howto(); // Howto.java 창 열기
+                new Howto(); // Scenes.Howto.java 창 열기
                 dispose(); // 현재 창 닫기
             }
         });
@@ -61,17 +60,11 @@ public class Main extends JFrame {
         // 스토리 버튼 클릭 시 이벤트
         button3.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new Story(); // Story.java 창 열기
+                new Story(); // Scenes.Story.java 창 열기
                 dispose(); // 현재 창 닫기
             }
         });
 
-        if (customFont != null) {
-            titleImageLabel.setFont(customFont);
-            button1.setFont(customFont);
-            button2.setFont(customFont);
-            button3.setFont(customFont);
-        }
         add(titleImageLabel);
         add(button1);
         add(button2);
@@ -86,23 +79,6 @@ public class Main extends JFrame {
         });
 
         setVisible(true);
-    }
-
-
-    private void loadCustomFont() {
-        try {
-            File fontFile = new File("assets/font/ChangwonDangamAsac-Bold_0712.ttf");
-            customFont = Font.createFont(Font.TRUETYPE_FONT, fontFile).deriveFont(18f);
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(customFont);
-
-            UIManager.put("Label.font", customFont);
-            UIManager.put("Button.font", customFont);
-        } catch (IOException | FontFormatException e) {
-            e.printStackTrace();
-            System.out.println("폰트 로드 실패, 기본 폰트를 사용합니다.");
-            customFont = new Font("Arial", Font.PLAIN, 18);
-        }
     }
 
     private void componentPositions() {
@@ -120,7 +96,7 @@ public class Main extends JFrame {
         // 타이틀 위치랑 크기
         int titleWidth = (int) (titleImageLabel.getIcon().getIconWidth() * widthRatio);
         int titleHeight = (int) (titleImageLabel.getIcon().getIconHeight() * heightRatio);
-        titleImageLabel.setBounds((width - titleWidth) / 10, (int) (-50 * heightRatio), titleWidth, titleHeight);
+        titleImageLabel.setBounds((width - titleWidth) / 10 - 30, (int) (-50 * heightRatio), titleWidth, titleHeight);
 
         // 버튼 위치랑 크기 (어차피 버튼 3개 크기 다 같음)
         int buttonWidth = (int) (button1.getIcon().getIconWidth() * widthRatio);
