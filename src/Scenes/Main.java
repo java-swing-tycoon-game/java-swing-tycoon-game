@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.awt.event.*;
 
+
 public class Main extends JFrame {
     private JLabel bgImageLabel, imageLabel1, titleImageLabel;
     private JButton button1, button2, button3;
