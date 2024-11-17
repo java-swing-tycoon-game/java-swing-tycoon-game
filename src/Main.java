@@ -3,6 +3,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.awt.event.*;
+import Deco.Deco;
 
 public class Main extends JFrame {
     private JLabel bgImageLabel, imageLabel1, titleImageLabel;
@@ -131,6 +132,6 @@ public class Main extends JFrame {
     }
 
     public static void main(String[] args) {
-        new Main();
+        new Deco();
     }
 }
