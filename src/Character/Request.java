@@ -5,22 +5,22 @@ import java.awt.*;
 import java.util.Random;
 
 public class Request {
-    private static final String[] itemRequest = {"album", "bag", "cup"};
-    private static final String[] placeRequest = {"goods", "makeTop", "movie"};
+    private static final String[] itemRequestList = {"assets/img/item/slogan.png", "assets/img/item/tshirts.png", "assets/img/item/stick.png", "assets/img/item/doll.png", "assets/img/item/bag.png", "assets/img/item/album.png"};
+    private static final String[] placeRequestList = {"goods", "makeTop", "movie"};
     private static final Image request = new ImageIcon("assets/img/npc/request.png").getImage();
 
-    private String requestItem;
+    private Image requestItem;
     private boolean active;
 
     public Request() {
-        this.requestItem = getRandomRequest();
+        this.requestItem = setRandomRequest();
         this.active = true;
     }
 
     // 요청을 랜덤으로 선택
-    private static String getRandomRequest() {
+    private static Image setRandomRequest() {
         Random random = new Random();
-        return itemRequest[random.nextInt(itemRequest.length)];
+        return new ImageIcon(itemRequestList[random.nextInt(itemRequestList.length)]).getImage();
     }
 
     public boolean isActive() {
@@ -39,9 +39,8 @@ public class Request {
             // 말풍선 이미지 그리기
             g2d.drawImage(request, balloonX, balloonY, null);
 
-            // 요청 텍스트 표시
-            g2d.setColor(Color.BLACK);
-            g2d.drawString(requestItem, balloonX + 10, balloonY + 25);
+            // 요청 아이템 이미지 표시
+            g2d.drawImage(requestItem, balloonX, balloonY, null);
         }
     }
 }
