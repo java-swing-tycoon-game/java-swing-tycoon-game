@@ -17,10 +17,10 @@ public class Npc extends Move {
     private Image eyeImg, hairImg, shirtsImg, pantsImg;
 
     // 이미지 경로
-    String[] eyeImgPath = {"assets/img/npc/eye1.png", "assets/img/npc/eye2.png"};
-    String[] hairImgPath = {"assets/img/npc/hair1.png", "assets/img/npc/hair2.png"};
-    String[] shirtsImgPath = {"assets/img/npc/shirts1.png", "assets/img/npc/shirts2.png"};
-    String[] pantsImgPath = {"assets/img/npc/pants1.png", "assets/img/npc/pants2.png"};
+    private String[] eyeImgPath = {"assets/img/npc/eye1.png", "assets/img/npc/eye2.png"};
+    private String[] hairImgPath = {"assets/img/npc/hair1.png", "assets/img/npc/hair2.png"};
+    private String[] shirtsImgPath = {"assets/img/npc/shirts1.png", "assets/img/npc/shirts2.png"};
+    private String[] pantsImgPath = {"assets/img/npc/pants1.png", "assets/img/npc/pants2.png"};
 
     private Image walkingImg;
     private int walkingIndex = 0;
@@ -33,6 +33,19 @@ public class Npc extends Move {
         randomSetNpc();
         walkingAnimation();
     }
+
+    // NPC 상태
+    public void update() {
+
+    }
+
+    // 요청 생성
+    private void makeRequest()
+    {
+
+    }
+
+    ////////// NPC 이미지 관련 //////////
 
     // NPC 이미지 조합하기
     private void randomSetNpc()
@@ -58,11 +71,6 @@ public class Npc extends Move {
             repaint();
         });
         walkingTimer.start();
-    }
-
-    // NPC 상태
-    public void update() {
-
     }
 
     @Override
