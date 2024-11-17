@@ -3,7 +3,7 @@ package Scenes;
 import javax.swing.*;
 import java.awt.*;
 
-public class Buy extends JPanel {
+public class Buy extends JFrame {
     public Buy() {
         showPopup();
     }
@@ -11,8 +11,12 @@ public class Buy extends JPanel {
     private JPanel popupPanel() {
         JPanel popupPanel = new JPanel();
         popupPanel.setLayout(null);
+        popupPanel.setBackground(Color.decode("#D5F2FF"));
 
-        showBackground();
+        JPanel background = showBackground();
+        background.setBounds(0,0,873,578);
+        popupPanel.add(background);
+
         showItem();
         showCoin();
         showButton();
@@ -20,8 +24,16 @@ public class Buy extends JPanel {
         return popupPanel;
     }
 
-    void showBackground() {
+    JPanel showBackground() {
+        JPanel backgroundPanel = new JPanel();
+        backgroundPanel.setOpaque(false);
+        backgroundPanel.setLayout(new BorderLayout())
+        ;
 
+        ImageIcon background = new ImageIcon("assets/img/panel/buy.png");
+        backgroundPanel.add(new JLabel(background), BorderLayout.CENTER);
+
+        return backgroundPanel;
     }
 
     void showItem() {

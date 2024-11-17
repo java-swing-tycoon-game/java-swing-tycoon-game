@@ -18,13 +18,13 @@ public class Play extends JFrame {
     private Timer dayTimer; // 각 데이의 타이머
 
     private int realTime = 60;  // 각 데이를 60초로 설정 (일단 임시로.. 데이 증가하면 여기를 같이 수정하면 될듯)
-    private int coinAmount = 500;  // 초기 코인 금액
+    private int coinAmount = 0;  // 초기 코인 금액
 
     private LightStick LStick;  // 응원봉 객체
     private Tshirt tshirt; // 티셔츠 객체
     private Move characterMove; // 캐릭터 이동 객체
 
-    Play() {
+    public Play() {
         setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다");
         LStick = new LightStick();  // 응원봉 객체 생성
         tshirt = new Tshirt();  // 티셔츠 객체 생성
@@ -36,6 +36,8 @@ public class Play extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1038, 805);
         setVisible(true);
+
+        startDayTimer();  // 타이머
     }
 
     void showBackground()
@@ -43,7 +45,7 @@ public class Play extends JFrame {
         // 겹칠 패널 생성
         JLayeredPane layeredPane = new JLayeredPane();
         layeredPane.setOpaque(false);
-        layeredPane.setLayout(null);  // null 레이아웃으로 절대 위치 설정 가능
+        layeredPane.setLayout(null);
 
         // mapPanel을 layeredPane에 추가
         JPanel map = showMap();
@@ -71,8 +73,6 @@ public class Play extends JFrame {
         layeredPane.add(bottom, Integer.valueOf(100));  // 위쪽 레이어
 
         add(layeredPane, BorderLayout.CENTER);
-
-        startDayTimer();  // 타이머
     }
 
     JPanel showMap()
@@ -257,7 +257,7 @@ public class Play extends JFrame {
                 .getLayoutComponent(BorderLayout.EAST)).getComponent(2);
         // coinTxt를 찾아서 getComponent()이벤트를 발생한 컴포넌트 반환하기 (인덱스 2: coinTxt)
 
-        coinTxt.setText("x " + coinAmount + "만원");  // 코인 금액 업데이트
+        coinTxt.setText("x " + coinAmount + " 만원");  // 코인 금액 업데이트
     }
 
     // 응원봉 추가했을 때 타이머 변동
