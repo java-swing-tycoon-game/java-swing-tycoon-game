@@ -6,7 +6,6 @@ import java.awt.image.BufferedImage;
 import java.util.Random;
 
 public class Npc extends Move {
-
     // face와 leg는 공통 사용
     private final Image faceImg = new ImageIcon("assets/img/npc/face.png").getImage();
     private final Image[] legImg = {
@@ -26,27 +25,16 @@ public class Npc extends Move {
     private int walkingIndex = 0;
     private BufferedImage buffer;
 
-    // npc의 요청이 모두 처리되었는지 여부
-    private boolean request = true;
+    // 요청 클래스
+    private Request request;
 
     public Npc() {
         randomSetNpc();
         walkingAnimation();
-    }
-
-    // NPC 상태
-    public void update() {
-
-    }
-
-    // 요청 생성
-    private void makeRequest()
-    {
-
+        request = null;
     }
 
     ////////// NPC 이미지 관련 //////////
-
     // NPC 이미지 조합하기
     private void randomSetNpc()
     {
@@ -73,6 +61,22 @@ public class Npc extends Move {
         walkingTimer.start();
     }
 
+    ////// NPC 요청 //////
+    // 요청 생성
+    private void makeRequest() {
+        if (request == null || !request.isActive()) {
+            request = new Request(); // 새 요청 생성
+        }
+    }
+
+    // 요청 삭제
+    public void completeRequest() {
+        if (request != null && request.isActive()) {
+            request.deactivate(); // 요청 비활성화
+        }
+    }
+
+    ////// 그리기 //////
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -94,6 +98,11 @@ public class Npc extends Move {
         g2d.drawImage(faceImg, imageX, imageY, null);
         g2d.drawImage(hairImg, imageX, imageY, null);
         g2d.drawImage(eyeImg, imageX, imageY, null);
+
+        // 요청 있으면 그리기
+        if (request != null && request.isActive()) {
+            request.draw(g2d, imageX, imageY);
+        }
 
         g2d.dispose();
 
