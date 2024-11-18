@@ -2,6 +2,8 @@ package Character;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
@@ -32,6 +34,9 @@ public class Npc extends Move {
         randomSetNpc();
         walkingAnimation();
         request = null;
+        makeRequest(); // 디버깅용으로 요청 하나 생성
+
+
     }
 
     ////////// NPC 이미지 관련 //////////
