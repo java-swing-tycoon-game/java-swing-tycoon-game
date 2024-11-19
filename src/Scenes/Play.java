@@ -2,10 +2,7 @@ package Scenes;
 
 import Character.Player;
 import Character.Npc;
-import Character.Move;
-import GameManager.FontManager;
-import Items.LightStick; // lightStick 클래스 (응원봉 사용시 realTime 증가)
-import Items.Tshirt;    // Tshirt 클래스 (티셔츠 착용시 캐릭터 이동 속도 증가)
+import GameManager.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,22 +10,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Play extends JFrame {
-    private JLabel timeBarLabel, basicTimeBar, time; // 시간바
+    private JLabel time; // 시간바
     private JPanel timePanel;
-    private Timer dayTimer; // 각 데이의 타이머
-
-    private int realTime = 60;  // 각 데이를 60초로 설정 (일단 임시로.. 데이 증가하면 여기를 같이 수정하면 될듯)
     private int coinAmount = 0;  // 초기 코인 금액
-
-    private LightStick LStick;  // 응원봉 객체
-    private Tshirt tshirt; // 티셔츠 객체
-    private Move characterMove; // 캐릭터 이동 객체
 
     public Play() {
         setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다");
-        LStick = new LightStick();  // 응원봉 객체 생성
-        tshirt = new Tshirt();  // 티셔츠 객체 생성
-        characterMove = new Move(); // 캐릭터 이동 객체 초기화
 
         setLayout(new BorderLayout());
         showBackground();
@@ -37,7 +24,7 @@ public class Play extends JFrame {
         setSize(1038, 805);
         setVisible(true);
 
-        startDayTimer();  // 타이머
+        // startDayTimer();  // 타이머
     }
 
     void showBackground()
@@ -113,37 +100,6 @@ public class Play extends JFrame {
         itemPanel.add(item);
         itemPanel.add(itemCircle);
 
-        /*// 응원봉
-        ImageIcon lightStickIcon = new ImageIcon("assets/img/lightStick.png");
-        JLabel lightStickLabel = new JLabel(new ImageIcon(
-                lightStickIcon.getImage().getScaledInstance(50, 70, Image.SCALE_SMOOTH)));
-        lightStickLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
-        itemPanel.add(lightStickLabel);
-
-        // 응원봉 클릭 이벤트 추가
-        lightStickLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                useLStick(); // 응원봉 사용
-                System.out.println("응원봉 효과 적용: 타이머 증가");    // 확인용
-            }
-        });
-
-        // 티셔츠
-        ImageIcon tshirtIcon = new ImageIcon("assets/img/tshirt.png");
-        JLabel tshirtLabel = new JLabel(new ImageIcon(
-                tshirtIcon.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH)));
-        tshirtLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
-        itemPanel.add(tshirtLabel);
-
-        // 티셔츠 클릭 이벤트 추가
-        tshirtLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                tshirt.tshirtEffect(characterMove); // 티셔츠 효과 적용
-                System.out.println("티셔츠 효과 적용: 속도 증가"); // 확인용
-                System.out.println("현재 캐릭터 속도: " + characterMove.getMoveSpeed()); // 현재 속도 확인용
-            }
-        });*/
-
         top.add(dayPanel, BorderLayout.WEST);
         top.add(itemPanel, BorderLayout.EAST);
 
@@ -158,24 +114,16 @@ public class Play extends JFrame {
         bottom.setLayout(new BorderLayout());
 
         // 시간
-        timePanel = new JPanel();
-        timePanel.setOpaque(false);
-        timePanel.setLayout(null);  // 시간바 겹치게 하기 위함
-
         time = new JLabel(new ImageIcon("assets/img/time.png"));
-        time.setBounds(-2, 9, time.getIcon().getIconWidth(), time.getIcon().getIconHeight());  // TIME 이미지
+        time.setBounds(-2, 9, time.getIcon().getIconWidth(), time.getIcon().getIconHeight()); // TIME 이미지
 
-        // 초기 시간바 크기 설정
-        int initialWidth = 440;  // 초기 너비 400 고정
-        ImageIcon timeBarIcon = new ImageIcon("assets/img/timeBar.png");
+        timePanel = new JPanel();
+        timePanel.add(time); // TIME 이미지 따로 먼저 추가
 
-        timeBarLabel = new JLabel(new ImageIcon(timeBarIcon.getImage().getScaledInstance(initialWidth, timeBarIcon.getIconHeight(), Image.SCALE_SMOOTH)));
-        timeBarLabel.setBounds(time.getIcon().getIconWidth() + 2, 15, initialWidth, timeBarLabel.getIcon().getIconHeight());
-
-        basicTimeBar = new JLabel(new ImageIcon("assets/img/basicTimeBar.png"));
-        basicTimeBar.setBounds(time.getIcon().getIconWidth() + 2, 10, 440, basicTimeBar.getIcon().getIconHeight());
-
-        timePanel.setPreferredSize(new Dimension(initialWidth, timeBarLabel.getHeight()));
+        // ProgressPane 추가
+        ProgressPaneManager progressManager = new ProgressPaneManager();
+        JPanel progressPane = progressManager.getProgressPane();
+        bottom.add(progressPane, BorderLayout.CENTER);  // progressPane을 하단 패널 중앙에 추가
 
         // 코인
         JPanel coinPanel = new JPanel();
@@ -193,9 +141,6 @@ public class Play extends JFrame {
         coinTxt.setBorder(BorderFactory.createEmptyBorder(0 , 10, 0 , 0));
 
         // timePanel 관련 요소들 추가하기
-        timePanel.add(time);
-        timePanel.add(timeBarLabel);
-        timePanel.add(basicTimeBar);
         bottom.add(timePanel, BorderLayout.WEST);
 
         // coin 머시깽이들
@@ -205,49 +150,6 @@ public class Play extends JFrame {
         bottom.add(coinPanel, BorderLayout.EAST);
 
         return bottom;
-    }
-
-    // 타임 관련 함수들..
-    void startDayTimer() {
-        dayTimer = new Timer(1000, new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                realTime--;
-                updateTimeBar();  // 시간바 업데이트
-
-                // 타이머 종료
-                if (realTime <= 0) {
-                    dayTimer.stop();  // 타이머 중지
-                    resetDay();
-                }
-            }
-        });
-        dayTimer.start();
-    }
-
-    // 하단 시간바 크기 조정
-    void updateTimeBar() {
-        int newWidth = (int) (440 * (realTime / 60.0)); // 60초 기준으로 시간바 너비 계산
-
-        // 시간바 이미지를 줄어든 크기로 설정
-        ImageIcon resizedTimeBar = new ImageIcon(new ImageIcon("assets/img/timeBar.png")
-                .getImage().getScaledInstance(newWidth, timeBarLabel.getHeight(), Image.SCALE_SMOOTH));
-        timeBarLabel.setIcon(resizedTimeBar);
-
-        // timePanel이랑 기본 시간바 크기는 고정 back으로 고정시켜두기
-        basicTimeBar.setBounds(time.getIcon().getIconWidth() + 2, 10, 440, basicTimeBar.getIcon().getIconHeight());
-        timePanel.setPreferredSize(new Dimension(440 + time.getIcon().getIconWidth(), timePanel.getHeight()));
-
-        // timeBarLabel 위치 고정하고 너비만 조정
-        timeBarLabel.setBounds(time.getIcon().getIconWidth() + 2, 15, newWidth, timeBarLabel.getHeight());
-
-        timePanel.revalidate(); // 컴포넌트들 재배치하는 거
-        timePanel.repaint();
-    }
-
-    // 데이 다시 60초로 리셋
-    void resetDay() {
-        realTime = 60;
-        startDayTimer();  // 타이머 다시 시작
     }
 
     // 코인 금액 변경될 때 함수
@@ -260,6 +162,13 @@ public class Play extends JFrame {
         coinTxt.setText("x " + coinAmount + " 만원");  // 코인 금액 업데이트
     }
 
+    /*
+    추후에 수정해야 할 것 같아서! 그냥 냅둬주세요!!
+    // 하단 시간바 크기 조정
+    void updateTimeBar() {
+
+    }
+
     // 응원봉 추가했을 때 타이머 변동
     void useLStick() {
         if (realTime + LStick.getTimeIncrease() <= 60) { // 최대 60초 = realTime으로 정해둔 거
@@ -268,7 +177,7 @@ public class Play extends JFrame {
             updateTimeBar();
         }
         else realTime = 60;
-    }
+    }*/
 
     public static void main(String[] args) {
         new Play();
