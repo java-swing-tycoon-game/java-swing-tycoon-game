@@ -8,27 +8,53 @@ import java.awt.event.MouseEvent;
 public class Player extends Move {
     private Image characterImg = new ImageIcon("assets/img/playerCharacter.png").getImage();
 
-    public Player(){
+//    public Player(){
+//        super(512, 330);
+//        this.characterImg = new ImageIcon("assets/img/playerCharacter.png").getImage();
+//        setOpaque(false);
+//
+//        // 마우스 클릭 리스너 추가
+//        addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                int mouseX = e.getX();
+//                int mouseY = e.getY();
+//
+//                // 각 원을 검사하여 클릭된 경우 해당 원의 목표 위치로 이동
+//                for (Place place : getPlaces()) {
+//                    if (place.contains(mouseX, mouseY)) {
+//                        moveToDest(place);
+//                        break;
+//                    }
+//                }
+//            }
+//        });
+//    }
+
+
+    public Player() {
+        super(512, 330); // 초기 좌표 설정
         this.characterImg = new ImageIcon("assets/img/playerCharacter.png").getImage();
         setOpaque(false);
 
-        // 마우스 클릭 리스너 추가
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int mouseX = e.getX();
-                int mouseY = e.getY();
+        // 각 Place 객체마다 마우스 리스너를 추가
+        for (Place place : getPlaces()) {
+            addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    int mouseX = e.getX();
+                    int mouseY = e.getY();
 
-                // 각 원을 검사하여 클릭된 경우 해당 원의 목표 위치로 이동
-                for (Place place : getPlaces()) {
+                    // 해당 Place가 클릭된 경우 이동
                     if (place.contains(mouseX, mouseY)) {
                         moveToDest(place);
-                        break;
+                        return; // 클릭된 Place를 찾으면 나머지 검사 중단
                     }
                 }
-            }
-        });
+            });
+        }
     }
+
 
     @Override
     protected void paintComponent(Graphics g) {

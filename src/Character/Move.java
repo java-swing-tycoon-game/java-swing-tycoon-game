@@ -4,11 +4,12 @@ import javax.swing.*;
 import java.util.ArrayList;
 
 public class Move extends JPanel {
-    protected int characterX = 512;
-    protected int characterY = 330;
+    // 캐릭터의 현재 위치
+    protected int characterX;
+    protected int characterY;
 
-    protected int targetX = 512;
-    protected int targetY = 330;
+    protected int targetX;
+    protected int targetY;
 
     protected int moveSpeed = 5;
     private Timer moveTimer;
@@ -16,6 +17,15 @@ public class Move extends JPanel {
 
     public Move() {
         places = Place.createPlaces();
+    }
+
+    // 시작 위치 설정
+    public Move(int x, int y) {
+        this(); // 기본 생성자를 호출
+        this.characterX = x;
+        this.characterY = y;
+        this.targetX = x;
+        this.targetY = y;
     }
 
     public ArrayList<Place> getPlaces() {
@@ -42,6 +52,20 @@ public class Move extends JPanel {
         if (distance < moveSpeed) {
             characterX = centerX;
             characterY = centerY;
+        } else {
+            characterX += (int) (moveSpeed * dx / distance);
+            characterY += (int) (moveSpeed * dy / distance);
+        }
+    }
+
+    private void moveCharacter() {
+        int dx = targetX - characterX;
+        int dy = targetY - characterY;
+        double distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < moveSpeed) {
+            characterX = targetX;
+            characterY = targetY;
         } else {
             characterX += (int) (moveSpeed * dx / distance);
             characterY += (int) (moveSpeed * dy / distance);
@@ -77,19 +101,5 @@ public class Move extends JPanel {
             }
         });
         centerTimer.start();
-    }
-
-    private void moveCharacter() {
-        int dx = targetX - characterX;
-        int dy = targetY - characterY;
-        double distance = Math.sqrt(dx * dx + dy * dy);
-
-        if (distance < moveSpeed) {
-            characterX = targetX;
-            characterY = targetY;
-        } else {
-            characterX += (int) (moveSpeed * dx / distance);
-            characterY += (int) (moveSpeed * dy / distance);
-        }
     }
 }
