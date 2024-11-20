@@ -1,5 +1,7 @@
 package Character;
 
+import Scenes.Deco;
+
 import javax.swing.*;
 import java.util.ArrayList;
 
@@ -95,6 +97,9 @@ public class Move extends JPanel {
                     // 목표 좌표에 도달하면 타이머 종료
                     if (characterX == targetX && characterY == targetY) {
                         ((Timer) moveEvent.getSource()).stop();
+                        if(place == places.get(7)) {
+                            new Deco();
+                        }
                     }
                 });
                 moveTimer.start();

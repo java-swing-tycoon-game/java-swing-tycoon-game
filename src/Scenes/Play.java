@@ -8,8 +8,6 @@ import GameManager.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Play extends JFrame {
     private JLabel time; // 시간바
