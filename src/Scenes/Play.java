@@ -2,10 +2,8 @@ package Scenes;
 
 import Character.Player;
 import Character.Npc;
-import Character.Move;
+import Character.BlackConsumer;
 import GameManager.FontManager;
-import Items.LightStick; // lightStick 클래스 (응원봉 사용시 realTime 증가)
-import Items.Tshirt;    // Tshirt 클래스 (티셔츠 착용시 캐릭터 이동 속도 증가)
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,15 +18,8 @@ public class Play extends JFrame {
     private int realTime = 60;  // 각 데이를 60초로 설정 (일단 임시로.. 데이 증가하면 여기를 같이 수정하면 될듯)
     private int coinAmount = 0;  // 초기 코인 금액
 
-    private LightStick LStick;  // 응원봉 객체
-    private Tshirt tshirt; // 티셔츠 객체
-    private Move characterMove; // 캐릭터 이동 객체
-
     public Play() {
         setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다");
-        LStick = new LightStick();  // 응원봉 객체 생성
-        tshirt = new Tshirt();  // 티셔츠 객체 생성
-        characterMove = new Move(); // 캐릭터 이동 객체 초기화
 
         setLayout(new BorderLayout());
         showBackground();
@@ -57,10 +48,15 @@ public class Play extends JFrame {
         npc.setOpaque(false);
         layeredPane.add(npc, Integer.valueOf(2));  // map 위에 오도록 우선순위 설정
 
+        BlackConsumer bc = new BlackConsumer();
+        bc.setBounds(0, 0, 1024, 768);
+        bc.setOpaque(false);
+        layeredPane.add(bc, Integer.valueOf(2));  // map 위에 오도록 우선순위 설정
+
         // Player 객체 추가
-        Player player = new Player();
-        player.setBounds(0, 0, 1024, 768);
-        layeredPane.add(player, Integer.valueOf(2));
+        //Player player = new Player();
+        //player.setBounds(0, 0, 1024, 768);
+        //layeredPane.add(player, Integer.valueOf(2));
 
         // top 패널을 layeredPane에 추가
         JPanel top = showTop();
@@ -112,37 +108,6 @@ public class Play extends JFrame {
         itemCircle.setBorder(BorderFactory.createEmptyBorder(0 , 10, 0 , 0));
         itemPanel.add(item);
         itemPanel.add(itemCircle);
-
-        /*// 응원봉
-        ImageIcon lightStickIcon = new ImageIcon("assets/img/lightStick.png");
-        JLabel lightStickLabel = new JLabel(new ImageIcon(
-                lightStickIcon.getImage().getScaledInstance(50, 70, Image.SCALE_SMOOTH)));
-        lightStickLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
-        itemPanel.add(lightStickLabel);
-
-        // 응원봉 클릭 이벤트 추가
-        lightStickLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                useLStick(); // 응원봉 사용
-                System.out.println("응원봉 효과 적용: 타이머 증가");    // 확인용
-            }
-        });
-
-        // 티셔츠
-        ImageIcon tshirtIcon = new ImageIcon("assets/img/tshirt.png");
-        JLabel tshirtLabel = new JLabel(new ImageIcon(
-                tshirtIcon.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH)));
-        tshirtLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
-        itemPanel.add(tshirtLabel);
-
-        // 티셔츠 클릭 이벤트 추가
-        tshirtLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                tshirt.tshirtEffect(characterMove); // 티셔츠 효과 적용
-                System.out.println("티셔츠 효과 적용: 속도 증가"); // 확인용
-                System.out.println("현재 캐릭터 속도: " + characterMove.getMoveSpeed()); // 현재 속도 확인용
-            }
-        });*/
 
         top.add(dayPanel, BorderLayout.WEST);
         top.add(itemPanel, BorderLayout.EAST);
@@ -260,15 +225,15 @@ public class Play extends JFrame {
         coinTxt.setText("x " + coinAmount + " 만원");  // 코인 금액 업데이트
     }
 
-    // 응원봉 추가했을 때 타이머 변동
-    void useLStick() {
-        if (realTime + LStick.getTimeIncrease() <= 60) { // 최대 60초 = realTime으로 정해둔 거
-            LStick.use();
-            realTime += LStick.getTimeIncrease();
-            updateTimeBar();
-        }
-        else realTime = 60;
-    }
+//    // 응원봉 추가했을 때 타이머 변동
+//    void useLStick() {
+//        if (realTime + LStick.getTimeIncrease() <= 60) { // 최대 60초 = realTime으로 정해둔 거
+//            LStick.use();
+//            realTime += LStick.getTimeIncrease();
+//            updateTimeBar();
+//        }
+//        else realTime = 60;
+//    }
 
     public static void main(String[] args) {
         new Play();
