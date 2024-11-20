@@ -139,6 +139,7 @@ public class Play extends JFrame {
         time.setBounds(-2, 9, time.getIcon().getIconWidth(), time.getIcon().getIconHeight()); // TIME 이미지
 
         timePanel = new JPanel();
+        timePanel.setOpaque(false);    // 해당 패널 배경 투명도
         timePanel.add(time); // TIME 이미지 따로 먼저 추가
 
         // ProgressPane 추가
