@@ -26,6 +26,7 @@ public class ProgressPaneManager {
         public ImageProgressPane() {
             setPreferredSize(new java.awt.Dimension(600, 60));  // 전체 영역 임의 설정해두기
             setLayout(null);
+            setOpaque(false);
 
             try {
                 // 이미지 로드
@@ -114,7 +115,7 @@ public class ProgressPaneManager {
             // 진행률 이미지 그리기
             if (progressImage != null) {
                 int width = (int) (getWidth() * progressBar.getPercentComplete());
-                g2d.drawImage(progressImage, 0, 0, width, getHeight() - 50, this);
+                g2d.drawImage(progressImage, 5, 6, width - 2, getHeight() - 64, this);
             }
 
             g2d.dispose();

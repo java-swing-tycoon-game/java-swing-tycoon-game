@@ -23,8 +23,6 @@ public class Play extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1038, 805);
         setVisible(true);
-
-        // startDayTimer();  // 타이머
     }
 
     void showBackground()
@@ -118,6 +116,7 @@ public class Play extends JFrame {
         time.setBounds(-2, 9, time.getIcon().getIconWidth(), time.getIcon().getIconHeight()); // TIME 이미지
 
         timePanel = new JPanel();
+        timePanel.setOpaque(false);
         timePanel.add(time); // TIME 이미지 따로 먼저 추가
 
         // ProgressPane 추가

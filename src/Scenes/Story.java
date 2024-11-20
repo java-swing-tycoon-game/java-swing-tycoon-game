@@ -19,7 +19,7 @@ public class Story extends JFrame {
         imagePanel.setBounds(padding, padding-10, 924, 640);
         imagePanel.setOpaque(false);
 
-        ImageIcon howtoBg = new ImageIcon("assets/img/howtoBack.png");
+        ImageIcon howtoBg = new ImageIcon("assets/img/story.png");
         Image scaledImage = howtoBg.getImage().getScaledInstance(924, 620, Image.SCALE_SMOOTH);
         JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
 
