@@ -50,7 +50,7 @@ public class Buy extends JFrame {
 
         JPanel rightPanel = new JPanel(new GridLayout(4, 1, 0, 0));
         rightPanel.setOpaque(false);
-        rightPanel.setBounds(600, 130, 300, 400);
+        rightPanel.setBounds(590, 130, 300, 400);
 
         // 코인 타이틀 패널
         JPanel coinPanel = new JPanel(new BorderLayout());

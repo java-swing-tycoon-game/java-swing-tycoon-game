@@ -26,7 +26,7 @@ public class ProgressPaneManager {
         public ImageProgressPane() {
             setPreferredSize(new java.awt.Dimension(600, 60));  // 전체 영역 임의 설정해두기
             setLayout(null);
-            setOpaque(false);
+            setOpaque(false);    // 시간바 배경 투명도
 
             try {
                 // 이미지 로드

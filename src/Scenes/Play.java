@@ -2,6 +2,8 @@ package Scenes;
 
 import Character.Player;
 import Character.Npc;
+import Character.BlackConsumer;
+import GameManager.FontManager;
 import GameManager.*;
 
 import javax.swing.*;
@@ -23,6 +25,8 @@ public class Play extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1038, 805);
         setVisible(true);
+
+        // startDayTimer();  // 타이머
     }
 
     void showBackground()
@@ -42,10 +46,15 @@ public class Play extends JFrame {
         npc.setOpaque(false);
         layeredPane.add(npc, Integer.valueOf(2));  // map 위에 오도록 우선순위 설정
 
+        BlackConsumer bc = new BlackConsumer();
+        bc.setBounds(0, 0, 1024, 768);
+        bc.setOpaque(false);
+        layeredPane.add(bc, Integer.valueOf(2));  // map 위에 오도록 우선순위 설정
+
         // Player 객체 추가
-        Player player = new Player();
-        player.setBounds(0, 0, 1024, 768);
-        layeredPane.add(player, Integer.valueOf(2));
+        //Player player = new Player();
+        //player.setBounds(0, 0, 1024, 768);
+        //layeredPane.add(player, Integer.valueOf(2));
 
         // top 패널을 layeredPane에 추가
         JPanel top = showTop();
@@ -116,7 +125,7 @@ public class Play extends JFrame {
         time.setBounds(-2, 9, time.getIcon().getIconWidth(), time.getIcon().getIconHeight()); // TIME 이미지
 
         timePanel = new JPanel();
-        timePanel.setOpaque(false);
+        timePanel.setOpaque(false);    // 해당 패널 배경 투명도
         timePanel.add(time); // TIME 이미지 따로 먼저 추가
 
         // ProgressPane 추가

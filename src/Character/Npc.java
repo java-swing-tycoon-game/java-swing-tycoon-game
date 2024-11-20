@@ -33,10 +33,7 @@ public class Npc extends Move {
     public Npc() {
         randomSetNpc();
         walkingAnimation();
-        request = null;
-        makeRequest(); // 디버깅용으로 요청 하나 생성
-
-
+        setupRequest(); // 디버깅용으로 요청 하나 생성
     }
 
     ////////// NPC 이미지 관련 //////////
@@ -67,18 +64,17 @@ public class Npc extends Move {
     }
 
     ////// NPC 요청 //////
-    // 요청 생성
-    private void makeRequest() {
-        if (request == null || !request.isActive()) {
-            request = new Request(); // 새 요청 생성
-        }
-    }
+    private void setupRequest() {
+        request = new Request();
 
-    // 요청 삭제
-    public void completeRequest() {
-        if (request != null && request.isActive()) {
-            request.deactivate(); // 요청 비활성화
-        }
+        // 클릭 이벤트로 요청 완료 처리
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                request.completeRequest();
+                repaint();
+            }
+        });
     }
 
     ////// 그리기 //////
@@ -94,8 +90,8 @@ public class Npc extends Move {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         // 캐릭터 생성되는 위치
-        int imageX = 500;
-        int imageY = 300;
+        int imageX = 510;
+        int imageY = 520;
 
         g2d.drawImage(walkingImg, imageX, imageY, null);
         g2d.drawImage(pantsImg, imageX, imageY, null);
