@@ -20,6 +20,7 @@ public class Play extends JFrame {
         setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다");
 
         setLayout(new BorderLayout());
+        showCharacter();
         showBackground();
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -27,6 +28,34 @@ public class Play extends JFrame {
         setVisible(true);
 
         // startDayTimer();  // 타이머
+    }
+
+    void showCharacter()
+    {
+        // Npc 생성
+        Npc npc = new Npc();
+        npc.setBounds(0, 0, 1024, 768);
+        npc.setOpaque(false);
+        add(npc);
+
+        // 악성 Npc 생성
+//        BlackConsumer bc = new BlackConsumer();
+//        bc.setBounds(0, 0, 1024, 768);
+//        bc.setOpaque(false);
+//        layeredPane.add(bc, Integer.valueOf(2));  // map 위에 오도록 우선순위 설정
+
+        // Player 생성
+        Player player = new Player();
+        player.setBounds(0, 0, 1024, 768);
+        add(player);
+
+        // 캐릭터들 클릭 되도록
+        ClickManager clickManager = new ClickManager();
+
+        clickManager.setClickList(npc);
+        clickManager.setClickList(player);
+
+        addMouseListener(clickManager);
     }
 
     void showBackground()
@@ -40,21 +69,6 @@ public class Play extends JFrame {
         JPanel map = showMap();
         map.setBounds(0, 0, 1024, 768);
         layeredPane.add(map, Integer.valueOf(0));
-
-        Npc npc = new Npc();
-        npc.setBounds(0, 0, 1024, 768);
-        npc.setOpaque(false);
-        layeredPane.add(npc, Integer.valueOf(2));  // map 위에 오도록 우선순위 설정
-
-        BlackConsumer bc = new BlackConsumer();
-        bc.setBounds(0, 0, 1024, 768);
-        bc.setOpaque(false);
-        layeredPane.add(bc, Integer.valueOf(2));  // map 위에 오도록 우선순위 설정
-
-        // Player 객체 추가
-        //Player player = new Player();
-        //player.setBounds(0, 0, 1024, 768);
-        //layeredPane.add(player, Integer.valueOf(2));
 
         // top 패널을 layeredPane에 추가
         JPanel top = showTop();

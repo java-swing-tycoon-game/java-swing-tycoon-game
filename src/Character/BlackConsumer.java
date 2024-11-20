@@ -4,7 +4,7 @@ import java.awt.*;
 
 public class BlackConsumer extends Npc {
     public BlackConsumer() {
-        super();
+        super(); // 초기 좌표 설정
         moveToDest(new Place(245, 285, 75, 300, 220));
     }
 

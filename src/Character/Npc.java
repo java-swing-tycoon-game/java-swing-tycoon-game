@@ -1,5 +1,6 @@
 package Character;
 
+import GameManager.ClickEvent;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -7,7 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
-public class Npc extends Move {
+public class Npc extends Move implements ClickEvent {
     // face와 leg는 공통 사용
     private final Image faceImg = new ImageIcon("assets/img/npc/face.png").getImage();
     private final Image[] legImg = {
@@ -29,8 +30,10 @@ public class Npc extends Move {
 
     // 요청 클래스
     private Request request;
+    private Rectangle clickBounds;
 
     public Npc() {
+        super(510, 520); // 초기 좌표 설정
         randomSetNpc();
         walkingAnimation();
         setupRequest(); // 디버깅용으로 요청 하나 생성
@@ -66,15 +69,22 @@ public class Npc extends Move {
     ////// NPC 요청 //////
     private void setupRequest() {
         request = new Request();
+    }
 
-        // 클릭 이벤트로 요청 완료 처리
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                request.completeRequest();
-                repaint();
-            }
-        });
+    @Override
+    public Rectangle setBounds() {
+        int imageWidth = faceImg.getWidth(null);
+        int imageHeight = faceImg.getHeight(null);
+        clickBounds = new Rectangle(characterX, characterY, imageWidth, imageHeight);
+        return clickBounds;
+    }
+
+    @Override
+    public void onClick(Point clickPoint) {
+        if (request != null) {
+            request.completeRequest(); // 클릭 시 요청 완료
+            repaint();
+        }
     }
 
     ////// 그리기 //////
@@ -89,20 +99,16 @@ public class Npc extends Move {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        // 캐릭터 생성되는 위치
-        int imageX = 510;
-        int imageY = 520;
-
-        g2d.drawImage(walkingImg, imageX, imageY, null);
-        g2d.drawImage(pantsImg, imageX, imageY, null);
-        g2d.drawImage(shirtsImg, imageX, imageY, null);
-        g2d.drawImage(faceImg, imageX, imageY, null);
-        g2d.drawImage(hairImg, imageX, imageY, null);
-        g2d.drawImage(eyeImg, imageX, imageY, null);
+        g2d.drawImage(walkingImg, characterX, characterY, null);
+        g2d.drawImage(pantsImg, characterX, characterY, null);
+        g2d.drawImage(shirtsImg, characterX, characterY, null);
+        g2d.drawImage(faceImg, characterX, characterY, null);
+        g2d.drawImage(hairImg, characterX, characterY, null);
+        g2d.drawImage(eyeImg, characterX, characterY, null);
 
         // 요청 있으면 그리기
         if (request != null && request.isActive()) {
-            request.draw(g2d, imageX, imageY);
+            request.draw(g2d, characterX, characterY);
         }
 
         g2d.dispose();
