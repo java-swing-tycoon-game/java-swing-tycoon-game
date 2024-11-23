@@ -10,6 +10,8 @@ public class bcRequest extends Request {
     private static final String PATH = "assets/txt/bcLog.txt"; // 진상 대사 파일
     protected Image request = new ImageIcon("assets/img/npc/bcQuest.png").getImage();
 
+    private bcAns ans;
+
     public bcRequest(int x, int y) {
         super(x, y, null);
         bcLog = setBcLog(); // 대사 설정
@@ -27,8 +29,16 @@ public class bcRequest extends Request {
         }
     }
 
+    public void setAns(bcAns ans) {
+        this.ans = ans; // 외부에서 제공된 bcAns 설정
+    }
+
+    public bcAns getAns() {
+        return ans; // bcAns 반환
+    }
+
     // 대사 세팅
-    private String setBcLog() {
+    public String setBcLog() {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(PATH), "UTF-8"))) {
             ArrayList<String> lines = new ArrayList<>();
             String line;
@@ -59,6 +69,10 @@ public class bcRequest extends Request {
             // 대사 출력
             g2d.setColor(Color.BLACK);
             g2d.drawString(bcLog, balloonX + 10, balloonY + 30);
+
+            if (ans != null && ans.ansActive) {
+                ans.draw(g2d, 360, 180);
+            }
         }
     }
 }
