@@ -74,39 +74,73 @@ public class Move extends JPanel {
         }
     }
 
+//    protected void moveToDest(Place place) {
+//        // 목표 좌표 설정
+//        targetX = place.targetX;
+//        targetY = place.targetY;
+//
+//        // 먼저 중앙으로 이동
+//        Timer centerTimer = new Timer(15, e -> {
+//            // 중앙으로 이동하는 동안
+//            if (characterX != centerX || characterY != centerY) {
+//                moveToCenter(); // 중앙으로 이동
+//                repaint();
+//            }
+//            else {
+//                // 중앙으로 이동이 끝난 후 목표 좌표로 이동 시작
+//                ((Timer) e.getSource()).stop(); // 중앙 이동 타이머 중지
+//
+//                Timer moveTimer = new Timer(15, moveEvent -> {
+//                    moveCharacter(); // 목표 좌표로 이동
+//                    repaint();
+//
+//                    // 목표 좌표에 도달하면 타이머 종료
+//                    if (characterX == targetX && characterY == targetY) {
+//                        ((Timer) moveEvent.getSource()).stop();
+//                        if(place == places.get(7)) {
+//                            new Deco();
+//                        }
+//                    }
+//                });
+//                moveTimer.start();
+//            }
+//        });
+//        centerTimer.start();
+//    }
+
     protected void moveToDest(Place place) {
         // 목표 좌표 설정
         targetX = place.targetX;
         targetY = place.targetY;
 
-        // 먼저 중앙으로 이동
-        Timer centerTimer = new Timer(15, e -> {
-            // 중앙으로 이동하는 동안
-            if (characterX != centerX || characterY != centerY) {
-                moveToCenter(); // 중앙으로 이동
-                repaint();
-            }
-            else {
-                // 중앙으로 이동이 끝난 후 목표 좌표로 이동 시작
-                ((Timer) e.getSource()).stop(); // 중앙 이동 타이머 중지
+        // 먼저 목표 좌표로 이동
+        Timer moveTimer = new Timer(15, moveEvent -> {
+            moveCharacter(); // 목표 좌표로 이동
+            repaint();
 
-                Timer moveTimer = new Timer(15, moveEvent -> {
-                    moveCharacter(); // 목표 좌표로 이동
-                    repaint();
+            // 목표 좌표에 도달하면 타이머 종료
+            if (characterX == targetX && characterY == targetY) {
+                ((Timer) moveEvent.getSource()).stop();
 
-                    // 목표 좌표에 도달하면 타이머 종료
-                    if (characterX == targetX && characterY == targetY) {
-                        ((Timer) moveEvent.getSource()).stop();
-                        if(place == places.get(7)) {
-                            new Deco();
-                        }
+                if (place == places.get(7)) {
+                    new Deco();
+                }
+
+                // 목표 좌표에 도달한 후 중앙으로 이동 시작
+                Timer centerTimer = new Timer(15, centerEvent -> {
+                    if (characterX != centerX || characterY != centerY) {
+                        moveToCenter(); // 중앙으로 이동
+                        repaint();
+                    } else {
+                        ((Timer) centerEvent.getSource()).stop(); // 중앙 이동 타이머 중지
                     }
                 });
-                moveTimer.start();
+                centerTimer.start();
             }
         });
-        centerTimer.start();
+        moveTimer.start();
     }
+
 
     protected void moveToWait(Runnable callback)
     {
