@@ -5,6 +5,7 @@ import Character.Npc;
 import Character.BlackConsumer;
 import GameManager.FontManager;
 import GameManager.*;
+import Goods.Goods;
 
 import javax.swing.*;
 import java.awt.*;
@@ -46,6 +47,12 @@ public class Play extends JFrame {
         Player player = new Player();
         player.setBounds(0, 0, 1024, 768);
         add(player);
+
+        // Goods 생성
+        Goods goods = new Goods();
+        goods.setBounds(0, 0, 1024, 768);
+        goods.setOpaque(false);
+        add(goods);
 
         // 캐릭터들 클릭 되도록
         ClickManager clickManager = new ClickManager();
