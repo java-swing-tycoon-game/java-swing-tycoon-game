@@ -24,8 +24,6 @@ public class Play extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1038, 805);
         setVisible(true);
-
-        // startDayTimer();  // 타이머
     }
 
     void showCharacter()
@@ -102,12 +100,8 @@ public class Play extends JFrame {
         top.setLayout(new BorderLayout());
 
         // 데이
-        JPanel dayPanel = new JPanel();
-        dayPanel.setOpaque(false);
-        dayPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-
-        JLabel day = new JLabel(new ImageIcon("assets/img/day.png"));
-        dayPanel.add(day);
+        ProgressPaneManager progressManager = new ProgressPaneManager();
+        JPanel dayPanel = progressManager.getDayPanel();
 
         // 아이템
         JPanel itemPanel = new JPanel();
