@@ -7,8 +7,8 @@ import Goods.PickDrop;
 
 public class Player extends Move implements ClickEvent {
     private Image characterImg = new ImageIcon("assets/img/playerCharacter.png").getImage();
-    private Image holdItemL = null; // 왼손에 들고 있는 아이템
-    private Image holdItemR = null; // 오른손에 들고 있는 아이템
+    private Image holdItemL = null; // 왼손
+    private Image holdItemR = null; // 오른손
     private PickDrop pickDrop;
 
     public Player() {
