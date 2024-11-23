@@ -13,9 +13,11 @@ public class Play extends JFrame {
     private JLabel time; // 시간바
     private JPanel timePanel;
     private int coinAmount = 0;  // 초기 코인 금액
+    private bgmManager bgm;
 
     public Play() {
         setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다");
+        playBgm();
 
         setLayout(new BorderLayout());
         showCharacter();
@@ -24,6 +26,22 @@ public class Play extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1038, 805);
         setVisible(true);
+    }
+
+    void playBgm() {
+        // 배경 음악 초기화
+        bgm = new bgmManager("assets/bgm/playBgm.wav");
+        bgmManager.toggleMusic(); // 음악 자동 재생
+
+        // m 누르면 재생/정지
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyPressed(java.awt.event.KeyEvent e) {
+                if (e.getKeyCode() == java.awt.event.KeyEvent.VK_M) {
+                    bgmManager.toggleMusic(); // M 버튼으로 음악 토글
+                }
+            }
+        });
     }
 
     void showCharacter()
