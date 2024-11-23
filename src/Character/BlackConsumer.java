@@ -29,7 +29,7 @@ public class BlackConsumer extends Npc {
     @Override
     // 요청을 만들러 간다. bc 때문에 분리해봄
     protected void moveToRequest() {
-        moveToDest(new Place(512, 330, 0, 512, 330));
+        moveToDest(new Place(5, 512, 330, 0, 512, 330));
         setupRequest();
     }
 
