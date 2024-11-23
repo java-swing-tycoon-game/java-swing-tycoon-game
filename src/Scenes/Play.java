@@ -51,8 +51,8 @@ public class Play extends JFrame {
         ClickManager clickManager = new ClickManager();
 
         clickManager.setClickList(npc);
-        clickManager.setClickList(player);
         clickManager.setClickList(bc);
+        clickManager.setClickList(player);
 
         addMouseListener(clickManager);
     }

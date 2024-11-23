@@ -7,13 +7,13 @@ import java.util.Random;
 
 public class Request {
     private static final String[] itemRequestList = {"assets/img/item/cup.png", "assets/img/item/photoCard.png", "assets/img/item/popcorn.png", "assets/img/item/doll.png", "assets/img/item/bag.png", "assets/img/item/album.png"};
-    private static final Image request = new ImageIcon("assets/img/npc/request.png").getImage();
+    protected Image request = new ImageIcon("assets/img/npc/request.png").getImage();
 
     private Image requestItem; // 요청 말풍선에 뜨는 이미지
     private final ArrayList<Place> zone; // 요청과 연관된 장소
 
-    private final Timer requestTimer; // 시간제한을 위한 타이머
-    private boolean active; // 개별 요청의 완료 여부
+    protected final Timer requestTimer; // 시간제한을 위한 타이머
+    protected boolean active; // 개별 요청의 완료 여부
 
     public Request(int x, int y, ArrayList<Place> places) {
         active = false;
@@ -26,7 +26,7 @@ public class Request {
         requestTimer.start();
     }
 
-    private void setZone(ArrayList<Place> places)
+    protected void setZone(ArrayList<Place> places)
     {
         zone.add(places.get(7));
         zone.add(places.get(8));
@@ -61,7 +61,7 @@ public class Request {
             System.out.println("대기존1");
             return setWaitingRequest();
        }
-        return null;
+        return setWaitingRequest();
     }
 
     // 대기 중 요청을 랜덤으로 선택
