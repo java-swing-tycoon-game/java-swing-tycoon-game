@@ -15,6 +15,7 @@ public class Play extends JFrame {
     private JPanel timePanel;
     private int coinAmount = 0;  // 초기 코인 금액
     private bgmManager bgm;
+    private CoinManager coinManager;
 
     public Play() {
         setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다");
@@ -125,8 +126,8 @@ public class Play extends JFrame {
         top.setLayout(new BorderLayout());
 
         // 데이
-        ProgressPaneManager progressManager = new ProgressPaneManager();
-        JPanel dayPanel = progressManager.getDayPanel();
+        DayManager dayManager = new DayManager();
+        JPanel dayPanel = dayManager.getDayPanel();
 
         // 아이템
         JPanel itemPanel = new JPanel();
@@ -159,47 +160,27 @@ public class Play extends JFrame {
         timePanel = new JPanel();
         timePanel.setOpaque(false);    // 해당 패널 배경 투명도
         timePanel.add(time); // TIME 이미지 따로 먼저 추가
-
+        
+        // timePanel 관련 요소들 추가하기
+        bottom.add(timePanel, BorderLayout.WEST);
+        
         // ProgressPane 추가
         ProgressPaneManager progressManager = new ProgressPaneManager();
         JPanel progressPane = progressManager.getProgressPane();
         bottom.add(progressPane, BorderLayout.CENTER);  // progressPane을 하단 패널 중앙에 추가
 
-        // 코인
-        JPanel coinPanel = new JPanel();
-        coinPanel.setOpaque(false);
-        coinPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-
-        JLabel coin = new JLabel(new ImageIcon("assets/img/coin.png"));
-        JLabel coinImage = new JLabel(new ImageIcon("assets/img/coinImage.png"));
-        coinImage.setBorder(BorderFactory.createEmptyBorder(0 , 10, 0 , 0));
-
-        // 코인 텍스트 확인 부분
-        Font font = FontManager.loadFont(30);
-        JLabel coinTxt = new JLabel("x " + coinAmount + "만원");  // 코인 금액 표시
-        coinTxt.setFont(font);
-        coinTxt.setBorder(BorderFactory.createEmptyBorder(0 , 10, 0 , 0));
-
-        // timePanel 관련 요소들 추가하기
-        bottom.add(timePanel, BorderLayout.WEST);
-
-        // coin 머시깽이들
-        coinPanel.add(coin);
-        coinPanel.add(coinImage);
-        coinPanel.add(coinTxt);
-        bottom.add(coinPanel, BorderLayout.EAST);
+        // 코인 관리
+        coinManager = new CoinManager();  // CoinManager 객체 생성
+        
+        // 코인 관련 요소들 추가하기
+        bottom.add(coinManager.getCoinPanel(), BorderLayout.EAST);
 
         return bottom;
     }
 
     // 코인 금액 변경될 때 함수
     void updateCoinAmount(int amount) {
-        coinAmount += amount;  // 코인 금액 +/-
-        JLabel coinTxt = (JLabel) ((JPanel) ((BorderLayout) getContentPane().getLayout())
-                .getLayoutComponent(BorderLayout.EAST)).getComponent(2);
-        // coinTxt를 찾아서 getComponent()이벤트를 발생한 컴포넌트 반환하기 (인덱스 2: coinTxt)
-
-        coinTxt.setText("x " + coinAmount + " 만원");  // 코인 금액 업데이트
+        coinManager.updateCoinAmount(amount);  // CoinManager를 통해 코인 금액 업데이트
     }
 
     /*

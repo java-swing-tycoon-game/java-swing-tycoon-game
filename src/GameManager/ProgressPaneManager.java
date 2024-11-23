@@ -7,26 +7,19 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class ProgressPaneManager {
-    private int day = 1; // 현재 날짜 (1부터 시작)
     private int realTime; // 현재 남은 시간
-    // private final int[] dayTimes = {60, 50, 45, 40, 35, 30, 25}; // 각 day의 초기 시간 final int 배열로 고정..
-    private final int[] dayTimes = {12, 10, 8, 6, 4, 2, 1}; // 각 day의 초기 시간 final int 배열로 고정.. (디버깅용)
+    private int day = 1;  // 현재 데이 (1부터 시작)
+    private final int[] dayTimes = {12, 10, 8, 6, 4, 2, 1}; // 각 day의 초기 시간 (디버깅용)
     private Timer dayTimer; // 날짜 타이머
 
-    private ImageDayPanel dayPanel;
     private ImageProgressPane progressPane;
 
     public ProgressPaneManager() {
-        this.dayPanel = new ImageDayPanel(); // dayPanel 초기화
         this.progressPane = new ImageProgressPane(); // progressPane 초기화
     }
 
     public JPanel getProgressPane() {
         return progressPane; // 시간바 관련
-    }
-
-    public JPanel getDayPanel() {
-        return dayPanel; // 데이 이미지 관련
     }
 
     // 시간바 관련 클래스
@@ -61,58 +54,43 @@ public class ProgressPaneManager {
             realTime = dayTimes[day - 1];   // 현재 데이의 초기 시간
             progressBar.setValue(100);  // 진행률 이미지 다시 100으로 초기화하기
 
-            // 첫 번째 Day에서 이미지를 업데이트하도록 설정
-            // dayPanel.updateDayImage(day);
-
             dayTimer = new Timer(1000, e -> {
                 realTime--;
                 updateTimeBar();
 
-                // 콘솔에 현재 day와 남은 시간 콘솔 출력 확인용 입니다!!!
-                // System.out.println("Day: " + day + ", 남은 시간: " + realTime + "초");
-
+                // 남은 시간이 0이 되면 데이 종료
                 if (realTime <= 0) {
-                    dayTimer.stop();
-                    System.out.println("Day " + day + " 종료! 다음 Day로 이동");   // 데이 종료된 거 콘솔 출력 확인용 입니다!!!
-                    resetDay(); // 타이머 종료 후 다음 day로 초기화
+                    dayTimer.stop();  // 타이머 종료
+                    System.out.println("Day " + day + " 종료! 다음 Day로 이동");
+
+                    // Day 종료 메시지 팝업
+                    JOptionPane.showMessageDialog(null,
+                            "Day " + day + " 종료! 다음 Day로 이동합니다.",
+                            "Day 진행",
+                            JOptionPane.INFORMATION_MESSAGE);
+
+                    // 모든 Day가 끝났으면 게임 종료 메시지
+                    if (day >= dayTimes.length) {
+                        JOptionPane.showMessageDialog(null,
+                                "모든 Day를 완료했습니다! 게임 끝!!!",
+                                "게임 종료",
+                                JOptionPane.INFORMATION_MESSAGE);
+
+                        // 게임 종료 처리
+                        return;
+                    }
+
+                    // 다음 Day로 이동
+                    day++;
+                    startDayTimer();  // 새로운 Day 타이머 시작
                 }
             });
 
             dayTimer.start();
         }
 
-        private void resetDay() {
-            day++;  // 다음 day로 이동
-
-            // 다음 Day로 이동하기 전에 팝업창 표시
-            JOptionPane.showMessageDialog(null,
-                    "Day " + (day - 1) + " 종료! 다음 Day로 이동합니다.",
-                    "Day 진행",
-                    JOptionPane.INFORMATION_MESSAGE);
-
-            if (day > dayTimes.length) {
-                JOptionPane.showMessageDialog(null,
-                        "모든 Day를 완료했습니다! 게임 끝!!!",
-                        "게임 종료",
-                        JOptionPane.INFORMATION_MESSAGE);
-
-                // 이후 타이머 중지 및 게임 종료 처리
-                if (dayTimer != null) {
-                    dayTimer.stop();
-                }
-                return;
-            }
-
-            startDayTimer(); // 새로운 Day 타이머 시작
-
-            // 데이 이미지 변경
-            dayPanel.updateDayImage(day);
-        }
-
-
         private void updateTimeBar() {
-            // 진행률 업데이트
-            int initialTime = dayTimes[day - 1];
+            int initialTime = dayTimes[day - 1]; // 현재 Day의 초기 시간
             int progress = (int) ((realTime / (double) initialTime) * 100);
             progressBar.setValue(progress);
             repaint();
@@ -136,32 +114,6 @@ public class ProgressPaneManager {
             }
 
             g2d.dispose();
-        }
-    }
-
-    // 데이 이미지 관련
-    public class ImageDayPanel extends JPanel {
-        private JLabel dayLabel;
-
-        public ImageDayPanel() {
-            setLayout(new FlowLayout(FlowLayout.LEFT));
-            setOpaque(false);
-
-            dayLabel = new JLabel();
-            updateDayImage(day);    // 데이 이미지 초기화
-            add(dayLabel);
-        }
-
-        // day 변경 시 데이 이미지도 변경
-        public void updateDayImage(int day) {
-            try {
-                String imagePath = "assets/img/day" + day + ".png";
-                BufferedImage dayImage = ImageIO.read(new File(imagePath));
-                dayLabel.setIcon(new ImageIcon(dayImage));
-            } catch (IOException ex) {
-                System.err.println("이미지 로드 실패: " + ex.getMessage());
-                dayLabel.setIcon(null); // 이미지 로드 실패 시 아이콘 초기화
-            }
         }
     }
 }
