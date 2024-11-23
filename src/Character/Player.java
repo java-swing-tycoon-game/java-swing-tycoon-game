@@ -39,14 +39,18 @@ public class Player extends Move implements ClickEvent {
     public void onClick(Point clickPoint) {
         // 클릭된 좌표가 특정 Place 안에 있는지 확인하고 이동
         for (Place place : getPlaces()) {
+               // 수정
                 if (place.contains(clickPoint.x, clickPoint.y)) {
                     if(characterX != place.getTargetX() && characterY != place.getTargetY()) {
-                        System.out.println("클릭되었습니다.");
                         moveToDest(place);
-                         break;
+                        break;
                 }
                     else if(characterX == place.getTargetX() && characterY == place.getTargetY()) {
-                        pickDrop.handleItemClick(clickPoint);
+                        if(place.getTargetX() == 670 && place.getTargetY() == 420) {
+                            dropItem();
+                        }
+                       else
+                           pickDrop.handleItemClick(clickPoint);
                     }
                 }
             }
@@ -70,5 +74,17 @@ public class Player extends Move implements ClickEvent {
             int handY = characterY + 15;
             g2d.drawImage(holdItem, handX, handY, 40, 40, null);
         }
-     }
+
+//        // 원 그리기 (Place 객체들 기반)
+//        g2d.setColor(Color.RED); // 원의 색상 설정 (예: 빨간색)
+//        g2d.setStroke(new BasicStroke(2)); // 원의 테두리 두께 설정
+//
+//        // Place 객체들의 원을 반복적으로 그리기
+//        for (Place place : Place.createPlaces()) {
+//            int x = place.getX() - place.getRadius(); // 원의 좌상단 x 좌표
+//            int y = place.getY() - place.getRadius(); // 원의 좌상단 y 좌표
+//            int diameter = place.getRadius() * 2;    // 원의 지름
+//            g2d.drawOval(x, y, diameter, diameter);
+//     }
+    }
 }
