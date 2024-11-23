@@ -7,31 +7,38 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class ProgressPaneManager {
-
     private int day = 1; // 현재 날짜 (1부터 시작)
     private int realTime; // 현재 남은 시간
     // private final int[] dayTimes = {60, 50, 45, 40, 35, 30, 25}; // 각 day의 초기 시간 final int 배열로 고정..
     private final int[] dayTimes = {12, 10, 8, 6, 4, 2, 1}; // 각 day의 초기 시간 final int 배열로 고정.. (디버깅용)
     private Timer dayTimer; // 날짜 타이머
 
+    private ImageDayPanel dayPanel;
+    private ImageProgressPane progressPane;
+
+    public ProgressPaneManager() {
+        this.dayPanel = new ImageDayPanel(); // dayPanel 초기화
+        this.progressPane = new ImageProgressPane(); // progressPane 초기화
+    }
+
     public JPanel getProgressPane() {
-        return new ImageProgressPane(); // 시간바 관련
+        return progressPane; // 시간바 관련
     }
 
     public JPanel getDayPanel() {
-        return new ImageDayPanel(); // 데이 이미지 관련
+        return dayPanel; // 데이 이미지 관련
     }
 
-    // 시간바 관련
+    // 시간바 관련 클래스
     public class ImageProgressPane extends JPanel {
-        private JProgressBar progressBar; // 진행률을 표시할 JProgressBar
-        private BufferedImage progressImage; // 진행률 이미지
-        private BufferedImage backgroundImage; // 배경 이미지
+        private JProgressBar progressBar;   // 진행률을 표시할 JProgressBar
+        private BufferedImage progressImage;    // 진행률 이미지
+        private BufferedImage backgroundImage;  // 배경 이미지
 
         public ImageProgressPane() {
-            setPreferredSize(new java.awt.Dimension(600, 60));  // 전체 영역 임의 설정해두기
+            setPreferredSize(new java.awt.Dimension(600, 60));  // 전체 영역 임의로 설정해두기
             setLayout(null);
-            setOpaque(false);    // 시간바 배경 투명도
+            setOpaque(false);   // 시간바 배경 투명도
 
             try {
                 progressImage = ImageIO.read(new File("assets/img/timeBar.png"));
@@ -44,7 +51,7 @@ public class ProgressPaneManager {
             progressBar = new JProgressBar(0, 100);
             progressBar.setValue(100);
 
-            // 이미지들이 패널에 추가
+            // 이미지들 패널에 추가
             add(progressBar);
 
             startDayTimer();
@@ -55,7 +62,7 @@ public class ProgressPaneManager {
             progressBar.setValue(100);  // 진행률 이미지 다시 100으로 초기화하기
 
             // 첫 번째 Day에서 이미지를 업데이트하도록 설정
-            ((ImageDayPanel) getDayPanel()).updateDayImage(day);
+            // dayPanel.updateDayImage(day);
 
             dayTimer = new Timer(1000, e -> {
                 realTime--;
@@ -75,12 +82,15 @@ public class ProgressPaneManager {
         }
 
         private void resetDay() {
-            day++; // 다음 day로 이동
-            // 데이 이미지 변경
-            ((ImageDayPanel) getDayPanel()).updateDayImage(day);
+            day++;  // 다음 day로 이동
+
+            // 다음 Day로 이동하기 전에 팝업창 표시
+            JOptionPane.showMessageDialog(null,
+                    "Day " + (day - 1) + " 종료! 다음 Day로 이동합니다.",
+                    "Day 진행",
+                    JOptionPane.INFORMATION_MESSAGE);
 
             if (day > dayTimes.length) {
-                // 모든 Day 완료 후 게임 종료 팝업창 표시
                 JOptionPane.showMessageDialog(null,
                         "모든 Day를 완료했습니다! 게임 끝!!!",
                         "게임 종료",
@@ -93,14 +103,12 @@ public class ProgressPaneManager {
                 return;
             }
 
-            // 다음 Day로 이동하기 전에 팝업창 표시
-            JOptionPane.showMessageDialog(null,
-                    "Day " + (day - 1) + " 종료! 다음 Day로 이동합니다.",
-                    "Day 진행",
-                    JOptionPane.INFORMATION_MESSAGE);
-
             startDayTimer(); // 새로운 Day 타이머 시작
+
+            // 데이 이미지 변경
+            dayPanel.updateDayImage(day);
         }
+
 
         private void updateTimeBar() {
             // 진행률 업데이트
@@ -131,6 +139,7 @@ public class ProgressPaneManager {
         }
     }
 
+    // 데이 이미지 관련
     public class ImageDayPanel extends JPanel {
         private JLabel dayLabel;
 
@@ -139,7 +148,7 @@ public class ProgressPaneManager {
             setOpaque(false);
 
             dayLabel = new JLabel();
-            updateDayImage(day);  // 데이 이미지 초기화
+            updateDayImage(day);    // 데이 이미지 초기화
             add(dayLabel);
         }
 
