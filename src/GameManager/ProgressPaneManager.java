@@ -55,7 +55,7 @@ public class ProgressPaneManager {
                 updateTimeBar();
 
                 // 콘솔에 현재 day와 남은 시간 콘솔 출력 확인용 입니다!!!
-                System.out.println("Day: " + day + ", 남은 시간: " + realTime + "초");
+                //System.out.println("Day: " + day + ", 남은 시간: " + realTime + "초");
 
                 if (realTime <= 0) {
                     dayTimer.stop();

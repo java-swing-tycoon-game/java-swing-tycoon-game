@@ -2,31 +2,41 @@ package Character;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Request {
     private static final String[] itemRequestList = {"assets/img/item/cup.png", "assets/img/item/photoCard.png", "assets/img/item/popcorn.png", "assets/img/item/doll.png", "assets/img/item/bag.png", "assets/img/item/album.png"};
-    private static final String[] placeRequestList = {"movie", "goods", "makeTop"};
     private static final Image request = new ImageIcon("assets/img/npc/request.png").getImage();
 
-    private Image requestItem;
-    private boolean active;
-    private Timer requestTimer;
+    private Image requestItem; // 요청 말풍선에 뜨는 이미지
+    private final ArrayList<Place> zone; // 요청과 연관된 장소
 
-    public Request() {
-        this.active = false;
+    private final Timer requestTimer; // 시간제한을 위한 타이머
+    private boolean active; // 개별 요청의 완료 여부
+
+    public Request(int x, int y, ArrayList<Place> places) {
+        active = false;
+        zone = new ArrayList<>();
+        setZone(places);
+
         requestTimer = new Timer(5000, e -> {
-            makeRequest();
+            makeRequest(x, y);
         });
         requestTimer.start();
     }
 
-    public void makeRequest() {
+    private void setZone(ArrayList<Place> places)
+    {
+        zone.add(places.get(7));
+        zone.add(places.get(8));
+        zone.add(places.get(9));
+    }
+
+    public void makeRequest(int x, int y) {
         if (!active) {
-            this.requestItem = setRequestItem();
-            this.active = true;
+            requestItem = setRequestItem(x, y);
+            active = true;
             requestTimer.stop();
         }
     }
@@ -38,17 +48,20 @@ public class Request {
         }
     }
 
-    private Image setRequestItem() {
-//        if(대기존에 있으면) {
-//            return setWaitingRequest();
-//        }
-//        else if(무비에 있으면) {
-//            return setMovieRequest();
-//        }
-//        else if(굿즈에 있으면) {
-//            return setGoodsRequest();
-//        }
-        return setWaitingRequest();
+    private Image setRequestItem(int x, int y) {
+        if (zone.get(0).contains(x, y)) {
+            System.out.println("영화");
+            return setMovieRequest();
+        }
+        else if (zone.get(1).contains(x, y)) {
+            System.out.println("굿즈");
+            return setGoodsRequest();
+        }
+        else if(zone.get(2).contains(x, y)) {
+            System.out.println("대기존1");
+            return setWaitingRequest();
+       }
+        return null;
     }
 
     // 대기 중 요청을 랜덤으로 선택

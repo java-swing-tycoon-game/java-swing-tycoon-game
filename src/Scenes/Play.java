@@ -37,10 +37,10 @@ public class Play extends JFrame {
         add(npc);
 
         // 악성 Npc 생성
-//        BlackConsumer bc = new BlackConsumer();
-//        bc.setBounds(0, 0, 1024, 768);
-//        bc.setOpaque(false);
-//        layeredPane.add(bc, Integer.valueOf(2));  // map 위에 오도록 우선순위 설정
+        BlackConsumer bc = new BlackConsumer();
+        bc.setBounds(0, 0, 1024, 768);
+        bc.setOpaque(false);
+        add(bc);  // map 위에 오도록 우선순위 설정
 
         // Player 생성
         Player player = new Player();
@@ -52,6 +52,7 @@ public class Play extends JFrame {
 
         clickManager.setClickList(npc);
         clickManager.setClickList(player);
+        clickManager.setClickList(bc);
 
         addMouseListener(clickManager);
     }

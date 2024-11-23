@@ -14,7 +14,7 @@ public class Move extends JPanel {
     protected int targetY;
 
     protected int moveSpeed = 5;
-    private Timer moveTimer;
+    //private Timer moveTimer;
     protected ArrayList<Place> places;
 
     public Move() {
@@ -74,7 +74,7 @@ public class Move extends JPanel {
         }
     }
 
-    public void moveToDest(Place place) {
+    protected void moveToDest(Place place) {
         // 목표 좌표 설정
         targetX = place.targetX;
         targetY = place.targetY;
@@ -106,5 +106,28 @@ public class Move extends JPanel {
             }
         });
         centerTimer.start();
+    }
+
+    protected void moveToWait(Runnable callback)
+    {
+        // 목표 좌표 설정
+        targetX = 510;
+        targetY = 520;
+
+        Timer moveTimer = new Timer(15, moveEvent -> {
+            moveCharacter(); // 목표 좌표로 이동
+            repaint();
+
+            // 목표 좌표에 도달하면 타이머 종료
+            if (characterX == targetX && characterY == targetY) {
+                ((Timer) moveEvent.getSource()).stop();
+
+                // 콜백 실행
+                if (callback != null) {
+                    callback.run();
+                }
+            }
+        });
+        moveTimer.start();
     }
 }

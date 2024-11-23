@@ -3,8 +3,6 @@ package Character;
 import GameManager.ClickEvent;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
@@ -19,24 +17,31 @@ public class Npc extends Move implements ClickEvent {
     private Image eyeImg, hairImg, shirtsImg, pantsImg;
 
     // 이미지 경로
-    private String[] eyeImgPath = {"assets/img/npc/eye1.png", "assets/img/npc/eye2.png"};
-    private String[] hairImgPath = {"assets/img/npc/hair1.png", "assets/img/npc/hair2.png"};
-    private String[] shirtsImgPath = {"assets/img/npc/shirts1.png", "assets/img/npc/shirts2.png"};
-    private String[] pantsImgPath = {"assets/img/npc/pants1.png", "assets/img/npc/pants2.png"};
+    private final String[] eyeImgPath = {"assets/img/npc/eye1.png", "assets/img/npc/eye2.png"};
+    private final String[] hairImgPath = {"assets/img/npc/hair1.png", "assets/img/npc/hair2.png"};
+    private final String[] shirtsImgPath = {"assets/img/npc/shirts1.png", "assets/img/npc/shirts2.png"};
+    private final String[] pantsImgPath = {"assets/img/npc/pants1.png", "assets/img/npc/pants2.png"};
 
     private Image walkingImg;
     private int walkingIndex = 0;
     private BufferedImage buffer;
+    private Rectangle clickBounds;
 
     // 요청 클래스
     private Request request;
-    private Rectangle clickBounds;
+    private boolean active;
 
+    // 생성자
     public Npc() {
-        super(510, 520); // 초기 좌표 설정
-        randomSetNpc();
+        super(900, 520); // 초기 좌표 설정
+        randomSetNpc(); // npc 이미지 조합
         walkingAnimation();
-        setupRequest(); // 디버깅용으로 요청 하나 생성
+        active = true;
+
+        moveToWait(() -> {
+            setupRequest(); // 디버깅용으로 요청 하나 생성
+            // 타이머로 작동해서 좌표가 갱신이 안됐는데 실행되는 오류 때문에 수정함
+        }); // 대기존으로 이동
     }
 
     ////////// NPC 이미지 관련 //////////
@@ -68,10 +73,11 @@ public class Npc extends Move implements ClickEvent {
 
     ////// NPC 요청 //////
     private void setupRequest() {
-        request = new Request();
+        // 요청 생성
+        request = new Request(characterX, characterY, places);
     }
 
-    @Override
+    @Override // npc 범위만 클릭해서 요청 수행하도록
     public Rectangle setBounds() {
         int imageWidth = faceImg.getWidth(null);
         int imageHeight = faceImg.getHeight(null);
@@ -79,12 +85,17 @@ public class Npc extends Move implements ClickEvent {
         return clickBounds;
     }
 
-    @Override
+    @Override // 요청 완료 처리
     public void onClick(Point clickPoint) {
         if (request != null) {
             request.completeRequest(); // 클릭 시 요청 완료
+            active = false;
             repaint();
         }
+    }
+
+    protected void finishNpc() {
+        active = false;
     }
 
     ////// 그리기 //////
