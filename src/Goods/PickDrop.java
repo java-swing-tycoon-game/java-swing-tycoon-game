@@ -1,4 +1,3 @@
-/*
 package Goods;
 
 import Character.Place;
@@ -89,5 +88,3 @@ public class PickDrop extends JPanel {
         }
     }
 }
-
-*/
