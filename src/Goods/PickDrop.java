@@ -49,7 +49,6 @@ public class PickDrop extends JPanel {
 
     public void handleItemClick(Point clickPoint) {
         for (Place place : places) {
-            // 클릭된 장소에 매핑된 아이템을 가져오기
             if (place.contains(clickPoint.x, clickPoint.y)) {
                 Image item = placeItemMap.get(place);  // 해당 장소에 매핑된 아이템을 가져옴
                 if (item != null) {
