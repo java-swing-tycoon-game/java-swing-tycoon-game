@@ -10,14 +10,19 @@ public class ProgressPaneManager {
 
     private int day = 1; // 현재 날짜 (1부터 시작)
     private int realTime; // 현재 남은 시간
-    private final int[] dayTimes = {60, 50, 45, 40, 35, 30, 25}; // 각 day의 초기 시간 final int 배열로 고정..
-    // private final int[] dayTimes = {12, 10, 8, 6, 4, 2, 1}; // 각 day의 초기 시간 final int 배열로 고정.. (디버깅용)
+    // private final int[] dayTimes = {60, 50, 45, 40, 35, 30, 25}; // 각 day의 초기 시간 final int 배열로 고정..
+    private final int[] dayTimes = {12, 10, 8, 6, 4, 2, 1}; // 각 day의 초기 시간 final int 배열로 고정.. (디버깅용)
     private Timer dayTimer; // 날짜 타이머
 
     public JPanel getProgressPane() {
-        return new ImageProgressPane();
+        return new ImageProgressPane(); // 시간바 관련
     }
 
+    public JPanel getDayPanel() {
+        return new ImageDayPanel(); // 데이 이미지 관련
+    }
+
+    // 시간바 관련
     public class ImageProgressPane extends JPanel {
         private JProgressBar progressBar; // 진행률을 표시할 JProgressBar
         private BufferedImage progressImage; // 진행률 이미지
@@ -29,7 +34,6 @@ public class ProgressPaneManager {
             setOpaque(false);    // 시간바 배경 투명도
 
             try {
-                // 이미지 로드
                 progressImage = ImageIO.read(new File("assets/img/timeBar.png"));
                 backgroundImage = ImageIO.read(new File("assets/img/basicTimeBar.png"));
             } catch (IOException ex) {
@@ -50,12 +54,15 @@ public class ProgressPaneManager {
             realTime = dayTimes[day - 1];   // 현재 데이의 초기 시간
             progressBar.setValue(100);  // 진행률 이미지 다시 100으로 초기화하기
 
+            // 첫 번째 Day에서 이미지를 업데이트하도록 설정
+            ((ImageDayPanel) getDayPanel()).updateDayImage(day);
+
             dayTimer = new Timer(1000, e -> {
                 realTime--;
                 updateTimeBar();
 
                 // 콘솔에 현재 day와 남은 시간 콘솔 출력 확인용 입니다!!!
-                //System.out.println("Day: " + day + ", 남은 시간: " + realTime + "초");
+                // System.out.println("Day: " + day + ", 남은 시간: " + realTime + "초");
 
                 if (realTime <= 0) {
                     dayTimer.stop();
@@ -69,6 +76,8 @@ public class ProgressPaneManager {
 
         private void resetDay() {
             day++; // 다음 day로 이동
+            // 데이 이미지 변경
+            ((ImageDayPanel) getDayPanel()).updateDayImage(day);
 
             if (day > dayTimes.length) {
                 // 모든 Day 완료 후 게임 종료 팝업창 표시
@@ -119,6 +128,31 @@ public class ProgressPaneManager {
             }
 
             g2d.dispose();
+        }
+    }
+
+    public class ImageDayPanel extends JPanel {
+        private JLabel dayLabel;
+
+        public ImageDayPanel() {
+            setLayout(new FlowLayout(FlowLayout.LEFT));
+            setOpaque(false);
+
+            dayLabel = new JLabel();
+            updateDayImage(day);  // 데이 이미지 초기화
+            add(dayLabel);
+        }
+
+        // day 변경 시 데이 이미지도 변경
+        public void updateDayImage(int day) {
+            try {
+                String imagePath = "assets/img/day" + day + ".png";
+                BufferedImage dayImage = ImageIO.read(new File(imagePath));
+                dayLabel.setIcon(new ImageIcon(dayImage));
+            } catch (IOException ex) {
+                System.err.println("이미지 로드 실패: " + ex.getMessage());
+                dayLabel.setIcon(null); // 이미지 로드 실패 시 아이콘 초기화
+            }
         }
     }
 }
