@@ -1,4 +1,3 @@
-/*
 package Goods;
 
 import Character.Place;
@@ -38,5 +37,3 @@ public class Goods extends JPanel {
         }
     }
 }
-
-*/
