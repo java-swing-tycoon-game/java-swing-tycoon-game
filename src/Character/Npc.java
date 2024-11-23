@@ -25,11 +25,11 @@ public class Npc extends Move implements ClickEvent {
     private Image walkingImg;
     private int walkingIndex = 0;
     private BufferedImage buffer;
-    private Rectangle clickBounds;
+    protected Rectangle clickBounds;
 
     // 요청 클래스
-    private Request request;
-    private boolean active;
+    protected Request request;
+    protected boolean active;
 
     // 생성자
     public Npc() {
@@ -38,10 +38,7 @@ public class Npc extends Move implements ClickEvent {
         walkingAnimation();
         active = true;
 
-        moveToWait(() -> {
-            setupRequest(); // 디버깅용으로 요청 하나 생성
-            // 타이머로 작동해서 좌표가 갱신이 안됐는데 실행되는 오류 때문에 수정함
-        }); // 대기존으로 이동
+        moveToRequest();
     }
 
     ////////// NPC 이미지 관련 //////////
@@ -72,9 +69,17 @@ public class Npc extends Move implements ClickEvent {
     }
 
     ////// NPC 요청 //////
-    private void setupRequest() {
+    protected void setupRequest() {
         // 요청 생성
         request = new Request(characterX, characterY, places);
+    }
+
+    // 요청을 만들러 간다. bc 때문에 분리해봄
+    protected void moveToRequest() {
+        moveToWait(() -> {
+            setupRequest(); // 요청 생성
+            // 타이머로 작동해서 좌표가 갱신이 안됐는데 실행되는 오류 때문에 수정함
+        }); // 대기존으로 이동
     }
 
     @Override // npc 범위만 클릭해서 요청 수행하도록
