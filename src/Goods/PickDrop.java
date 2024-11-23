@@ -48,13 +48,41 @@ public class PickDrop extends JPanel {
         });
     }
 
+    // 아이템 집기
+    public void pickUpItemLeft(Image item) {
+        player.setHoldItemL(item);
+        player.repaint();
+    }
+
+    public void pickUpItemRight(Image item) {
+        player.setHoldItemR(item);
+        player.repaint();
+    }
+
+    // 아이템 버리기 (양손 모두 버림)
+    public void dropItem() {
+        player.setHoldItemL(null);
+        player.setHoldItemR(null);
+        player.repaint();
+    }
+
     public void handleItemClick(Point clickPoint) {
         for (Place place : places) {
-            // 클릭된 장소에 매핑된 아이템을 가져오기
             if (place.contains(clickPoint.x, clickPoint.y)) {
                 Image item = placeItemMap.get(place);  // 해당 장소에 매핑된 아이템을 가져옴
                 if (item != null) {
-                    player.pickUpItem(item);  // 플레이어가 아이템을 집음
+                    // 왼손이 비어 있으면 왼손에 들기
+                    if (player.getHoldItemL() == null) {
+                        pickUpItemLeft(item);
+                    }
+                    // 오른손이 비어 있으면 오른손에 들기
+                    else if (player.getHoldItemR() == null) {
+                        pickUpItemRight(item);
+                    }
+                    else {
+                        System.out.println("양손이 이미 차 있습니다.");
+                    }
+                    player.repaint();
                     break;
                 }
             }
