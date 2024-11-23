@@ -60,13 +60,16 @@ public class Play extends JFrame {
         bc.setOpaque(false);
         add(bc);  // map 위에 오도록 우선순위 설정
 
+        // ItemManager 생성
+        ItemManager itemManager = new ItemManager();
+
         // Player 생성
-        Player player = new Player();
+        Player player = new Player(itemManager);
         player.setBounds(0, 0, 1024, 768);
         add(player);
 
         // Goods 생성
-        Goods goods = new Goods();
+        Goods goods = new Goods(itemManager);
         goods.setBounds(0, 0, 1024, 768);
         goods.setOpaque(false);
         add(goods);

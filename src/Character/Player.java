@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import GameManager.ClickEvent;
 import Goods.PickDrop;
+import GameManager.ItemManager;
 
 public class Player extends Move implements ClickEvent {
     private Image characterImg = new ImageIcon("assets/img/playerCharacter.png").getImage();
@@ -11,12 +12,12 @@ public class Player extends Move implements ClickEvent {
     private Image holdItemR = null; // 오른손
     private PickDrop pickDrop;
 
-    public Player() {
+    public Player(ItemManager itemManager) {
         super(512, 330); // 초기 좌표 설정
         this.characterImg = new ImageIcon("assets/img/playerCharacter.png").getImage();
         setOpaque(false);
 
-        pickDrop = new PickDrop(this);
+        pickDrop = new PickDrop(this, itemManager);
     }
 
     @Override
