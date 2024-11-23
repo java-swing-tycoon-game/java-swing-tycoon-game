@@ -30,8 +30,8 @@ public class Play extends JFrame {
     }
 
     void playBgm() {
-        // 배경 음악 초기화
-        bgm = new bgmManager("assets/bgm/playBgm.wav");
+        // 배경 음악 시끄러워서 잠깐 주석^^
+        //bgm = new bgmManager("assets/bgm/playBgm.wav");
         bgmManager.toggleMusic(); // 음악 자동 재생
 
         // m 누르면 재생/정지
