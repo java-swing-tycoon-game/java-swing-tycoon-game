@@ -5,7 +5,8 @@ import java.awt.*;
 public class BlackConsumer extends Npc {
     public BlackConsumer() {
         super();
-        moveToDest(new Place(512, 330, 0, 512, 330));
+        // 임시로 5 작성
+        moveToDest(new Place(5, 512, 330, 0, 512, 330));
     }
 
     //BlackConsumer 전용 그래픽 효과 추가

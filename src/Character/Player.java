@@ -7,7 +7,8 @@ import Goods.PickDrop;
 
 public class Player extends Move implements ClickEvent {
     private Image characterImg = new ImageIcon("assets/img/playerCharacter.png").getImage();
-    private Image holdItem = null; // 캐릭터가 들고 있는 아이템
+    private Image holdItemL = null; // 캐릭터가 들고 있는 아이템
+    private Image holdItemR = null; // 캐릭터가 들고 있는 아이템
     private PickDrop pickDrop;
 
     public Player() {
@@ -24,38 +25,62 @@ public class Player extends Move implements ClickEvent {
     }
 
     // 아이템 들기
-    public void pickUpItem(Image item) {
-        this.holdItem = item;
+    public void pickUpItemLeft(Image item) {
+        this.holdItemL = item;
         repaint();
     }
 
-    // 아이템 내려놓기
-    public void dropItem() {
-        this.holdItem = null;
-        repaint();
+    public void setHoldItemL(Image item) {
+        this.holdItemL = item;
+    }
+
+    public void setHoldItemR(Image item) {
+        this.holdItemR = item;
+    }
+
+    public Image getHoldItemL() {
+        return holdItemL;
+    }
+
+    public Image getHoldItemR() {
+        return holdItemR;
     }
 
     @Override
     public void onClick(Point clickPoint) {
-        // 클릭된 좌표가 특정 Place 안에 있는지 확인하고 이동
+        // 클릭된 좌표가 특정 Place 안에 있는지 확인
         for (Place place : getPlaces()) {
-               // 수정
-                if (place.contains(clickPoint.x, clickPoint.y)) {
-                    if(characterX != place.getTargetX() && characterY != place.getTargetY()) {
-                        moveToDest(place);
-                        break;
-                }
-                    else if(characterX == place.getTargetX() && characterY == place.getTargetY()) {
-                        if(place.getTargetX() == 670 && place.getTargetY() == 420) {
-                            dropItem();
+            if (place.contains(clickPoint.x, clickPoint.y)) {
+                // 타겟 위치로 이동
+                moveToDest(place);
+
+                // 이동 완료 후 작업 처리
+                Timer actionTimer = new Timer(15, actionEvent -> {
+                    // 타겟 위치에 도착한 경우 동작 수행
+                    if (characterX == place.getTargetX() && characterY == place.getTargetY()) {
+                        ((Timer) actionEvent.getSource()).stop(); // 타이머 정지
+
+                        switch (place.getNum()) {
+                            case 1 -> {
+                                // 아이템 자동 집기
+                                pickDrop.handleItemClick(clickPoint);
+                                repaint();
+                            }
+                            case 4 -> {
+                                // 아이템 자동 버리기
+                                pickDrop.dropItem();
+                            }
+                            // 필요한 경우 다른 행동 추가
+                            default -> {
+                            }
                         }
-                       else
-                           pickDrop.handleItemClick(clickPoint);
                     }
-                }
+                });
+                actionTimer.start();
+                break;
             }
         }
-
+    }
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -69,22 +94,18 @@ public class Player extends Move implements ClickEvent {
         int imageY = characterY - characterImg.getHeight(null) / 2;
         g2d.drawImage(characterImg, imageX, imageY, null);
 
-        if (holdItem != null) {
-            int handX = characterX + 10; // 캐릭터 손 위치 조정
+        // 왼손에 그리기
+        if (holdItemL != null) {
+            int handX = characterX - 40; // 캐릭터 손 위치 조정
             int handY = characterY + 15;
-            g2d.drawImage(holdItem, handX, handY, 40, 40, null);
+            g2d.drawImage(holdItemL, handX, handY, 40, 40, null);
         }
 
-//        // 원 그리기 (Place 객체들 기반)
-//        g2d.setColor(Color.RED); // 원의 색상 설정 (예: 빨간색)
-//        g2d.setStroke(new BasicStroke(2)); // 원의 테두리 두께 설정
-//
-//        // Place 객체들의 원을 반복적으로 그리기
-//        for (Place place : Place.createPlaces()) {
-//            int x = place.getX() - place.getRadius(); // 원의 좌상단 x 좌표
-//            int y = place.getY() - place.getRadius(); // 원의 좌상단 y 좌표
-//            int diameter = place.getRadius() * 2;    // 원의 지름
-//            g2d.drawOval(x, y, diameter, diameter);
-//     }
+        // 오른손에 그리기
+        if (holdItemR != null) {
+            int handX = characterX + 10; // 캐릭터 손 위치 조정
+            int handY = characterY + 15;
+            g2d.drawImage(holdItemR, handX, handY, 40, 40, null);
+        }
     }
 }
