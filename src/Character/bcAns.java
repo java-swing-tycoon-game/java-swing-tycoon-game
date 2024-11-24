@@ -14,6 +14,7 @@ public class bcAns {
 
     public bcAns(String targetText) {
         this.targetText = targetText;
+        userInput = "";
         ansActive = false;
         isSuccess = false;
     }

@@ -61,7 +61,7 @@ public class Play extends JFrame {
         Player player = new Player();
         player.setBounds(0, 0, 1024, 768);
         player.setOpaque(false);
-        mainPanel.add(player, Integer.valueOf(100));
+        mainPanel.add(player, Integer.valueOf(110));
         clickManager.setClickList(player);
 
         // npc 생성
@@ -71,7 +71,7 @@ public class Play extends JFrame {
         Goods goods = new Goods();
         goods.setBounds(0, 0, 1024, 768);
         goods.setOpaque(false);
-        add(goods);
+        mainPanel.add(goods, Integer.valueOf(100));
     }
 
     void setMainPanel() {

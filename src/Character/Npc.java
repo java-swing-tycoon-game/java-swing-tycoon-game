@@ -31,7 +31,7 @@ public class Npc extends Move implements ClickEvent {
 
     // 요청 클래스
     protected Request request;
-    protected boolean active;
+    protected boolean active; // npc 상태
 
     // 생성자
     public Npc() {
@@ -92,6 +92,11 @@ public class Npc extends Move implements ClickEvent {
         return clickBounds;
     }
 
+    @Override
+    public int getPriority() {
+        return 2; // Player보다 높은 우선순위
+    }
+
     @Override // 요청 완료 처리
     public void onClick(Point clickPoint) {
         if (request != null) {
@@ -122,6 +127,9 @@ public class Npc extends Move implements ClickEvent {
         g2d.drawImage(faceImg, characterX, characterY, null);
         g2d.drawImage(hairImg, characterX, characterY, null);
         g2d.drawImage(eyeImg, characterX, characterY, null);
+
+        g2d.setColor(Color.RED); // 클릭 영역 표시용
+        g2d.drawRect(characterX, characterY, faceImg.getWidth(null), faceImg.getHeight(null));
 
         // 요청 있으면 그리기
         if (request != null && request.isActive()) {

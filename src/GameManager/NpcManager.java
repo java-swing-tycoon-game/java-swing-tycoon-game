@@ -26,7 +26,7 @@ public class NpcManager {
 
     private void startNpcSpawnTimer() {
         spawnNpc();
-        Timer spawnTimer = new Timer(20000, e -> {
+        Timer spawnTimer = new Timer(13000, e -> {
             if (npcs.size() < maxNpcs) {
                 spawnNpc();
             }
@@ -37,7 +37,7 @@ public class NpcManager {
     private void spawnNpc() {
         Npc npc;
 
-        if (Math.random() < 0.3) { // 30% 확률로 BlackConsumer 생성
+        if (Math.random() < 0.8) { // 30% 확률로 BlackConsumer 생성
             npc = new BlackConsumer();
             blackConsumerCount++;
 
