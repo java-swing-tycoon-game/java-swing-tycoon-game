@@ -28,9 +28,11 @@ public class Request {
 
     protected void setZone(ArrayList<Place> places)
     {
+        zone.add(places.get(6));
         zone.add(places.get(7));
         zone.add(places.get(8));
         zone.add(places.get(9));
+        zone.add(places.get(10));
     }
 
     public void makeRequest(int x, int y) {

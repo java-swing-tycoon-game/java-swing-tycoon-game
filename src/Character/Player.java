@@ -52,7 +52,7 @@ public class Player extends Move implements ClickEvent {
         for (Place place : getPlaces()) {
             if (place.contains(clickPoint.x, clickPoint.y)) {
                 // 타겟 위치로 이동
-                moveToDest(place);
+                moveToDest(place, true, null);
 
                 // 이동 완료 후 작업 처리
                 Timer actionTimer = new Timer(15, actionEvent -> {

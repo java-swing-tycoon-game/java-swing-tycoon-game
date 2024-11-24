@@ -78,10 +78,10 @@ public class Npc extends Move implements ClickEvent {
 
     // 요청을 만들러 간다. bc 때문에 분리해봄
     protected void moveToRequest() {
-        moveToWait(() -> {
+        //moveToWait(() -> {
             setupRequest(); // 요청 생성
             // 타이머로 작동해서 좌표가 갱신이 안됐는데 실행되는 오류 때문에 수정함
-        }); // 대기존으로 이동
+        //}); // 대기존으로 이동
     }
 
     @Override // npc 범위만 클릭해서 요청 수행하도록
@@ -108,6 +108,13 @@ public class Npc extends Move implements ClickEvent {
     protected void finishNpc() {
         active = false;
     }
+
+    public boolean getActive()
+    {
+        return active;
+    }
+
+    public void removeFromParent() {}
 
     ////// 그리기 //////
     @Override

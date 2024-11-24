@@ -2,6 +2,7 @@ package Character;
 
 import GameManager.ClickEvent;
 import GameManager.ClickManager;
+import GameManager.NpcManager;
 
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -31,12 +32,12 @@ public class BlackConsumer extends Npc {
     @Override
     // 요청을 만들러 간다. bc 때문에 분리해봄
     protected void moveToRequest() {
-        moveToDest(new Place(5, 512, 330, 0, 512, 330));
+        moveToDest(new Place(5, 512, 330, 0, 512, 330), false, null);
         setupRequest();
     }
 
     @Override
-    protected void setupRequest() {
+    public void setupRequest() {
         // 요청 생성
         request = new bcRequest(characterX,characterY);
         ans = new bcAns("제발 나가주세요");
@@ -74,6 +75,7 @@ public class BlackConsumer extends Npc {
             if (!ans.ansActive) {
                 if (ans.isSuccess()) {
                     request.completeRequest(); // 요청 완료
+                    active = false;
                     removeFromParent();
                 }
                 repaint(); // 화면 갱신
@@ -81,7 +83,8 @@ public class BlackConsumer extends Npc {
         }
     }
 
-    protected void removeFromParent() {
+    @Override
+    public void removeFromParent() {
         Container parent = getParent();
         if (parent != null) {
             parent.remove(this); // 이미지 제거
@@ -96,6 +99,11 @@ public class BlackConsumer extends Npc {
             // 포커스 이동 (다른 객체나 기본 컨테이너로)
             if (parent.getComponentCount() > 0) {
                 parent.getComponent(0).requestFocusInWindow(); // 첫 번째 컴포넌트에 포커스 설정
+            }
+
+            // NpcManager와 상태 동기화
+            if (this instanceof BlackConsumer) {
+                NpcManager.setBcActive(false); // 블랙 컨슈머 플래그 초기화
             }
         }
     }
