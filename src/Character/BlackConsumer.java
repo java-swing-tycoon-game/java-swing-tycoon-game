@@ -37,7 +37,7 @@ public class BlackConsumer extends Npc {
     protected void setupRequest() {
         // 요청 생성
         request = new bcRequest(characterX,characterY);
-        ans = new bcAns("진상클래스");
+        ans = new bcAns("제발 나가주세요");
         ((bcRequest) request).setAns(ans);
     }
 
@@ -65,9 +65,21 @@ public class BlackConsumer extends Npc {
             if (!ans.ansActive) {
                 if (ans.isSuccess()) {
                     request.completeRequest(); // 요청 완료
+                    removeFromParent();
                 }
                 repaint(); // 화면 갱신
             }
         }
     }
+
+
+    protected void removeFromParent() {
+        Container parent = getParent(); // 상위 컨테이너 참조
+        if (parent != null) {
+            parent.remove(this); // 상위 컨테이너에서 this 제거
+            parent.revalidate(); // 레이아웃 재계산
+            parent.repaint(); // 화면 갱신
+        }
+    }
+
 }

@@ -1,6 +1,8 @@
 package Character;
 
 import GameManager.ClickEvent;
+import GameManager.ClickManager;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -94,7 +96,6 @@ public class Npc extends Move implements ClickEvent {
     public void onClick(Point clickPoint) {
         if (request != null) {
             request.completeRequest(); // 클릭 시 요청 완료
-            active = false;
             repaint();
         }
     }

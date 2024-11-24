@@ -11,7 +11,7 @@ public class ProgressPaneManager {
     private int day = 1; // 현재 날짜 (1부터 시작)
     private int realTime; // 현재 남은 시간
     // private final int[] dayTimes = {60, 50, 45, 40, 35, 30, 25}; // 각 day의 초기 시간 final int 배열로 고정..
-    private final int[] dayTimes = {12, 10, 8, 6, 4, 2, 1}; // 각 day의 초기 시간 final int 배열로 고정.. (디버깅용)
+    private final int[] dayTimes = {222, 100, 80, 6, 4, 2, 1}; // 각 day의 초기 시간 final int 배열로 고정.. (디버깅용)
     private Timer dayTimer; // 날짜 타이머
 
     public JPanel getProgressPane() {

@@ -48,9 +48,10 @@ public class bcAns {
             g2d.drawImage(request, x, y, null);
 
             // 답변 텍스트 출력
-            g2d.drawString("Type: " + targetText, x + 10, y + 20);
+            g2d.drawString("입력할 문장: " + targetText, x + 10, y + 20);
 
             // 사용자 입력 텍스트 출력
+            g2d.setColor(Color.red);
             g2d.drawString(userInput, x + 10, y + 40);
         }
     }

@@ -14,7 +14,16 @@ public class bcRequest extends Request {
 
     public bcRequest(int x, int y) {
         super(x, y, null);
+        customizeTimer();
         bcLog = setBcLog(); // 대사 설정
+    }
+
+    private void customizeTimer() {
+        // 기존 타이머를 멈추고 새 타이머 생성
+        requestTimer = new Timer(2000, e -> {
+            makeRequest(0, 0); // 좌표는 의미 없으므로 0, 0 전달
+        });
+        requestTimer.start(); // 새 타이머 시작
     }
 
     // null 오류 때문에 비워둠
