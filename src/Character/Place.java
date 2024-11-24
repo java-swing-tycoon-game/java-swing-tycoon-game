@@ -24,25 +24,19 @@ public class Place {
         return dx * dx + dy * dy <= radius * radius;
     }
 
-    public int getNum(){
-        return num;
-    }
+    public int getNum(){ return num; }
     public int getX() {
         return x;
     }
-
     public int getY() {
         return y;
     }
-
     public int getRadius() {
         return radius;
     }
-
     public int getTargetX() {
         return targetX;
     }
-
     public int getTargetY() {
         return targetY;
     }
@@ -53,22 +47,29 @@ public class Place {
 
         // num1: 아이템 위치, num2: 장소, num3: 대기존, num4: 쓰레기통
 
-        places.add(new Place(1, (int) 72.5, (int) 437.5, (int) 35, (int) 90, 520));  // 아이템1
-        places.add(new Place(1, (int) 132.5, (int) 417.5, (int) 35, (int) 140, 500));  // 아이템2
-        places.add(new Place(1, (int) 192.5, (int) 397.5, (int) 35, (int) 200, 480));  // 아이템3
+        // 아이템1~3
+        places.add(new Place(1, 72, 437, 35, 90, 520));
+        places.add(new Place(1, 132, 417, 35, 140, 500));
+        places.add(new Place(1, 192, 397, 35, 200, 480));
 
-        places.add(new Place(1, (int) 837.5, (int) 392.5, (int) 35, 820, 480));  // 아이템4
-        places.add(new Place(1, (int) 897.5, (int) 412.5, (int) 35, 880, 500));  // 아이템5
-        places.add(new Place(1, (int) 960.5, (int) 434.5, (int) 35, 930, 520));  // 아이템6
+        // 아이템4~6
+        places.add(new Place(1, 837, 392, 35, 820, 480));
+        places.add(new Place(1, 897, 412, 35, 880, 500));
+        places.add(new Place(1, 960, 434, 35, 930, 520));
 
-        places.add(new Place(2, 285, 245, 75, 300, 220));  // 굿즈
-        places.add(new Place(2, 525, 175, 75, 525, 175));  // 꾸미기
-        places.add(new Place(2, 775, 245, 75, 790, 250));  // 무비
+        // 굿즈
+        places.add(new Place(2, 285, 245, 75, 300, 220));
+        // 꾸미기
+        places.add(new Place(2, 525, 175, 75, 525, 175));
+        // 무비
+        places.add(new Place(2, 775, 245, 75, 790, 250));
 
-        places.add(new Place(3,510, 520, 10, 900, 520));  // 대기존1
-        places.add(new Place(3,  540, 520, 10, 900, 520));  // 대기존1
+        // 대기 구역
+        places.add(new Place(3,510, 520, 10, 900, 520));
+        places.add(new Place(3,  540, 520, 10, 900, 520));
 
-        places.add(new Place(4, 745, 400, 35, 670, 420)); // 쓰레기통
+        // 쓰레기통
+        places.add(new Place(4, 745, 400, 35, 670, 420));
 
         return places;
     }
