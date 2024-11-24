@@ -62,11 +62,11 @@ public class Place {
         // 꾸미기
         places.add(new Place(2, 525, 175, 75, 525, 175));
         // 무비
-        places.add(new Place(2, 775, 245, 75, 790, 250));
+        places.add(new Place(2, 775, 245, 75, 800, 240));
 
         // 대기 구역
-        places.add(new Place(3,510, 520, 10, 510, 520));
-        places.add(new Place(3,  680, 520, 10, 680, 520));
+        places.add(new Place(3,570, 600, 10, 570, 600));
+        places.add(new Place(3,  750, 600, 10, 750, 600));
 
         // 쓰레기통
         places.add(new Place(4, 745, 400, 35, 670, 420));
@@ -74,5 +74,3 @@ public class Place {
         return places;
     }
 }
-
-

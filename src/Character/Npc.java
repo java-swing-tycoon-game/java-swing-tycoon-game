@@ -35,7 +35,7 @@ public class Npc extends Move implements ClickEvent {
 
     // 생성자
     public Npc() {
-        super(900, 520); // 초기 좌표 설정
+        super(960, 600); // 초기 좌표 설정
         randomSetNpc(); // npc 이미지 조합
         walkingAnimation();
         active = true;
@@ -88,7 +88,7 @@ public class Npc extends Move implements ClickEvent {
     public Rectangle setBounds() {
         int imageWidth = faceImg.getWidth(null);
         int imageHeight = faceImg.getHeight(null);
-        clickBounds = new Rectangle(characterX, characterY, imageWidth, imageHeight);
+        clickBounds = new Rectangle(characterX-120/2, characterY-150/2, imageWidth, imageHeight);
         return clickBounds;
     }
 
@@ -128,19 +128,24 @@ public class Npc extends Move implements ClickEvent {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        g2d.drawImage(walkingImg, characterX, characterY, null);
-        g2d.drawImage(pantsImg, characterX, characterY, null);
-        g2d.drawImage(shirtsImg, characterX, characterY, null);
-        g2d.drawImage(faceImg, characterX, characterY, null);
-        g2d.drawImage(hairImg, characterX, characterY, null);
-        g2d.drawImage(eyeImg, characterX, characterY, null);
+        // 캐릭터 이미지 그리기 (이미지의 중앙이 캐릭터 위치에 오도록 조정)
+        int imageX = characterX - 120/ 2;
+        int imageY = characterY - 150/ 2;
+
+        g2d.drawImage(walkingImg, imageX, imageY, null);
+        g2d.drawImage(pantsImg, imageX, imageY, null);
+        g2d.drawImage(shirtsImg, imageX, imageY, null);
+        g2d.drawImage(faceImg, imageX, imageY, null);
+        g2d.drawImage(hairImg, imageX, imageY, null);
+        g2d.drawImage(eyeImg, imageX, imageY, null);
 
         g2d.setColor(Color.RED); // 클릭 영역 표시용
-        g2d.drawRect(characterX, characterY, faceImg.getWidth(null), faceImg.getHeight(null));
-
+        g2d.drawRect(imageX, imageY, faceImg.getWidth(null), faceImg.getHeight(null));
+        g2d.setColor(Color.GREEN);
+        g2d.fillOval(characterX, characterY, 10, 10);
         // 요청 있으면 그리기
         if (request != null && request.isActive()) {
-            request.draw(g2d, characterX, characterY);
+            request.draw(g2d, imageX, imageY);
         }
 
         g2d.dispose();

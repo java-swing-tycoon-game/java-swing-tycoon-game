@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.util.ArrayList;
 
 public class Move extends JPanel {
-    protected int characterX;
+    public int characterX;
     protected int characterY;
 
     protected int targetX;
