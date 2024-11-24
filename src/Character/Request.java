@@ -60,7 +60,7 @@ public class Request {
         else if(zone.get(2).contains(x, y)) {
             System.out.println("대기존1");
             return setWaitingRequest();
-       }
+        }
         return setWaitingRequest();
     }
 
