@@ -3,12 +3,16 @@ package GameManager;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 public class FontManager {
     /////////// 폰트 관련 ///////////
     private static Map<String, Font> fontCache = new HashMap<>();
+    private static Font customFont;
+    
+
     // 폰트 로드
     public static Font loadFont(float size) {
         // 캐시에서 폰트가 이미 로드되었는지 확인
@@ -32,5 +36,18 @@ public class FontManager {
         }
 
         return customFont;
+    }
+
+    public static void loadCustomFont() {
+        try (InputStream is = FontManager.class.getResourceAsStream("/path/to/font.ttf")) {
+            customFont = Font.createFont(Font.TRUETYPE_FONT, is);
+        } catch (Exception e) {
+            customFont = new Font("assets/font/ChangwonDangamAsac-Bold_0712.ttf", Font.PLAIN, 12);
+        }
+    }
+
+    
+    public static Font getCustomFont(float size) {
+        return customFont.deriveFont(size);
     }
 }
