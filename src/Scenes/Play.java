@@ -1,8 +1,6 @@
 package Scenes;
 
 import Character.Player;
-import Character.Npc;
-import Character.BlackConsumer;
 import GameManager.FontManager;
 import GameManager.*;
 import Goods.Goods;
@@ -11,23 +9,33 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Play extends JFrame {
+    private JLayeredPane mainPanel;
+
     private JLabel time; // 시간바
     private JPanel timePanel;
     private int coinAmount = 0;  // 초기 코인 금액
+
     private bgmManager bgm;
     private CoinManager coinManager;
+    private NpcManager npcManager;
+    private ClickManager clickManager;
 
     public Play() {
         setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다");
         playBgm();
 
-        setLayout(new BorderLayout());
+        setMainPanel();
+        //showBackground();
         showCharacter();
-        showBackground();
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1038, 805);
         setVisible(true);
+    }
+
+    void setupClickManager() {
+        clickManager = new ClickManager(); // ClickManager 초기화
+        mainPanel.addMouseListener(clickManager); // MouseListener 등록
     }
 
     void playBgm() {
@@ -48,17 +56,7 @@ public class Play extends JFrame {
 
     void showCharacter()
     {
-        // Npc 생성
-        Npc npc = new Npc();
-        npc.setBounds(0, 0, 1024, 768);
-        npc.setOpaque(false);
-        add(npc);
-
-        // 악성 Npc 생성
-        BlackConsumer bc = new BlackConsumer();
-        bc.setBounds(0, 0, 1024, 768);
-        bc.setOpaque(false);
-        add(bc);  // map 위에 오도록 우선순위 설정
+        setupClickManager();
 
         // ItemManager 생성
         ItemManager itemManager = new ItemManager();
@@ -66,47 +64,46 @@ public class Play extends JFrame {
         // Player 생성
         Player player = new Player(itemManager);
         player.setBounds(0, 0, 1024, 768);
-        add(player);
+        player.setOpaque(false);
+        mainPanel.add(player, Integer.valueOf(110));
+        clickManager.setClickList(player);
+
+        // npc 생성
+        npcManager = new NpcManager(mainPanel, 5, clickManager);
 
         // Goods 생성
         Goods goods = new Goods(itemManager);
         goods.setBounds(0, 0, 1024, 768);
         goods.setOpaque(false);
-        add(goods);
+        mainPanel.add(goods, Integer.valueOf(100));
+    }
 
-        // 캐릭터들 클릭 되도록
-        ClickManager clickManager = new ClickManager();
+    void setMainPanel() {
+        mainPanel = new JLayeredPane();
+        mainPanel.setOpaque(false);
+        mainPanel.setLayout(null);
 
-        clickManager.setClickList(npc);
-        clickManager.setClickList(bc);
-        clickManager.setClickList(player);
+        showBackground();
 
-        addMouseListener(clickManager);
+        setContentPane(mainPanel);
     }
 
     void showBackground()
     {
-        // 겹칠 패널 생성
-        JLayeredPane layeredPane = new JLayeredPane();
-        layeredPane.setOpaque(false);
-        layeredPane.setLayout(null);
-
         // mapPanel을 layeredPane에 추가
         JPanel map = showMap();
         map.setBounds(0, 0, 1024, 768);
-        layeredPane.add(map, Integer.valueOf(0));
+        mainPanel.add(map, Integer.valueOf(0));
 
         // top 패널을 layeredPane에 추가
         JPanel top = showTop();
         top.setBounds(65, 0, 900, 100); // 위치와 크기를 설정하여 mapPanel과 겹치도록 설정
-        layeredPane.add(top, Integer.valueOf(100));  // 위쪽 레이어
+        mainPanel.add(top, Integer.valueOf(100));  // 위쪽 레이어
 
         // bottom 패널을 layeredPane에 추가
         JPanel bottom = showBottom();
         bottom.setBounds(65, 700, 900, 100); // 위치와 크기를 설정하여 mapPanel과 겹치도록 설정
-        layeredPane.add(bottom, Integer.valueOf(100));  // 위쪽 레이어
-
-        add(layeredPane, BorderLayout.CENTER);
+        mainPanel.add(bottom, Integer.valueOf(100));  // 위쪽 레이어
     }
 
     JPanel showMap()

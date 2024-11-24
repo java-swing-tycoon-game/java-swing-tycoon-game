@@ -1,5 +1,8 @@
 package Character;
 
+import GameManager.ClickEvent;
+import GameManager.ClickManager;
+
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -23,7 +26,6 @@ public class BlackConsumer extends Npc {
 
         // 키 이벤트를 받을 수 있도록 설정
         setFocusable(true);  // 키 이벤트를 받을 수 있게 설정
-        requestFocusInWindow();  // 포커스를 현재 컴포넌트로 설정
     }
 
     @Override
@@ -37,8 +39,13 @@ public class BlackConsumer extends Npc {
     protected void setupRequest() {
         // 요청 생성
         request = new bcRequest(characterX,characterY);
-        ans = new bcAns("진상클래스");
+        ans = new bcAns("제발 나가주세요");
         ((bcRequest) request).setAns(ans);
+    }
+
+    @Override
+    public int getPriority() {
+        return 3; // Player보다 높은 우선순위
     }
 
     @Override // 요청 완료 처리
@@ -46,6 +53,8 @@ public class BlackConsumer extends Npc {
         if (request != null && !ans.ansActive) {
             System.out.println("bc 클릭됨");
             ans.ansActive = true;
+
+            requestFocusInWindow();  // 포커스를 현재 컴포넌트로 설정
             repaint(); // 화면 갱신
         }
     }
@@ -65,9 +74,30 @@ public class BlackConsumer extends Npc {
             if (!ans.ansActive) {
                 if (ans.isSuccess()) {
                     request.completeRequest(); // 요청 완료
+                    removeFromParent();
                 }
                 repaint(); // 화면 갱신
             }
         }
     }
+
+    protected void removeFromParent() {
+        Container parent = getParent();
+        if (parent != null) {
+            parent.remove(this); // 이미지 제거
+            parent.revalidate(); // 레이아웃 재계산
+            parent.repaint(); // 화면 갱신
+
+            // 클릭 이벤트 리스트에서 제거
+            ClickManager.removeClickList(this);
+            System.out.println("Removed from ClickManager: " + this);
+            System.out.println(ClickManager.ClickEventList);
+
+            // 포커스 이동 (다른 객체나 기본 컨테이너로)
+            if (parent.getComponentCount() > 0) {
+                parent.getComponent(0).requestFocusInWindow(); // 첫 번째 컴포넌트에 포커스 설정
+            }
+        }
+    }
+
 }

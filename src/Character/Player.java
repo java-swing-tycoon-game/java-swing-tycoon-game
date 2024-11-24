@@ -25,6 +25,11 @@ public class Player extends Move implements ClickEvent {
         return new Rectangle(0, 0, getWidth(), getHeight());
     }
 
+@Override
+    public int getPriority() {
+        return 1; // 높은 우선순위
+    }
+
     public void setHoldItemL(Image item) {
         this.holdItemL = item;
     }

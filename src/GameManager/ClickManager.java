@@ -7,11 +7,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClickManager extends MouseAdapter {
-    private List<ClickEvent> ClickEventList = new ArrayList<>();
+    public static List<ClickEvent> ClickEventList = new ArrayList<>();
 
     // 클릭 가능한 이벤트들 저장
     public void setClickList(ClickEvent click) {
         ClickEventList.add(click);
+        ClickEventList.sort((a, b) -> b.getPriority() - a.getPriority());
+    }
+
+    // 클릭 가능한 이벤트 삭제
+    public static void removeClickList(ClickEvent click) {
+        ClickEventList.remove(click);
     }
 
     // 클릭 이벤트 처리
@@ -21,7 +27,7 @@ public class ClickManager extends MouseAdapter {
         for (ClickEvent click : ClickEventList) {
             if (click.setBounds().contains(clickPoint)) {
                 click.onClick(clickPoint);
-                break;
+                //break;
             }
         }
     }
