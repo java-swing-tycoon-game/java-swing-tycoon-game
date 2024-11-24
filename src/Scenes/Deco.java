@@ -11,14 +11,22 @@ import java.awt.event.ActionListener;
 import GameManager.FontManager;
 
 public class Deco extends JFrame {
+    public Boolean gameResult = null;
     private JButton nextButton;
     public static Font customFont;
     private int clickCount = 0;
     private JLayeredPane layeredPane;
-    private ArrayList<String> selectedItems = new ArrayList<>();
+    private int[] selectedItems = new int[3];
+    private int[] currentList = new int[3];
+    private final String[] films = { "사랑하는 마음이 담긴", "내 스타를 위한", "하늘에 수놓은 비단같은" };
+    private final String[] colors = { "벚꽃", "푸른", "레몬" };
+    private final String[] themes = { "공주", "바다", "진주" };
 
     public Deco() {
         loadCustomFont();
+        for (int i = 0; i < currentList.length; i++) {
+            currentList[i] = 3;
+        }
 
         setTitle("탑로더를 꾸며보아요!");
         setSize(800, 600);
@@ -75,7 +83,7 @@ public class Deco extends JFrame {
         commentPanel.setSize(700, 200);
         commentPanel.setLocation(
                 (getWidth() - commentPanel.getWidth()) / 2,
-                330);
+                180);
         commentPanel.setBackground(new Color(255, 255, 252));
         commentPanel.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0), 5, true));
         commentPanel.add(textLabel);
@@ -146,7 +154,8 @@ public class Deco extends JFrame {
                     decoItem();
                     filmLayer();
                     colorLayer();
-                    themaLayer();
+                    partsLayer();
+                    game();
                 }
             }
         });
@@ -160,27 +169,17 @@ public class Deco extends JFrame {
     private String randomDecoItem() {
         Random random = new Random();
 
-        String[] films = { "사랑하는 마음이 담긴", "내 스타를 위한 ", "하늘에 수놓은 비단같은 " };
-        String selectedFilm = films[random.nextInt(films.length)];
+        selectedItems[0] = random.nextInt(films.length);
+        selectedItems[1] = random.nextInt(colors.length);
+        selectedItems[2] = random.nextInt(themes.length);
 
-        String[] colors = { "벚꽃", "푸른", "레몬" };
-        String selectedColor = colors[random.nextInt(colors.length)];
-
-        String[] themes = { "공주", "바다", "진주" };
-        String selectedTheme = themes[random.nextInt(themes.length)];
-
-        selectedItems.add(selectedFilm);
-        selectedItems.add(selectedColor);
-        selectedItems.add(selectedTheme);
-
-        return selectedFilm + "</font> 필름을 씌우고<br/> <font color='#2DA5DC'>" + selectedColor
-                + "</font> 색을 바른 다음<font color='#2DA5DC'> " + selectedTheme + "</font> 컨셉으로 결정!";
+        return films[selectedItems[0]] + " " + colors[selectedItems[1]] + " " + themes[selectedItems[2]];
     }
 
     private void filmLayer() {
         JPanel filmJPanel = new JPanel(null);
         filmJPanel.setSize(200, 400);
-        filmJPanel.setLocation(50, 30);
+        filmJPanel.setLocation(50, 130);
         filmJPanel.setOpaque(false);
 
         ImageIcon starIcon = new ImageIcon("assets/img/decoItem/starFilm.png");
@@ -218,8 +217,10 @@ public class Deco extends JFrame {
 
             @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                starButton.setSize(150, 220);
-                starButton.setLocation(30, 0);
+                if (currentList[0] != 1) {
+                    starButton.setSize(150, 220);
+                    starButton.setLocation(30, 0);
+                }
             }
         });
 
@@ -232,8 +233,10 @@ public class Deco extends JFrame {
 
             @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                heartButton.setSize(150, 220);
-                heartButton.setLocation(15, 80);
+                if (currentList[0] != 0) {
+                    heartButton.setSize(150, 220);
+                    heartButton.setLocation(15, 80);
+                }
             }
         });
 
@@ -246,8 +249,46 @@ public class Deco extends JFrame {
 
             @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
+                if (currentList[0] != 2) {
+                    auroraButton.setSize(150, 220);
+                    auroraButton.setLocation(0, 160);
+                }
+            }
+        });
+
+        heartButton.addActionListener(e -> {
+            onCurrentListChanged(0, 0);
+            if (currentList[0] == 0) {
+                heartButton.setSize(170, 240);
+                heartButton.setLocation(15, 70);
+                starButton.setSize(150, 220);
+                starButton.setLocation(30, 0);
                 auroraButton.setSize(150, 220);
                 auroraButton.setLocation(0, 160);
+            }
+        });
+
+        starButton.addActionListener(e -> {
+            onCurrentListChanged(0, 1);
+            if (currentList[0] == 1) {
+                starButton.setSize(170, 240);
+                starButton.setLocation(30, -10);
+                heartButton.setSize(150, 220);
+                heartButton.setLocation(15, 80);
+                auroraButton.setSize(150, 220);
+                auroraButton.setLocation(0, 160);
+            }
+        });
+
+        auroraButton.addActionListener(e -> {
+            onCurrentListChanged(0, 2);
+            if (currentList[0] == 2) {
+                auroraButton.setSize(170, 240);
+                auroraButton.setLocation(0, 150);
+                starButton.setSize(150, 220);
+                starButton.setLocation(30, 0);
+                heartButton.setSize(150, 220);
+                heartButton.setLocation(15, 80);
             }
         });
 
@@ -258,10 +299,118 @@ public class Deco extends JFrame {
         layeredPane.add(filmJPanel, Integer.valueOf(1));
     }
 
+    private void partsLayer() {
+        JPanel partsJPanel = new JPanel(null);
+        partsJPanel.setSize(130, 500);
+        partsJPanel.setLocation(getWidth() - partsJPanel.getWidth() - 80, 100);
+        partsJPanel.setOpaque(false);
+
+        ImageIcon bluePartsIcon = new ImageIcon("assets/img/decoItem/blueParts.png");
+        ImageIcon whitePartsIcon = new ImageIcon("assets/img/decoItem/whiteParts.png");
+        ImageIcon pinkPartsIcon = new ImageIcon("assets/img/decoItem/pinkParts.png");
+
+        JButton bluePartsButton = new JButton(bluePartsIcon);
+        JButton whitePartsButton = new JButton(whitePartsIcon);
+        JButton pinkPartsButton = new JButton(pinkPartsIcon);
+
+        bluePartsButton.setFocusPainted(false);
+        bluePartsButton.setBorderPainted(false);
+        bluePartsButton.setContentAreaFilled(false);
+        whitePartsButton.setFocusPainted(false);
+        whitePartsButton.setBorderPainted(false);
+        whitePartsButton.setContentAreaFilled(false);
+        pinkPartsButton.setFocusPainted(false);
+        pinkPartsButton.setBorderPainted(false);
+        pinkPartsButton.setContentAreaFilled(false);
+
+        bluePartsButton.setSize(120, 120);
+        whitePartsButton.setSize(120, 120);
+        pinkPartsButton.setSize(120, 130);
+
+        bluePartsButton.setLocation(10, 20);
+        whitePartsButton.setLocation(10, 140);
+        pinkPartsButton.setLocation(10, 260);
+
+        bluePartsButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                bluePartsButton.setLocation(0, 20);
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                if (currentList[2] != 1) {
+                    bluePartsButton.setLocation(10, 20);
+                }
+            }
+        });
+
+        whitePartsButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                whitePartsButton.setLocation(0, 140);
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                if (currentList[2] != 2) {
+                    whitePartsButton.setLocation(10, 140);
+                }
+            }
+        });
+
+        pinkPartsButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                pinkPartsButton.setLocation(0, 260);
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                if (currentList[2] != 0) {
+                    pinkPartsButton.setLocation(10, 260);
+                }
+            }
+        });
+
+        pinkPartsButton.addActionListener(e -> {
+            onCurrentListChanged(2, 0);
+            if (currentList[2] == 0) {
+                pinkPartsButton.setLocation(0, 260);
+                bluePartsButton.setLocation(10, 20);
+                whitePartsButton.setLocation(10, 140);
+            }
+        });
+
+        bluePartsButton.addActionListener(e -> {
+            onCurrentListChanged(2, 1);
+            if (currentList[2] == 1) {
+                bluePartsButton.setLocation(0, 20);
+                pinkPartsButton.setLocation(10, 260);
+                whitePartsButton.setLocation(10, 140);
+            }
+        });
+
+        whitePartsButton.addActionListener(e -> {
+            onCurrentListChanged(2, 2);
+            if (currentList[2] == 2) {
+                whitePartsButton.setLocation(0, 140);
+                bluePartsButton.setLocation(10, 20);
+                pinkPartsButton.setLocation(10, 260);
+            }
+        });
+
+        partsJPanel.add(pinkPartsButton);
+        partsJPanel.add(whitePartsButton);
+        partsJPanel.add(bluePartsButton);
+
+        layeredPane.add(partsJPanel, Integer.valueOf(1));
+    }
+
     private void colorLayer() {
         JPanel colorJPanel = new JPanel(null);
         colorJPanel.setSize(250, 250);
-        colorJPanel.setLocation((getWidth() - colorJPanel.getWidth()) / 2, 00);
+        colorJPanel.setLocation((getWidth() - colorJPanel.getWidth()) / 2, 20);
         colorJPanel.setOpaque(false);
 
         ImageIcon blueIcon = new ImageIcon("assets/img/decoItem/Pblue.png");
@@ -293,38 +442,69 @@ public class Deco extends JFrame {
         blueButton.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                blueButton.setSize(150, 170);
-
+                blueButton.setIcon(new ImageIcon("assets/img/decoItem/BPblue.png"));
             }
 
             @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                blueButton.setSize(150, 150);
-
+                if (currentList[1] != 1) {
+                    blueButton.setIcon(new ImageIcon("assets/img/decoItem/Pblue.png"));
+                }
             }
         });
 
         yellowButton.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                yellowButton.setSize(150, 170);
+                yellowButton.setIcon(new ImageIcon("assets/img/decoItem/BPyellow.png"));
             }
 
             @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                yellowButton.setSize(150, 150);
+                if (currentList[1] != 2) {
+                    yellowButton.setIcon(new ImageIcon("assets/img/decoItem/Pyellow.png"));
+                }
             }
         });
 
         pinkButton.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                pinkButton.setSize(150, 170);
+                pinkButton.setIcon(new ImageIcon("assets/img/decoItem/BPpink.png"));
             }
 
             @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                pinkButton.setSize(150, 150);
+                if (currentList[1] != 0) {
+                    pinkButton.setIcon(new ImageIcon("assets/img/decoItem/Ppink.png"));
+                }
+            }
+        });
+
+        pinkButton.addActionListener(e -> {
+            onCurrentListChanged(1, 0);
+            if (currentList[1] == 0) {
+                pinkButton.setIcon(new ImageIcon("assets/img/decoItem/BPpink.png"));
+                yellowButton.setIcon(new ImageIcon("assets/img/decoItem/Pyellow.png"));
+                blueButton.setIcon(new ImageIcon("assets/img/decoItem/Pblue.png"));
+            }
+        });
+
+        blueButton.addActionListener(e -> {
+            onCurrentListChanged(1, 1);
+            if (currentList[1] == 1) {
+                blueButton.setIcon(new ImageIcon("assets/img/decoItem/BPblue.png"));
+                yellowButton.setIcon(new ImageIcon("assets/img/decoItem/Pyellow.png"));
+                pinkButton.setIcon(new ImageIcon("assets/img/decoItem/Ppink.png"));
+            }
+        });
+
+        yellowButton.addActionListener(e -> {
+            onCurrentListChanged(1, 2);
+            if (currentList[1] == 2) {
+                yellowButton.setIcon(new ImageIcon("assets/img/decoItem/BPyellow.png"));
+                blueButton.setIcon(new ImageIcon("assets/img/decoItem/Pblue.png"));
+                pinkButton.setIcon(new ImageIcon("assets/img/decoItem/Ppink.png"));
             }
         });
 
@@ -335,35 +515,148 @@ public class Deco extends JFrame {
         layeredPane.add(colorJPanel, Integer.valueOf(1));
     }
 
-    private void themaLayer() {
-        JPanel themaJPanel = new JPanel(null);
-        themaJPanel.setSize(180, 400);
-        themaJPanel.setLocation(getWidth() - themaJPanel.getWidth() - 50, 30);
-
-        themaJPanel.setBackground(new Color(1, 1, 1));
-
-        layeredPane.add(themaJPanel, Integer.valueOf(1));
-    }
-
     private void decoItem() {
         JPanel decoJPanel = new JPanel(null);
         decoJPanel.setSize(600, 50);
-        decoJPanel.setLocation(50, getHeight() - decoJPanel.getHeight() - 60);
+        decoJPanel.setLocation(0, 0);
         decoJPanel.setOpaque(false);
 
-        JLabel textLabel = new JLabel("\" " +
-                selectedItems.get(0) + "\" " + " \" " + selectedItems.get(1) + "\" " + " \" " + selectedItems.get(2)
-                + "\" ", SwingConstants.CENTER);
+        JLabel textLabel = new JLabel(
+                "\"" + films[selectedItems[0]] + "\" \"" +
+                        colors[selectedItems[1]] + "\" \"" +
+                        themes[selectedItems[2]] + "\"",
+                SwingConstants.CENTER);
         textLabel.setOpaque(false);
         textLabel.setSize(600, 50);
-        textLabel.setLocation(0, 0);
         textLabel.setFont(customFont.deriveFont(24f));
         textLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        textLabel.setVerticalAlignment(SwingConstants.CENTER);
-        textLabel.setForeground(new Color(217, 89, 217));
 
         decoJPanel.add(textLabel);
         layeredPane.add(decoJPanel, Integer.valueOf(1));
+    }
+
+    private void game() {
+        // 기본 탑로더 레이어
+        JLabel toploaderLabel = new JLabel(new ImageIcon("assets/img/decoItem/toploader.png"));
+        int frameWidth = getWidth();
+        int frameHeight = getHeight();
+        int xPosition = (frameWidth - 600) / 2;
+        int yPosition = (frameHeight - 600) / 2;
+
+        toploaderLabel.setBounds(xPosition, yPosition, 600, 600 + 180);
+        layeredPane.add(toploaderLabel, Integer.valueOf(1));
+
+        // 종료 버튼 설정
+        ImageIcon endIcon = new ImageIcon("assets/img/decoItem/endBtn.png");
+        JButton endButton = new JButton(endIcon);
+        endButton.setSize(200, 100);
+        endButton.setLocation((getWidth() - endButton.getWidth()) / 2, getHeight() - endButton.getHeight() - 60);
+        endButton.setFocusPainted(false);
+        endButton.setBorderPainted(false);
+        endButton.setContentAreaFilled(false);
+
+        endButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                endButton.setIcon(new ImageIcon("assets/img/decoItem/BendBtn.png"));
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                endButton.setIcon(new ImageIcon("assets/img/decoItem/endBtn.png"));
+            }
+        });
+        layeredPane.add(endButton, Integer.valueOf(10));
+        endButton.addActionListener(e -> {
+
+            gameResult = gameEnd();
+            
+            dispose();
+          
+        });
+
+    }
+
+    private void updateLayers() {
+
+        for (Component component : layeredPane.getComponents()) {
+            if (layeredPane.getLayer(component) > 1 && layeredPane.getLayer(component) < 10) {
+                layeredPane.remove(component);
+            }
+        }
+        layeredPane.repaint();
+
+        JLabel toploaderLabel = new JLabel(new ImageIcon("assets/img/decoItem/toploader.png"));
+        int frameWidth = getWidth();
+        int frameHeight = getHeight();
+        int xPosition = (frameWidth - 600) / 2;
+        int yPosition = (frameHeight - 600) / 2;
+
+        toploaderLabel.setBounds(xPosition, yPosition, 600, 600 + 180);
+        layeredPane.add(toploaderLabel, Integer.valueOf(1));
+
+        // 심볼 레이어
+        if (currentList[0] == 0) {
+            JLabel heartLayer = new JLabel(new ImageIcon("assets/img/decoItem/heart.png"));
+            heartLayer.setBounds(xPosition, yPosition, 600, frameHeight + 180);
+            layeredPane.add(heartLayer, Integer.valueOf(2));
+        } else if (currentList[0] == 1) {
+            JLabel starLayer = new JLabel(new ImageIcon("assets/img/decoItem/star.png"));
+            starLayer.setBounds(xPosition, yPosition, 600, frameHeight + 180);
+            layeredPane.add(starLayer, Integer.valueOf(2));
+        } else if (currentList[0] == 2) {
+            JLabel auroraLayer = new JLabel(new ImageIcon("assets/img/decoItem/aurora.png"));
+            auroraLayer.setBounds(xPosition, yPosition, 600, frameHeight + 180);
+            layeredPane.add(auroraLayer, Integer.valueOf(2));
+        }
+
+        // 색상 레이어
+        if (currentList[1] == 0) {
+            JLabel pinkLayer = new JLabel(new ImageIcon("assets/img/decoItem/pink.png"));
+            pinkLayer.setBounds(xPosition - 5, yPosition - 10, 600, frameHeight + 180);
+            layeredPane.add(pinkLayer, Integer.valueOf(3));
+        } else if (currentList[1] == 1) {
+            JLabel blueLayer = new JLabel(new ImageIcon("assets/img/decoItem/blue.png"));
+            blueLayer.setBounds(xPosition - 5, yPosition - 10, 600, frameHeight + 180);
+            layeredPane.add(blueLayer, Integer.valueOf(3));
+        } else if (currentList[1] == 2) {
+            JLabel yellowLayer = new JLabel(new ImageIcon("assets/img/decoItem/yellow.png"));
+            yellowLayer.setBounds(xPosition - 15, yPosition - 10, 600, frameHeight + 180);
+            layeredPane.add(yellowLayer, Integer.valueOf(3));
+        }
+
+        // 파츠 레이어
+        if (currentList[2] == 0) {
+            JLabel pinkPartsLayer = new JLabel(new ImageIcon("assets/img/decoItem/partsP.png"));
+            pinkPartsLayer.setBounds(xPosition, yPosition, 580, frameHeight + 180);
+            layeredPane.add(pinkPartsLayer, Integer.valueOf(4));
+        } else if (currentList[2] == 1) {
+            JLabel bluePartsLayer = new JLabel(new ImageIcon("assets/img/decoItem/partsB.png"));
+            bluePartsLayer.setBounds(xPosition, yPosition, 600, frameHeight + 180);
+            layeredPane.add(bluePartsLayer, Integer.valueOf(4));
+        } else if (currentList[2] == 2) {
+            JLabel whitePartsLayer = new JLabel(new ImageIcon("assets/img/decoItem/partsW.png"));
+            whitePartsLayer.setBounds(xPosition, yPosition, 600, frameHeight + 180);
+            layeredPane.add(whitePartsLayer, Integer.valueOf(4));
+        }
+
+        layeredPane.repaint();
+    }
+
+    private void onCurrentListChanged(int index, int value) {
+
+        updateCurrentList(index, value);
+        updateLayers();
+
+    }
+
+    private void updateCurrentList(int index, int value) {
+        if (currentList.length > index) {
+            currentList[index] = value;
+
+        }
+        System.out.println("올바른 결과: " + java.util.Arrays.toString(selectedItems));
+        System.out.println("Current List: " + java.util.Arrays.toString(currentList));
     }
 
     private void loadCustomFont() {
@@ -376,7 +669,29 @@ public class Deco extends JFrame {
         setVisible(true);
     }
 
+    private boolean gameEnd() {
+        if (currentList.length != selectedItems.length) {
+            return false;
+        }
+
+        for (int i = 0; i < currentList.length; i++) {
+            if (currentList[i] != selectedItems[i]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    
+    @Override
+    public void dispose() {
+        super.dispose();
+        if (gameResult != null) {
+            System.out.println(gameResult ? "참" : "거짓");
+        }
+    }
     public static void main(String[] args) {
-        new Deco();
+         new Deco();
+
     }
 }
