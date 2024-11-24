@@ -12,7 +12,7 @@ public class Request {
     private Image requestItem; // 요청 말풍선에 뜨는 이미지
     private final ArrayList<Place> zone; // 요청과 연관된 장소
 
-    protected final Timer requestTimer; // 시간제한을 위한 타이머
+    protected Timer requestTimer; // 시간제한을 위한 타이머
     protected boolean active; // 개별 요청의 완료 여부
 
     public Request(int x, int y, ArrayList<Place> places) {
@@ -60,7 +60,7 @@ public class Request {
         else if(zone.get(2).contains(x, y)) {
             System.out.println("대기존1");
             return setWaitingRequest();
-       }
+        }
         return setWaitingRequest();
     }
 

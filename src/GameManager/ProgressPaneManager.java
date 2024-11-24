@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import GameManager.FontManager;
 
 public class ProgressPaneManager {
     private int realTime; // 현재 남은 시간
@@ -20,6 +21,11 @@ public class ProgressPaneManager {
 
     public JPanel getProgressPane() {
         return progressPane; // 시간바 관련
+    }
+
+    // day 값을 외부에서 사용할 수 있도록 get..
+    public int getDay() {
+        return this.day;
     }
 
     // 시간바 관련 클래스
@@ -72,6 +78,7 @@ public class ProgressPaneManager {
                     // 모든 Day가 끝났으면 게임 종료 메시지
                     if (day >= dayTimes.length) {
                         JOptionPane.showMessageDialog(null,
+
                                 "모든 Day를 완료했습니다! 게임 끝!!!",
                                 "게임 종료",
                                 JOptionPane.INFORMATION_MESSAGE);
