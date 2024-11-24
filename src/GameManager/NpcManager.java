@@ -57,7 +57,7 @@ public class NpcManager {
         Npc npc;
 
         // 20% 확률로 블랙 컨슈머 생성
-        if (Math.random() < 0.7) {
+        if (Math.random() < 0.2) {
             if (bcActive) {
                 System.out.println("블랙 컨슈머가 이미 존재합니다. 새 블랙 컨슈머 생성 중단.");
                 return; // 기존 블랙 컨슈머가 있을 경우 생성 중단
@@ -66,10 +66,10 @@ public class NpcManager {
             npc = new BlackConsumer();
             blackConsumerCount++;
             bcActive = true;
-            addNpcPanel(npc);
-
+            addBcPanel(npc);
+            //player.moveToCenter();
             // 무조건 화면 가운데로 돌진
-            npc.moveToCenter(null);
+            //npc.moveToCenter(null);
         } else { // 일반 npc
             npc = new Npc();
             npcCount++;
@@ -77,20 +77,25 @@ public class NpcManager {
             addNpcPanel(npc);
             moveNpcToWait(npc);
         }
-
+        System.out.println(npcList);
         clickManager.setClickList(npc);
     }
 
-    private void addNpcPanel(Npc npc)
+    private void addBcPanel(Npc npc)
     {
         npc.setBounds(0, 0, 1024, 768);
         npc.setOpaque(false);
         parentPanel.add(npc, Integer.valueOf(200));
     }
 
-    private void moveNpcToWait(Npc npc) {
-        npc.moveToTarget(waitRoom.get(0),null);
+    private void addNpcPanel(Npc npc)
+    {
+        npc.setBounds(0, 0, 1024, 768);
+        npc.setOpaque(false);
+        parentPanel.add(npc, Integer.valueOf(100));
+    }
 
+    private void moveNpcToWait(Npc npc) {
         // 빈 대기 구역 찾기
         Optional<Place> emptyWaitRoom = waitRoom.stream()
                 .filter(place -> !isPlaceOccupied(place))
@@ -101,10 +106,39 @@ public class NpcManager {
             assignNpcToPlace(npc, targetWaitRoom); // NPC를 대기 구역에 배치
             npc.moveToTarget(targetWaitRoom, null); // 대기 구역으로 이동
             System.out.println("NPC가 대기 구역으로 이동합니다: " + targetWaitRoom);
+
+            // 10초 대기 후 비어있는 룸으로 이동 시도
+            Timer waitTimer = new Timer(10000, e -> moveNpcToRoom(npc));
+            waitTimer.setRepeats(false);
+            waitTimer.start();
         } else {
             System.out.println("대기 구역이 모두 가득 찼습니다. NPC 생성 중지.");
             spawnTimer.stop(); // 모든 대기 구역이 차 있으면 타이머 정지
             removeNpc(npc);
+        }
+    }
+
+    private void moveNpcToRoom(Npc npc) {
+        // 빈 룸 찾기
+        List<Place> emptyRooms = room.stream()
+                .filter(place -> !isPlaceOccupied(place))
+                .collect(Collectors.toList());
+
+        if (!emptyRooms.isEmpty()) {
+            // 랜덤으로 빈 룸 선택
+            Random random = new Random();
+            Place targetRoom = emptyRooms.get(random.nextInt(emptyRooms.size()));
+
+            // NPC를 해당 룸으로 이동
+            assignNpcToPlace(npc, targetRoom);
+            npc.moveToDest(targetRoom, true, null); // 룸으로 이동
+            System.out.println("NPC가 룸으로 이동합니다: " + npc.characterX);
+        } else {
+            System.out.println("모든 룸이 가득 찼습니다. NPC는 대기 구역에서 계속 대기합니다.");
+            // 대기 상태 유지
+            Timer recheckTimer = new Timer(10000, e -> moveNpcToRoom(npc));
+            recheckTimer.setRepeats(false);
+            recheckTimer.start();
         }
     }
 
