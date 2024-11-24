@@ -52,7 +52,7 @@ public class Player extends Move implements ClickEvent {
         for (Place place : getPlaces()) {
             if (place.contains(clickPoint.x, clickPoint.y)) {
                 // 타겟 위치로 이동
-                moveToDest(place);
+                moveToDest(place, false, null);
 
                 // 이동 완료 후 작업 처리
                 Timer actionTimer = new Timer(15, actionEvent -> {
@@ -65,10 +65,12 @@ public class Player extends Move implements ClickEvent {
                                 // 아이템 자동 집기
                                 pickDrop.handleItemClick(clickPoint);
                                 repaint();
+                                moveToCenter(null);
                             }
                             case 4 -> {
                                 // 아이템 자동 버리기
                                 pickDrop.dropItem();
+                                moveToCenter(null);
                             }
                             // 필요한 경우 다른 행동 추가
                             default -> {
