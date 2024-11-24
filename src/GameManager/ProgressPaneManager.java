@@ -10,7 +10,7 @@ import GameManager.FontManager;
 public class ProgressPaneManager {
     private int realTime; // 현재 남은 시간
     private int day = 1;  // 현재 데이 (1부터 시작)
-    private final int[] dayTimes = {12, 10, 8, 6, 4, 2, 1}; // 각 day의 초기 시간 (디버깅용)
+    private final int[] dayTimes = {60, 60, 60, 60, 60, 60, 60}; // 각 day의 초기 시간 (디버깅용)
     private Timer dayTimer; // 날짜 타이머
 
     private ImageProgressPane progressPane;
