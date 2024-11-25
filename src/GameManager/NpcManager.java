@@ -19,6 +19,8 @@ public class NpcManager {
     private final ArrayList<Place> room;
     private final ArrayList<Place> waitRoom;
     private final Map<Place, Npc> placeToNpcMap;
+    private final Map<Npc, Place> npcToWaitRoomMap = new HashMap<>(); // NPC와 대기 구역 매핑 추가
+
 
     private ClickManager clickManager;
     private Timer spawnTimer;
@@ -74,7 +76,7 @@ public class NpcManager {
             addNpcPanel(npc);
             moveNpcToWait(npc);
         }
-        //System.out.println(npcList);
+
         clickManager.setClickList(npc);
     }
 
@@ -101,6 +103,7 @@ public class NpcManager {
         if (emptyWaitRoom.isPresent()) {
             Place targetWaitRoom = emptyWaitRoom.get();
             assignNpcToPlace(npc, targetWaitRoom); // NPC를 대기 구역에 배치
+            npcToWaitRoomMap.put(npc, targetWaitRoom);
             npc.moveToTarget(targetWaitRoom, null); // 대기 구역으로 이동
             System.out.println("NPC가 대기 구역으로 이동합니다");
 
@@ -121,12 +124,16 @@ public class NpcManager {
                 .filter(place -> !isPlaceOccupied(place))
                 .collect(Collectors.toList());
 
+        Place currentWaitRoom = npcToWaitRoomMap.get(npc);
+
         if (!emptyRooms.isEmpty()) {
             // 랜덤으로 빈 룸 선택
             Random random = new Random();
             Place targetRoom = emptyRooms.get(random.nextInt(emptyRooms.size()));
 
             // NPC를 해당 룸으로 이동
+            removeNpcFromPlace(currentWaitRoom); // 나갔으니까 대기 구역 비움
+            npcToWaitRoomMap.remove(npc); // NPC와 대기 구역 매핑 제거
             assignNpcToPlace(npc, targetRoom);
             npc.moveToDest(targetRoom, true, null); // 룸으로 이동
             System.out.println("NPC가 룸으로 이동합니다. npc 좌표: " + npc.characterX);
@@ -137,6 +144,11 @@ public class NpcManager {
             recheckTimer.setRepeats(false);
             recheckTimer.start();
         }
+    }
+
+    private void removeNpcFromPlace(Place place) {
+        placeToNpcMap.remove(place);
+        System.out.println("NPC가 장소에서 제거되었습니다: " + place);
     }
 
     // room이 가득 참
