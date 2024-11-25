@@ -2,6 +2,7 @@ package Character;
 
 import javax.swing.*;
 import java.awt.*;
+
 import GameManager.ClickEvent;
 import Goods.PickDrop;
 import GameManager.ItemManager;
@@ -25,7 +26,7 @@ public class Player extends Move implements ClickEvent {
         return new Rectangle(0, 0, getWidth(), getHeight());
     }
 
-@Override
+    @Override
     public int getPriority() {
         return 1; // 높은 우선순위
     }
@@ -45,40 +46,52 @@ public class Player extends Move implements ClickEvent {
     public Image getHoldItemR() {
         return holdItemR;
     }
-
+    public boolean vistRoom = false;
     @Override
     public void onClick(Point clickPoint) {
         // 클릭된 좌표가 특정 Place 안에 있는지 확인
         for (Place place : getPlaces()) {
             if (place.contains(clickPoint.x, clickPoint.y)) {
-                // 타겟 위치로 이동
-                moveToDest(place, false, null);
-
-                // 이동 완료 후 작업 처리
-                Timer actionTimer = new Timer(15, actionEvent -> {
-                    // 타겟 위치에 도착한 경우 동작 수행
-                    if (characterX == place.getTargetX() && characterY == place.getTargetY()) {
-                        ((Timer) actionEvent.getSource()).stop(); // 타이머 정지
-
-                        switch (place.getNum()) {
-                            case 1 -> {
-                                // 아이템 자동 집기
-                                pickDrop.handleItemClick(clickPoint);
+                switch (place.getNum()) {
+                    case 1 -> {
+                        if(vistRoom) {
+                            moveToDest(place, true, () -> {
+                                pickDrop.handleItemClick(clickPoint); // 아이템 자동 집기
                                 repaint();
-                                moveToCenter(null);
-                            }
-                            case 4 -> {
+                            });
+                        }
+                        else {
+                            moveToDest(place, false, () -> {
+                                pickDrop.handleItemClick(clickPoint); // 아이템 자동 집기
+                                repaint();
+                            });
+                        }
+                        vistRoom = false;
+                    }
+                    case 2 -> {
+                        moveToDest(place, true, null);
+                        vistRoom = true;
+                    }
+                    case 4 -> {
+                        if(vistRoom) {
+                            moveToDest(place, true, () -> {
                                 // 아이템 자동 버리기
                                 pickDrop.dropItem();
-                                moveToCenter(null);
-                            }
-                            // 필요한 경우 다른 행동 추가
-                            default -> {
-                            }
+                            });
                         }
+                        else {
+                            moveToDest(place, false, () -> {
+                                // 아이템 자동 버리기
+                                pickDrop.dropItem();
+                            });
+                        }
+                        vistRoom = false;
                     }
-                });
-                actionTimer.start();
+                    // 필요한 경우 다른 행동 추가
+                    default -> {
+
+                    }
+                }
                 break;
             }
         }
