@@ -90,7 +90,7 @@ public class Request {
     private Image setGoodsRequest() {
         System.out.println("굿즈 요청 발생");
         Random random = new Random();
-        return new ImageIcon(itemRequestList[random.nextInt(4, itemRequestList.length)]).getImage();
+        return new ImageIcon(itemRequestList[random.nextInt(4, 6)]).getImage();
     }
 
     // 데코 요청

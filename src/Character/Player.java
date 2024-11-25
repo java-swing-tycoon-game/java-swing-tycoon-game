@@ -72,6 +72,17 @@ public class Player extends Move implements ClickEvent {
                         moveToDest(place, true, null);
                         vistRoom = true;
                     }
+                    case 3 -> {
+                        if(vistRoom) {
+                            moveToDest(place, true, () -> {
+                            });
+                        }
+                        else {
+                            moveToDest(place, false, () -> {
+                            });
+                        }
+                        vistRoom = false;
+                    }
                     case 4 -> {
                         if(vistRoom) {
                             moveToDest(place, true, () -> {

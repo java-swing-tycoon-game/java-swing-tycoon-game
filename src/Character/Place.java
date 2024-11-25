@@ -65,8 +65,8 @@ public class Place {
         places.add(new Place(2, 775, 245, 75, 800, 240));
 
         // 대기 구역
-        places.add(new Place(3,570, 600, 10, 570, 600));
-        places.add(new Place(3,  750, 600, 10, 750, 600));
+        places.add(new Place(3,570, 600, 30, 570, 600));
+        places.add(new Place(3,  750, 600, 30, 750, 600));
 
         // 쓰레기통
         places.add(new Place(4, 745, 400, 35, 670, 420));
