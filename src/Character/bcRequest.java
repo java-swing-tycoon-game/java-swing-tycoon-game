@@ -12,8 +12,8 @@ public class bcRequest extends Request {
 
     private bcAns ans;
 
-    public bcRequest(int x, int y) {
-        super(x, y, null);
+    public bcRequest(Npc npc) {
+        super(npc, null);
         customizeTimer();
         bcLog = setBcLog(); // 대사 설정
     }
@@ -30,7 +30,7 @@ public class bcRequest extends Request {
     @Override
     protected void setZone(ArrayList<Place> places) { }
 
-    @Override
+    //@Override
     public void makeRequest(int x, int y) {
         if (!active) {
             active = true;

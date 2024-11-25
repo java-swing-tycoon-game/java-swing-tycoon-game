@@ -96,7 +96,7 @@ public class Move extends JPanel {
         targetX = place.targetX;
         targetY = place.targetY;
 
-        System.out.println(targetX + " " + targetY+ " " +characterX+ " " +characterY);
+        System.out.println("이동 목표: " + targetX + ", " + targetY+ "현재 위치: " +characterX+ " " +characterY);
 
         currentTimer = new Timer(15, e -> {
             moveCharacter();

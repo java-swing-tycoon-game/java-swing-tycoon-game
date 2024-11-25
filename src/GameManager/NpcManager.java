@@ -67,9 +67,6 @@ public class NpcManager {
             blackConsumerCount++;
             bcActive = true;
             addBcPanel(npc);
-            //player.moveToCenter();
-            // 무조건 화면 가운데로 돌진
-            //npc.moveToCenter(null);
         } else { // 일반 npc
             npc = new Npc();
             npcCount++;
@@ -77,7 +74,7 @@ public class NpcManager {
             addNpcPanel(npc);
             moveNpcToWait(npc);
         }
-        System.out.println(npcList);
+        //System.out.println(npcList);
         clickManager.setClickList(npc);
     }
 
@@ -105,10 +102,10 @@ public class NpcManager {
             Place targetWaitRoom = emptyWaitRoom.get();
             assignNpcToPlace(npc, targetWaitRoom); // NPC를 대기 구역에 배치
             npc.moveToTarget(targetWaitRoom, null); // 대기 구역으로 이동
-            System.out.println("NPC가 대기 구역으로 이동합니다: " + targetWaitRoom);
+            System.out.println("NPC가 대기 구역으로 이동합니다");
 
             // 10초 대기 후 비어있는 룸으로 이동 시도
-            Timer waitTimer = new Timer(10000, e -> moveNpcToRoom(npc));
+            Timer waitTimer = new Timer(5000, e -> moveNpcToRoom(npc));
             waitTimer.setRepeats(false);
             waitTimer.start();
         } else {
@@ -132,7 +129,7 @@ public class NpcManager {
             // NPC를 해당 룸으로 이동
             assignNpcToPlace(npc, targetRoom);
             npc.moveToDest(targetRoom, true, null); // 룸으로 이동
-            System.out.println("NPC가 룸으로 이동합니다: " + npc.characterX);
+            System.out.println("NPC가 룸으로 이동합니다. npc 좌표: " + npc.characterX);
         } else {
             System.out.println("모든 룸이 가득 찼습니다. NPC는 대기 구역에서 계속 대기합니다.");
             // 대기 상태 유지

@@ -21,7 +21,7 @@ public class BlackConsumer extends Npc {
             public void keyTyped(KeyEvent e) {
                 // 키 입력을 받아서 processKeyTyped 메소드 호출
                 processKeyTyped(e.getKeyChar());
-                System.out.println(e.getKeyChar());
+                //System.out.println(e.getKeyChar());
             }
         });
 
@@ -39,7 +39,7 @@ public class BlackConsumer extends Npc {
     @Override
     public void setupRequest() {
         // 요청 생성
-        request = new bcRequest(characterX,characterY);
+        request = new bcRequest(this);
         ans = new bcAns("제발 나가주세요");
         ((bcRequest) request).setAns(ans);
     }

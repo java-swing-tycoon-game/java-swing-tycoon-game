@@ -71,9 +71,9 @@ public class Npc extends Move implements ClickEvent {
     }
 
     ////// NPC 요청 //////
-    protected void setupRequest() {
+    public void setupRequest() {
         // 요청 생성
-        request = new Request(characterX, characterY, places);
+        request = new Request(this, places);
     }
 
     // 요청을 만들러 간다. bc 때문에 분리해봄
