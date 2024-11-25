@@ -40,15 +40,15 @@ public class Play extends JFrame {
 
     void playBgm() {
         // 배경 음악 시끄러워서 잠깐 주석^^
-        //bgm = new bgmManager("assets/bgm/playBgm.wav");
-        bgmManager.toggleMusic(); // 음악 자동 재생
+        bgm = new bgmManager("assets/bgm/playBgm.wav", true);
+        bgm.toggleMusic(); // 음악 자동 재생
 
         // m 누르면 재생/정지
         addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
             public void keyPressed(java.awt.event.KeyEvent e) {
                 if (e.getKeyCode() == java.awt.event.KeyEvent.VK_M) {
-                    bgmManager.toggleMusic(); // M 버튼으로 음악 토글
+                    bgm.toggleMusic(); // M 버튼으로 on/off
                 }
             }
         });
