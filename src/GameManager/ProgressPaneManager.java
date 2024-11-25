@@ -1,17 +1,20 @@
 package GameManager;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import javax.imageio.ImageIO;
-import javax.swing.*;
-import GameManager.FontManager;
+import Scenes.Buy;
+import Scenes.Play;
 
 public class ProgressPaneManager {
     private int realTime; // 현재 남은 시간
     private int day = 1;  // 현재 데이 (1부터 시작)
     private final int[] dayTimes = {600, 600, 60, 60, 60, 60, 60}; // 각 day의 초기 시간 (디버깅용)
     private Timer dayTimer; // 날짜 타이머
+    private DayManager dayManager = new DayManager();
+    private CoinManager coinManager = new CoinManager();
 
     private ImageProgressPane progressPane;
 
@@ -26,6 +29,16 @@ public class ProgressPaneManager {
     // day 값을 외부에서 사용할 수 있도록 get..
     public int getDay() {
         return this.day;
+    }
+
+    // 엔딩 화면을 띄우는 함수
+    private void showEndingScreen() {
+        SwingUtilities.invokeLater(() -> {
+            // Play 화면을 닫고 게임 오버 화면을 띄우기
+            // Play.dispose();  // Play 화면 닫기
+            EndingManager endingManager = new EndingManager(dayManager, coinManager);  // EndingManager 생성
+            endingManager.setVisible(true);  // 게임 오버 화면 띄우기
+        });
     }
 
     // 시간바 관련 클래스
@@ -58,43 +71,48 @@ public class ProgressPaneManager {
 
         private void startDayTimer() {
             realTime = dayTimes[day - 1];   // 현재 데이의 초기 시간
-            progressBar.setValue(100);  // 진행률 이미지 다시 100으로 초기화하기
+            progressBar.setValue(100);      // 진행률 이미지 초기화
 
             dayTimer = new Timer(1000, e -> {
                 realTime--;
                 updateTimeBar();
 
-                // 남은 시간이 0이 되면 데이 종료
+                // 시간이 0이 되면 Day 종료
                 if (realTime <= 0) {
                     dayTimer.stop();  // 타이머 종료
-                    System.out.println("Day " + day + " 종료! 다음 Day로 이동");
+                    System.out.println("Day " + day + " 종료!");
 
-                    // Day 종료 메시지 팝업
-                    JOptionPane.showMessageDialog(null,
-                            "Day " + day + " 종료! 다음 Day로 이동합니다.",
-                            "Day 진행",
-                            JOptionPane.INFORMATION_MESSAGE);
-
-                    // 모든 Day가 끝났으면 게임 종료 메시지
-                    if (day >= dayTimes.length) {
-                        JOptionPane.showMessageDialog(null,
-
-                                "모든 Day를 완료했습니다! 게임 끝!!!",
-                                "게임 종료",
-                                JOptionPane.INFORMATION_MESSAGE);
-
-                        // 게임 종료 처리
-                        return;
+                    // 코인 기준 금액 확인
+                    int[] coins = {5, 10, 20, 50, 75, 90, 100}; // 기준 금액 배열
+                    if (coinManager.getCoinAmount() >= coins[day - 1]) {
+                        // 기준 충족: Buy 팝업 표시
+                        if (day == dayTimes.length) {
+                            showEndingScreen(); // 최종 Day에서 엔딩 처리
+                        } else {
+                            showBuyScreen(); // Buy 창 표시
+                        }
+                    } else {
+                        // 기준 미달: Game Over 처리
+                        showEndingScreen();
                     }
-
-                    // 다음 Day로 이동
-                    day++;
-                    startDayTimer();  // 새로운 Day 타이머 시작
                 }
             });
 
             dayTimer.start();
         }
+
+        // Buy 팝업 호출
+        private void showBuyScreen() {
+            SwingUtilities.invokeLater(() -> {
+                Buy buyPopup = new Buy();
+                buyPopup.setVisible(true);
+            });
+
+            // 다음 Day로 이동
+            day++;
+            startDayTimer();
+        }
+
 
         private void updateTimeBar() {
             int initialTime = dayTimes[day - 1]; // 현재 Day의 초기 시간
