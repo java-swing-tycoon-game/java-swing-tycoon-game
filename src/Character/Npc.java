@@ -2,6 +2,7 @@ package Character;
 
 import GameManager.ClickEvent;
 import GameManager.ClickManager;
+import GameManager.bgmManager;
 
 import javax.swing.*;
 import java.awt.*;

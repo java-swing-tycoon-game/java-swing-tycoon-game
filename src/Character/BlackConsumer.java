@@ -3,6 +3,7 @@ package Character;
 import GameManager.ClickEvent;
 import GameManager.ClickManager;
 import GameManager.NpcManager;
+import GameManager.bgmManager;
 
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -19,9 +20,7 @@ public class BlackConsumer extends Npc {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
-                // 키 입력을 받아서 processKeyTyped 메소드 호출
                 processKeyTyped(e.getKeyChar());
-                //System.out.println(e.getKeyChar());
             }
         });
 

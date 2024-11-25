@@ -71,13 +71,14 @@ public class NpcManager {
             addBcPanel(npc);
         } else { // 일반 npc
             npc = new Npc();
+
             npcCount++;
             npcList.add(npc);
             addNpcPanel(npc);
             moveNpcToWait(npc);
         }
-
         clickManager.setClickList(npc);
+        new bgmManager("assets/bgm/door.wav", false).toggleMusic();
     }
 
     private void addBcPanel(Npc npc)
