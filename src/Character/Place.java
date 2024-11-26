@@ -18,11 +18,11 @@ public class Place {
     }
 
     public int getNum(){ return num; }
-    public int getX() {
-        return x;
+    public int getTargetX() {
+        return targetX;
     }
-    public int getY() {
-        return y;
+    public int getTargetY() {
+        return targetY;
     }
     public int getRadius() {
         return radius;
