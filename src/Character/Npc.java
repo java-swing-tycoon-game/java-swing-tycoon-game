@@ -2,7 +2,7 @@ package Character;
 
 import GameManager.ClickEvent;
 import GameManager.ClickManager;
-import GameManager.bgmManager;
+import GameManager.NpcManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,39 +10,47 @@ import java.awt.image.BufferedImage;
 import java.util.Random;
 
 public class Npc extends Move implements ClickEvent {
-    // face와 leg는 공통 사용
-    private final Image faceImg = new ImageIcon("assets/img/npc/face.png").getImage();
-    private final Image[] legImg = {
+    ////// 이미지 경로 //////
+    // face와 leg는 모든 npc가 공통 사용
+    private final static Image faceImg = new ImageIcon("assets/img/npc/face.png").getImage();
+    private final static Image[] legImg = {
             new ImageIcon("assets/img/npc/walking1.png").getImage(),
             new ImageIcon("assets/img/npc/walking2.png").getImage()
     };
+    private final static String[] eyeImgPath = {"assets/img/npc/eye1.png", "assets/img/npc/eye2.png"};
+    private final static String[] hairImgPath = {"assets/img/npc/hair1.png", "assets/img/npc/hair2.png"};
+    private final static String[] shirtsImgPath = {"assets/img/npc/shirts1.png", "assets/img/npc/shirts2.png"};
+    private final static String[] pantsImgPath = {"assets/img/npc/pants1.png", "assets/img/npc/pants2.png"};
 
     private Image eyeImg, hairImg, shirtsImg, pantsImg;
-
-    // 이미지 경로
-    private final String[] eyeImgPath = {"assets/img/npc/eye1.png", "assets/img/npc/eye2.png"};
-    private final String[] hairImgPath = {"assets/img/npc/hair1.png", "assets/img/npc/hair2.png"};
-    private final String[] shirtsImgPath = {"assets/img/npc/shirts1.png", "assets/img/npc/shirts2.png"};
-    private final String[] pantsImgPath = {"assets/img/npc/pants1.png", "assets/img/npc/pants2.png"};
-
     private Image walkingImg;
     private int walkingIndex = 0;
+
     private BufferedImage buffer;
     protected Rectangle clickBounds;
 
     // 요청 클래스
-    protected Request request;
+    public Request request;
+    protected int requestCount = 0; // 요청 횟수
+    protected static int MAX_REQUESTS = 4; // 최대 요청 횟수
     protected boolean active; // npc 상태
 
+    protected static Player player;
+
     // 생성자
-    public Npc() {
+    public Npc(Player player) {
         super(960, 600); // 초기 좌표 설정
+        Npc.player = player;
+
         randomSetNpc(); // npc 이미지 조합
         walkingAnimation();
         active = true;
 
         moveToRequest();
     }
+
+    public boolean getActive() { return active; }
+    protected void finishNpc() { active = false; }
 
     ////////// NPC 이미지 관련 //////////
     // NPC 이미지 조합하기
@@ -72,49 +80,90 @@ public class Npc extends Move implements ClickEvent {
     }
 
     ////// NPC 요청 //////
-    public void setupRequest() {
-        // 요청 생성
-        request = new Request(this, places);
-    }
+    // 요청을 만들러 간다. bc 때문에 분리
+    protected void moveToRequest() { setupRequest(); }
 
-    // 요청을 만들러 간다. bc 때문에 분리해봄
-    protected void moveToRequest() {
-        setupRequest();
-    }
+    // 요청 생성
+    public void setupRequest() { request = new Request(this, places); }
 
     @Override // npc 범위만 클릭해서 요청 수행하도록
     public Rectangle setBounds() {
-        int imageWidth = faceImg.getWidth(null);
-        int imageHeight = faceImg.getHeight(null);
+        int imageWidth = Npc.faceImg.getWidth(null);
+        int imageHeight = Npc.faceImg.getHeight(null);
         clickBounds = new Rectangle(characterX-120/2, characterY-150/2, imageWidth, imageHeight);
         return clickBounds;
     }
 
-    @Override
-    public int getPriority() {
-        return 2; // Player보다 높은 우선순위
-    }
-
-    @Override // 요청 완료 처리
+    // 수정 필요!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    @Override // 클릭 되면 요청 완료 처리
     public void onClick(Point clickPoint) {
-        if (request != null) {
-            request.completeRequest(); // 클릭 시 요청 완료
-            repaint();
+        if (request != null && request.isActive()) {
+            // Player를 NPC 위치로 이동
+            player.moveToDest(new Place(0, characterX, characterY, 0, characterX, characterY), true, () -> {
+                // Player 이동 완료 후 요청 비교
+                if (request.isActive()) {
+                    if (giveItem(player)) {
+                        request.completeRequest(); // 요청 완료 처리
+                        requestCount++;
+                        System.out.println("NPC 요청 완료! 현재 요청 횟수: " + requestCount);
+
+                        // 최대 요청 횟수 도달 시 NPC 비활성화
+                        if (requestCount >= MAX_REQUESTS) {
+                            active = false;
+                            removeFromParent();
+                            System.out.println("NPC가 비활성화되었습니다.");
+                        }
+                    } else {
+                        //System.out.println("Player의 아이템이 요청과 일치하지 않습니다.");
+                    }
+                }else {
+                    System.out.println("요청이 이미 완료되었습니다.");
+                }
+
+            });
+        }else {
+            System.out.println("NPC 요청이 활성화되지 않았거나 Player가 처리 중입니다.");
         }
     }
 
-    protected void finishNpc() {
-        active = false;
+    @Override
+    public int getPriority() { return 2; }
+
+    // 플레이어가 가지고 있는 아이템과 요청을 비교
+    protected boolean giveItem(Player player) {
+        Image leftItem = player.getHoldItemL();
+        Image rightItem = player.getHoldItemR();
+        Image requestedItem = request.getRequestItem();
+
+        // 요청 아이템 존재x
+        if (requestedItem == null) {
+            return false;
+        }
+
+        // 왼손과 요청 아이템 비교
+        if (requestedItem.equals(leftItem)) {
+            player.setHoldItemL(null); // 왼손 아이템 제거
+            return true;
+        }
+
+        // 오른손과 요청 아이템 비교
+        if (requestedItem.equals(rightItem)) {
+            player.setHoldItemR(null); // 오른손 아이템 제거
+            return true;
+        }
+
+        // 요청 아이템과 양 손 모두 불일치
+        return false;
     }
 
-    public boolean getActive()
-    {
-        return active;
+    @Override
+    public void moveToDest(Place place, boolean viaCenter, Runnable callback) {
+        // 요청 완료 전에는 이동 불가, 위치 유지
+        if (request != null && request.isActive()) { return; }
+        super.moveToDest(place, viaCenter, callback);
     }
 
-    public void removeFromParent() {}
-
-    ////// 그리기 //////
+    ////// 그리기 및 지우기 //////
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -137,11 +186,11 @@ public class Npc extends Move implements ClickEvent {
         g2d.drawImage(hairImg, imageX, imageY, null);
         g2d.drawImage(eyeImg, imageX, imageY, null);
 
-        g2d.setColor(Color.RED); // 클릭 영역 표시용
+        // 디버깅용
+        g2d.setColor(Color.RED);
         g2d.drawRect(imageX, imageY, faceImg.getWidth(null), faceImg.getHeight(null));
-        g2d.setColor(Color.GREEN);
-        g2d.fillOval(characterX, characterY, 10, 10);
-        // 요청 있으면 그리기
+
+        // 요청 있으면 요청 그리기
         if (request != null && request.isActive()) {
             request.draw(g2d, imageX, imageY);
         }
@@ -150,5 +199,19 @@ public class Npc extends Move implements ClickEvent {
 
         // 최종적으로 화면에 그리기
         g.drawImage(buffer, 0, 0, null);
+    }
+
+    // Npc 화면에서 삭제
+    public void removeFromParent() {
+        Container parent = getParent();
+
+        parent.remove(this); // 이미지 제거
+        parent.revalidate(); // 레이아웃 재계산
+        parent.repaint(); // 화면 갱신
+
+        // 포커스 이동 (다른 객체나 기본 컨테이너로)
+        if (parent.getComponentCount() > 0) {
+            parent.getComponent(0).requestFocusInWindow(); // 첫 번째 컴포넌트에 포커스 설정
+        }
     }
 }
