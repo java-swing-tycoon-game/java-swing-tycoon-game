@@ -27,10 +27,8 @@ public class ItemManager {
 
         // Place와 아이템 매핑
         placeItemMap = new HashMap<>();
-        for (int i = 0; i < places.size(); i++) {
-            if (i < itemImages.size()) {
-                placeItemMap.put(places.get(i), itemImages.get(i));
-            }
+        for (int i = 0; i < itemImages.size(); i++) {
+            placeItemMap.put(places.get(i+1), itemImages.get(i));
         }
 
         // 초기 가시성 설정

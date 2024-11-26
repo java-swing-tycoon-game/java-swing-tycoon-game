@@ -25,7 +25,7 @@ public class Goods extends JPanel {
         for (int i = 0; i < itemImages.size(); i++) {
             // visible 상태인 아이템만 화면에 표시
             if (itemManager.isVisible(i)) {
-                Place place = places.get(i);
+                Place place = places.get(i+1);
                 Image itemImage = itemImages.get(i);
 
                 // 아이템 이미지를 Place 위치에 맞게 그림
