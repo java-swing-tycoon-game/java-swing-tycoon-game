@@ -70,6 +70,9 @@ public class Place {
         // 쓰레기통
         places.add(new Place(4, 745, 400, 35, 670, 420));
 
+        // 진상 구역
+        places.add(new Place(5, 572, 410, 30, 572, 410));
+
         return places;
     }
 }
