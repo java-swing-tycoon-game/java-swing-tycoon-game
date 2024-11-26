@@ -6,32 +6,18 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class bcRequest extends Request {
-    private final String bcLog; // 진상 대사
     private static final String PATH = "assets/txt/bcLog.txt"; // 진상 대사 파일
+    private final String bcLog; // 진상 대사
+
     protected Image request = new ImageIcon("assets/img/npc/bcQuest.png").getImage();
 
     private final bcAns ans;
 
     public bcRequest(Npc npc, bcAns ans) {
         super(npc);
-        customizeTimer();
-        bcLog = setBcLog(); // 대사 설정
         this.ans = ans;
-    }
-
-    private void customizeTimer() {
-        requestTimer = new Timer(2000, e -> {
-            makeRequest(); // 좌표는 의미 없으므로 0, 0 전달
-        });
-        requestTimer.start(); // 새 타이머 시작
-    }
-
-    @Override
-    public void makeRequest() {
-        if (!active) {
-            active = true;
-            requestTimer.stop();
-        }
+        bcLog = setBcLog(); // 대사 설정
+        customizeTimer();
     }
 
     // 대사 세팅
@@ -53,6 +39,23 @@ public class bcRequest extends Request {
         return "코스프레 무대 해도 되나요?";
     }
 
+    // bc는 요청 생성 타이밍이 다름
+    private void customizeTimer() {
+        requestTimer = new Timer(2000, e -> {
+            makeRequest();
+        });
+        requestTimer.start();
+    }
+
+    @Override
+    public void makeRequest() {
+        if (!active) {
+            active = true;
+            requestTimer.stop();
+        }
+    }
+
+    // 배경 추가해서 그리기
     @Override
     public void draw(Graphics2D g2d, int x, int y) {
         if (active) {
@@ -69,6 +72,4 @@ public class bcRequest extends Request {
             ans.draw(g2d, 360, 180);
         }
     }
-
-
 }
