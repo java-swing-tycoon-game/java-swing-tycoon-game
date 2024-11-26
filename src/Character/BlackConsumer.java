@@ -1,24 +1,22 @@
 package Character;
 
-import GameManager.ClickEvent;
 import GameManager.ClickManager;
 import GameManager.NpcManager;
-import GameManager.bgmManager;
 
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.im.InputContext;
 
 public class BlackConsumer extends Npc {
+    // 타자게임 답변
     private bcAns ans;
 
+    // 생성자
     public BlackConsumer() {
-        super();
+        super(player);
 
-        // 키 입력을 처리할 이벤트 리스너 등록
+        // 타자 입력 받을 리스너
         addKeyListener(new KeyAdapter() {
-            @Override
             public void keyTyped(KeyEvent e) {
                 processKeyTyped(e.getKeyChar());
             }
@@ -29,42 +27,23 @@ public class BlackConsumer extends Npc {
     }
 
     @Override
-    // 요청을 만들러 간다. bc 때문에 분리해봄
-    protected void moveToRequest() {
-        moveToDest(new Place(5, 572, 410, 0, 572, 410), false, null);
-        setupRequest();
-    }
-
-    @Override
     public void setupRequest() {
-        // 요청 생성
-        request = new bcRequest(this);
-        ans = new bcAns("제발 나가주세요");
-        ((bcRequest) request).setAns(ans);
+        ans = new bcAns(); // 답장 설정
+        request = new bcRequest(this, ans);
     }
 
-    @Override
-    public int getPriority() {
-        return 3; // Player보다 높은 우선순위
-    }
-
-    @Override // 요청 완료 처리
+    @Override // 타자게임 시작
     public void onClick(Point clickPoint) {
         if (request != null && !ans.ansActive) {
-            System.out.println("bc 클릭됨");
             ans.ansActive = true;
 
-            requestFocusInWindow();  // 포커스를 현재 컴포넌트로 설정
-            repaint(); // 화면 갱신
+            requestFocusInWindow();
+            repaint();
         }
     }
 
-    //BlackConsumer 전용 그래픽 효과 추가
     @Override
-    protected void paintComponent(Graphics g) {
-        // 부모 클래스의 draw 호출
-        super.paintComponent(g);
-    }
+    public int getPriority() { return 3; }
 
     public void processKeyTyped(char keyChar) {
         if (ans.ansActive) {
@@ -72,7 +51,7 @@ public class BlackConsumer extends Npc {
 
             // 성공/실패 여부 확인
             if (!ans.ansActive) {
-                if (ans.isSuccess()) {
+                if (ans.getSuccess()) {
                     request.completeRequest(); // 요청 완료
                     active = false;
                     removeFromParent();
@@ -82,29 +61,29 @@ public class BlackConsumer extends Npc {
         }
     }
 
+    ////// 그리기 및 지우기 //////
     @Override
-    public void removeFromParent() {
-        Container parent = getParent();
-        if (parent != null) {
-            parent.remove(this); // 이미지 제거
-            parent.revalidate(); // 레이아웃 재계산
-            parent.repaint(); // 화면 갱신
+    protected void paintComponent(Graphics g) {
+        //BlackConsumer 주위에 반투명 원 생성
+        g.setColor(new Color(0, 0, 0, 128));
+        g.fillOval(characterX - 100, characterY - 100, 200, 200);
 
-            // 클릭 이벤트 리스트에서 제거
-            ClickManager.removeClickList(this);
-            System.out.println("Removed from ClickManager: " + this);
-            System.out.println(ClickManager.ClickEventList);
-
-            // 포커스 이동 (다른 객체나 기본 컨테이너로)
-            if (parent.getComponentCount() > 0) {
-                parent.getComponent(0).requestFocusInWindow(); // 첫 번째 컴포넌트에 포커스 설정
-            }
-
-            // NpcManager와 상태 동기화
-            if (this instanceof BlackConsumer) {
-                NpcManager.setBcActive(false); // 블랙 컨슈머 플래그 초기화
-            }
-        }
+        // 부모 클래스의 draw 호출
+        super.paintComponent(g);
     }
 
+    @Override
+    public void removeFromParent() {
+        super.removeFromParent();
+
+        // 클릭 이벤트 추가 처리
+        ClickManager.removeClickEventList(this);
+        System.out.println("Removed from ClickManager: " + this);
+        System.out.println(ClickManager.ClickEventList);
+
+        // NpcManager의 블랙 컨슈머 추가 처리
+        if (this instanceof BlackConsumer) {
+            NpcManager.setBcActive(false); // 블랙 컨슈머 플래그 초기화
+        }
+    }
 }
