@@ -25,7 +25,6 @@ public class Play extends JFrame {
         playBgm();
 
         setMainPanel();
-        //showBackground();
         showCharacter();
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -39,7 +38,6 @@ public class Play extends JFrame {
     }
 
     void playBgm() {
-        // 배경 음악 시끄러워서 잠깐 주석^^
         bgm = new bgmManager("assets/bgm/playBgm.wav", true);
         bgm.toggleMusic(); // 음악 자동 재생
 
@@ -66,10 +64,10 @@ public class Play extends JFrame {
         player.setBounds(0, 0, 1024, 768);
         player.setOpaque(false);
         mainPanel.add(player, Integer.valueOf(110));
-        clickManager.setClickList(player);
+        ClickManager.setClickEventList(player);
 
         // npc 생성
-        npcManager = new NpcManager(mainPanel, 5, clickManager);
+        npcManager = new NpcManager(mainPanel, player, 5, clickManager);
 
         // Goods 생성
         Goods goods = new Goods(itemManager);

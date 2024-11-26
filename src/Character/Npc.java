@@ -1,8 +1,6 @@
 package Character;
 
 import GameManager.ClickEvent;
-import GameManager.ClickManager;
-import GameManager.NpcManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,12 +25,13 @@ public class Npc extends Move implements ClickEvent {
     private int walkingIndex = 0;
 
     private BufferedImage buffer;
+    // 디버깅용
     protected Rectangle clickBounds;
 
     // 요청 클래스
     public Request request;
-    protected int requestCount = 0; // 요청 횟수
-    protected static int MAX_REQUESTS = 4; // 최대 요청 횟수
+    private int requestCount = 0; // 요청 횟수
+    private static int MAX_REQUESTS = 4; // 최대 요청 횟수
     protected boolean active; // npc 상태
 
     protected static Player player;
@@ -46,7 +45,7 @@ public class Npc extends Move implements ClickEvent {
         walkingAnimation();
         active = true;
 
-        moveToRequest();
+        setupRequest();
     }
 
     public boolean getActive() { return active; }
@@ -80,11 +79,8 @@ public class Npc extends Move implements ClickEvent {
     }
 
     ////// NPC 요청 //////
-    // 요청을 만들러 간다. bc 때문에 분리
-    protected void moveToRequest() { setupRequest(); }
-
     // 요청 생성
-    public void setupRequest() { request = new Request(this, places); }
+    public void setupRequest() { request = new Request(this); }
 
     @Override // npc 범위만 클릭해서 요청 수행하도록
     public Rectangle setBounds() {
@@ -97,11 +93,11 @@ public class Npc extends Move implements ClickEvent {
     // 수정 필요!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     @Override // 클릭 되면 요청 완료 처리
     public void onClick(Point clickPoint) {
-        if (request != null && request.isActive()) {
+        if (request != null && request.getActive()) {
             // Player를 NPC 위치로 이동
             player.moveToDest(new Place(0, characterX, characterY, 0, characterX, characterY), true, () -> {
                 // Player 이동 완료 후 요청 비교
-                if (request.isActive()) {
+                if (request.getActive()) {
                     if (giveItem(player)) {
                         request.completeRequest(); // 요청 완료 처리
                         requestCount++;
@@ -159,7 +155,7 @@ public class Npc extends Move implements ClickEvent {
     @Override
     public void moveToDest(Place place, boolean viaCenter, Runnable callback) {
         // 요청 완료 전에는 이동 불가, 위치 유지
-        if (request != null && request.isActive()) { return; }
+        if (request != null && request.getActive()) { return; }
         super.moveToDest(place, viaCenter, callback);
     }
 
@@ -191,7 +187,7 @@ public class Npc extends Move implements ClickEvent {
         g2d.drawRect(imageX, imageY, faceImg.getWidth(null), faceImg.getHeight(null));
 
         // 요청 있으면 요청 그리기
-        if (request != null && request.isActive()) {
+        if (request != null && request.getActive()) {
             request.draw(g2d, imageX, imageY);
         }
 

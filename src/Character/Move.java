@@ -13,7 +13,7 @@ public class Move extends JPanel {
     protected int targetY;
 
     // 장소 저장할 리스트 - 개별 장소는 Place에
-    protected static ArrayList<Place> places;
+    public static ArrayList<Place> places;
 
     // 이동 속도
     protected int moveSpeed = 5;
