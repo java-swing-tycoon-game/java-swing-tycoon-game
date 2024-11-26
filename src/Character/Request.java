@@ -1,7 +1,5 @@
 package Character;
 
-import Scenes.Deco;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -11,6 +9,7 @@ public class Request {
     protected Npc npc;
 
     private static final String[] itemRequestList = {"assets/img/item/cup.png", "assets/img/item/photoCard.png", "assets/img/item/popcorn.png", "assets/img/item/doll.png", "assets/img/item/bag.png", "assets/img/item/album.png", "assets/img/item/deco.png"};
+
     protected Image request = new ImageIcon("assets/img/npc/request.png").getImage();
 
     private Image requestItem; // 요청 말풍선에 뜨는 이미지
@@ -19,11 +18,11 @@ public class Request {
     protected Timer requestTimer; // 시간제한을 위한 타이머
     protected boolean active; // 개별 요청의 완료 여부
 
-    public Request(Npc npc, ArrayList<Place> places) {
+    public Request(Npc npc) {
         this.npc = npc;
         active = false;
         zone = new ArrayList<>();
-        setZone(places);
+        setZone();
 
         requestTimer = new Timer(5000, e -> {
             makeRequest();
@@ -31,13 +30,15 @@ public class Request {
         requestTimer.start();
     }
 
-    protected void setZone(ArrayList<Place> places)
+    public boolean getActive() {
+        return active;
+    }
+
+    protected void setZone()
     {
-        zone.add(places.get(6)); // 굿즈
-        zone.add(places.get(7)); // 꾸미기
-        zone.add(places.get(8)); // 무비
-        //zone.add(places.get(9)); // 대기존1
-        //zone.add(places.get(10)); // 대기존2
+        for (int i = 0; i < Move.places.size(); i++)
+            if(Move.places.get(i).getNum() == 2)
+                zone.add(Move.places.get(i));
     }
 
     public void makeRequest() {
@@ -50,23 +51,23 @@ public class Request {
 
     public void completeRequest() {
         if (active) {
-            this.active = false;
+            active = false;
             requestTimer.start();
         }
     }
 
+    public Image getRequestItem() {
+        return requestItem;
+    }
+
     private Image setRequestItem(int x, int y) {
-        System.out.println("셋리퀘아이템에서의 npc 좌표: " + x + ", " + y);
         if (zone.get(0).contains(x, y)) {
-            System.out.println("굿즈존에 들어왔습니다.");
             return setGoodsRequest();
         }
         else if (zone.get(1).contains(x, y)) {
-            System.out.println("꾸미기에 들어왔습니다.");
             return setDecoRequest();
         }
         else if(zone.get(2).contains(x, y)) {
-            System.out.println("무비에 들어왔습니다.");
             return setMovieRequest();
         }
         return setWaitingRequest();
@@ -97,10 +98,6 @@ public class Request {
     private Image setDecoRequest() {
         System.out.println("꾸미기 요청 발생");
         return new ImageIcon(itemRequestList[6]).getImage();
-    }
-
-    public boolean isActive() {
-        return active;
     }
 
     public void draw(Graphics2D g2d, int x, int y) {
