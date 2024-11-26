@@ -33,6 +33,10 @@ public class CoinManager {
         return coinPanel;
     }
 
+    public int getCoinAmount() {
+        return coinAmount;
+    }
+
     // 코인 금액 업데이트
     public void updateCoinAmount(int amount) {
         coinAmount += amount;  // 코인 금액 +/- 업데이트

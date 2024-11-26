@@ -19,10 +19,12 @@ public class Play extends JFrame {
     private CoinManager coinManager;
     private NpcManager npcManager;
     private ClickManager clickManager;
+    private DayManager dayManager;
+    private ProgressPaneManager progressPaneManager;
 
     public Play() {
         setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다");
-        playBgm();
+        // playBgm();
 
         setMainPanel();
         showCharacter();
