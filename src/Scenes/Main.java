@@ -11,7 +11,7 @@ public class Main extends JFrame {
     private JLabel bgImageLabel, imageLabel1, titleImageLabel;
     private JButton button1, button2, button3;
 
-    Main() {
+    public Main() {
         setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다");
         setSize(1038, 805);
         getContentPane().setBackground(Color.decode("#e3f6ff")); // 전체 배경색 맞추기 (하늘색으로)

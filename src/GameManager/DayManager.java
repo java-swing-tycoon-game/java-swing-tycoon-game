@@ -18,6 +18,10 @@ public class DayManager {
         return dayPanel; // 데이 이미지 관련
     }
 
+    public int getDay() {
+        return day;
+    }
+
     // 데이 이미지 관련 클래스
     public class ImageDayPanel extends JPanel {
         private JLabel dayLabel;
