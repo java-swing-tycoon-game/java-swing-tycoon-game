@@ -2,6 +2,7 @@ package Scenes;
 
 import Character.Player;
 import GameManager.FontManager;
+import GameManager.StartManager;
 import GameManager.*;
 import Goods.Goods;
 
@@ -21,6 +22,7 @@ public class Play extends JFrame {
     private ClickManager clickManager;
     private DayManager dayManager;
     private ProgressPaneManager progressPaneManager;
+
 
     public Play() {
         setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다");
@@ -82,6 +84,7 @@ public class Play extends JFrame {
     }
 
     void setMainPanel() {
+
         mainPanel = new JLayeredPane();
         mainPanel.setOpaque(false);
         mainPanel.setLayout(null);
@@ -89,6 +92,7 @@ public class Play extends JFrame {
         showBackground();
 
         setContentPane(mainPanel);
+
     }
 
     void showBackground()
@@ -204,6 +208,6 @@ public class Play extends JFrame {
     }*/
 
     public static void main(String[] args) {
-        new Play();
+        new StartManager();
     }
 }
