@@ -15,7 +15,6 @@ public class bcAns {
     public static String userInput = ""; // 입력 받은 텍스트
 
     public boolean ansActive; // 타자 게임 활성화 여부
-    private boolean Success; // 성공 여부
 
     private final Image request = new ImageIcon("assets/img/npc/bcAns.png").getImage();
 
@@ -23,11 +22,6 @@ public class bcAns {
         this.bcAns = setBcAns();
         userInput = "";
         ansActive = false;
-        Success = false;
-    }
-
-    public boolean getSuccess() {
-        return Success;
     }
 
     // 답장 세팅
@@ -56,7 +50,6 @@ public class bcAns {
 
             if (bcAns.startsWith(userInput)) {
                 if (userInput.equals(bcAns)) {
-                    Success = true;
                     stop(); // 성공 시 게임 종료
                 }
             } else {

@@ -34,6 +34,7 @@ public class Request {
         return active;
     }
 
+    // room 3곳 저장
     protected void setZone()
     {
         for (int i = 0; i < Move.places.size(); i++)
@@ -49,6 +50,7 @@ public class Request {
         }
     }
 
+    // 요청 완료
     public void completeRequest() {
         if (active) {
             active = false;
@@ -60,6 +62,7 @@ public class Request {
         return requestItem;
     }
 
+    // 장소에 맞춰 요청할 아이템 이미지 세팅
     private Image setRequestItem(int x, int y) {
         if (zone.get(0).contains(x, y)) {
             return setGoodsRequest();
