@@ -9,11 +9,16 @@ import java.util.stream.Collectors;
 
 public class NpcManager {
     private JLayeredPane parentPanel;
+
+    // 플레이어
+    private Player player;
+
+    // npc(여러명이라 리스트)
     private List<Npc> npcList;
     private int maxNpcs;
     private int npcCount = 0;
-    private int blackConsumerCount = 0;
 
+    // bc는 한 번에 1명만 등장
     private static boolean bcActive = false;
 
     private final ArrayList<Place> room;
@@ -24,13 +29,14 @@ public class NpcManager {
     private ClickManager clickManager;
     private Timer spawnTimer;
 
-    public NpcManager(JLayeredPane parentPanel, int maxNpcs, ClickManager clickManager) {
+    public NpcManager(JLayeredPane parentPanel, Player player, int maxNpcs, ClickManager clickManager) {
         this.parentPanel = parentPanel;
+        this.player = player;
         this.maxNpcs = maxNpcs;
         this.clickManager = clickManager;
 
         this.npcList = new ArrayList<>();
-        this.room = Place.createPlaces()
+        this.room = Npc.places
                 .stream()
                 .filter(place -> place.getNum() == 2) // 룸만 넣기
                 .collect(Collectors.toCollection(ArrayList::new));
@@ -58,25 +64,26 @@ public class NpcManager {
         Npc npc;
 
         // 20% 확률로 블랙 컨슈머 생성
-        if (Math.random() < 0.2) {
+        if (Math.random() < 0.6) {
             if (bcActive) {
                 System.out.println("블랙 컨슈머가 이미 존재합니다. 새 블랙 컨슈머 생성 중단.");
                 return; // 기존 블랙 컨슈머가 있을 경우 생성 중단
             }
 
             npc = new BlackConsumer();
-            blackConsumerCount++;
             bcActive = true;
             addBcPanel(npc);
+            moveBcToPlayer(npc);
         } else { // 일반 npc
-            npc = new Npc();
+            npc = new Npc(player);
 
             npcCount++;
             npcList.add(npc);
+            ClickManager.setClickEventList(npc);
             addNpcPanel(npc);
             moveNpcToWait(npc);
         }
-        clickManager.setClickList(npc);
+        ClickManager.setClickEventList(npc);
         new bgmManager("assets/bgm/door.wav", false).toggleMusic();
     }
 
@@ -92,6 +99,12 @@ public class NpcManager {
         npc.setBounds(0, 0, 1024, 768);
         npc.setOpaque(false);
         parentPanel.add(npc, Integer.valueOf(100));
+    }
+
+    private void moveBcToPlayer(Npc npc) {
+        npc.moveToDest(Move.places.getLast(), false, ()->{
+            npc.setupRequest();
+        });
     }
 
     private void moveNpcToWait(Npc npc) {
@@ -126,17 +139,29 @@ public class NpcManager {
 
         Place currentWaitRoom = npcToWaitRoomMap.get(npc);
 
+        // currentWaitRoom이 null인 경우 처리
+        if (currentWaitRoom == null) {
+            System.out.println("NPC가 대기 구역에 배치되지 않았습니다. 이동 중단.");
+            return;
+        }
+
         if (!emptyRooms.isEmpty()) {
             // 랜덤으로 빈 룸 선택
             Random random = new Random();
             Place targetRoom = emptyRooms.get(random.nextInt(emptyRooms.size()));
 
             // NPC를 해당 룸으로 이동
-            removeNpcFromPlace(currentWaitRoom); // 나갔으니까 대기 구역 비움
-            npcToWaitRoomMap.remove(npc); // NPC와 대기 구역 매핑 제거
-            assignNpcToPlace(npc, targetRoom);
-            npc.moveToDest(targetRoom, true, null); // 룸으로 이동
-            System.out.println("NPC가 룸으로 이동합니다. npc 좌표: " + npc.characterX);
+            npc.moveToDest(targetRoom, true, () -> {
+                removeNpcFromPlace(currentWaitRoom); // 나갔으니까 대기 구역 비움
+                npcToWaitRoomMap.remove(npc); // NPC와 대기 구역 매핑 제거
+                assignNpcToPlace(npc, targetRoom);
+                System.out.println("NPC가 룸으로 이동합니다. npc 좌표: " + npc.characterX + ", " + npc.characterY);
+            });
+//            removeNpcFromPlace(currentWaitRoom); // 나갔으니까 대기 구역 비움
+//            npcToWaitRoomMap.remove(npc); // NPC와 대기 구역 매핑 제거
+//            assignNpcToPlace(npc, targetRoom);
+//            npc.moveToDest(targetRoom, true, null); // 룸으로 이동
+//            System.out.println("NPC가 룸으로 이동합니다. npc 좌표: " + npc.characterX);
         } else {
             System.out.println("모든 룸이 가득 찼습니다. NPC는 대기 구역에서 계속 대기합니다.");
             // 대기 상태 유지
@@ -166,6 +191,7 @@ public class NpcManager {
 
     public void removeNpc(Npc npc) {
         npcList.remove(npc);
+        ClickManager.removeClickEventList(npc);
         parentPanel.remove(npc);
         parentPanel.revalidate();
         parentPanel.repaint();

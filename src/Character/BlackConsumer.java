@@ -49,14 +49,13 @@ public class BlackConsumer extends Npc {
         if (ans.ansActive) {
             ans.processInput(keyChar);
 
-            // 성공/실패 여부 확인
+            // 답장을 성공해야 타자게임 끝
             if (!ans.ansActive) {
-                if (ans.getSuccess()) {
-                    request.completeRequest(); // 요청 완료
-                    active = false;
-                    removeFromParent();
-                }
-                repaint(); // 화면 갱신
+                request.completeRequest(); // 요청 완료
+                active = false;
+                removeFromParent();
+
+                repaint();
             }
         }
     }
