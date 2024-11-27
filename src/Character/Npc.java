@@ -11,9 +11,10 @@ public class Npc extends Move implements ClickEvent {
     ////// 이미지 경로 //////
     // face와 leg는 모든 npc가 공통 사용
     private final static Image faceImg = new ImageIcon("assets/img/npc/face.png").getImage();
-    private final static Image[] legImg = {
+    public final static Image[] legImg = {
             new ImageIcon("assets/img/npc/walking1.png").getImage(),
-            new ImageIcon("assets/img/npc/walking2.png").getImage()
+            new ImageIcon("assets/img/npc/walking2.png").getImage(),
+            new ImageIcon("assets/img/npc/leg.png").getImage(),
     };
     private final static String[] eyeImgPath = {"assets/img/npc/eye1.png", "assets/img/npc/eye2.png"};
     private final static String[] hairImgPath = {"assets/img/npc/hair1.png", "assets/img/npc/hair2.png"};
@@ -33,6 +34,7 @@ public class Npc extends Move implements ClickEvent {
     private int requestCount = 0; // 요청 횟수
     private static int MAX_REQUESTS = 4; // 최대 요청 횟수
     protected boolean active; // npc 상태
+    protected boolean isMoving = false; // 이동 중인지
 
     protected static Player player;
 
@@ -71,7 +73,10 @@ public class Npc extends Move implements ClickEvent {
     // 걷기 애니메이션
     private void walkingAnimation() {
         Timer walkingTimer = new Timer(200, e -> {
-            walkingIndex = (walkingIndex + 1) % legImg.length;
+            if(isMoving)
+            { walkingIndex = (walkingIndex + 1) % 2; }
+            else { walkingIndex = 2; }
+
             walkingImg = legImg[walkingIndex];
             repaint();
         });
@@ -159,6 +164,16 @@ public class Npc extends Move implements ClickEvent {
         super.moveToDest(place, viaCenter, callback);
     }
 
+    @Override
+    public void moveToTarget(Place place, Runnable callback) {
+        if(isMoving) return;
+
+        isMoving = true;
+        super.moveToTarget(place, () -> {
+            isMoving = false;
+        });
+    }
+
     ////// 그리기 및 지우기 //////
     @Override
     protected void paintComponent(Graphics g) {
@@ -172,8 +187,8 @@ public class Npc extends Move implements ClickEvent {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         // 캐릭터 이미지 그리기 (이미지의 중앙이 캐릭터 위치에 오도록 조정)
-        int imageX = characterX - 120/ 2;
-        int imageY = characterY - 150/ 2;
+        int imageX = characterX - 60;
+        int imageY = characterY - 75;
 
         g2d.drawImage(walkingImg, imageX, imageY, null);
         g2d.drawImage(pantsImg, imageX, imageY, null);

@@ -6,6 +6,7 @@ import GameManager.ItemManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class Player extends Move implements ClickEvent {
     private final Image characterImg = new ImageIcon("assets/img/playerCharacter.png").getImage();
@@ -13,10 +14,13 @@ public class Player extends Move implements ClickEvent {
     private Image holdItemR = null; // 오른손
     private PickDrop pickDrop;
 
+    private boolean isMoving = false; // 이동 중인지
+    private int lastVisitedCase = -1; // 이전 방문 장소(Num)을 저장
+
     public Player(ItemManager itemManager) {
         super(512, 330); // 초기 좌표 설정
         setOpaque(false);
-
+        walkingAnimation();
         pickDrop = new PickDrop(this, itemManager);
     }
 
@@ -34,6 +38,8 @@ public class Player extends Move implements ClickEvent {
         return holdItemR;
     }
 
+    private BufferedImage buffer;
+
     @Override
     public Rectangle setBounds() {
         return new Rectangle(characterX-120/2, characterY-150/2, getWidth(), getHeight());
@@ -45,9 +51,6 @@ public class Player extends Move implements ClickEvent {
     }
 
     ////// 클릭에 따라 player 이동 //////
-    // 이전 방문 장소(Num)을 저장
-    private int lastVisitedCase = -1;
-
     @Override
     public void onClick(Point clickPoint) {
         // 클릭된 좌표가 특정 Place 안에 있는지 확인
@@ -96,49 +99,53 @@ public class Player extends Move implements ClickEvent {
         }
     }
 
-//    // NPC 요청 확인 메서드
-//    private void checkNpcRequest(Point clickPoint) {
-//        for (Npc npc : ClickManager.getNpcList()) { // 등록된 NPC 리스트 가져오기
-//            if (npc.getBounds().contains(clickPoint)) { // 클릭된 좌표가 NPC 영역인지 확인
-//                System.out.println("NPC 요청을 확인합니다.");
-//                npc.onClick(clickPoint); // NPC 요청 처리
-//            }
-//        }
-//    }
-
-    private boolean isMoving = false; // 이동 중인지 여부
-
     @Override
     public void moveToDest(Place place, boolean viaCenter, Runnable callback) {
-        if (isMoving) {
-            System.out.println("Player가 이미 이동 중입니다. 이동 중단.");
-            return; // 이동 중이면 중단
-        }
+        // 이동 중이면 무시
+        if (isMoving) { return; }
 
         isMoving = true; // 이동 시작
         super.moveToDest(place, viaCenter, () -> {
-            isMoving = false; // 이동 완료
+            isMoving = false; // 이동 후 완료
             if (callback != null) {
                 callback.run();
             }
         });
     }
 
-    public boolean getActive() {
-        return !isMoving; // 이동 중이 아닐 때만 활성 상태로 간주
-    }
+    private Image walkingImg;
+    private int walkingIndex = 0;
 
+    private void walkingAnimation() {
+            Timer walkingTimer = new Timer(200, e -> {
+            if(isMoving) {
+                walkingIndex = (walkingIndex + 1) % 2;
+            }
+            else {
+                walkingIndex = 2;
+            }
+            walkingImg = Npc.legImg[walkingIndex];
+            repaint();
+        });
+        walkingTimer.start();
+    }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        if (buffer == null) {
+            buffer = new BufferedImage(120, 150, BufferedImage.TYPE_INT_ARGB);
+        }
+
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         // 캐릭터 이미지 그리기 (이미지의 중앙이 캐릭터 위치에 오도록 조정)
-        int imageX = characterX - characterImg.getWidth(null) / 2;
-        int imageY = characterY - characterImg.getHeight(null) / 2;
+        int imageX = characterX - 60;
+        int imageY = characterY - 75;
+
+        g2d.drawImage(walkingImg, imageX, imageY, null);
         g2d.drawImage(characterImg, imageX, imageY, null);
 
         // 왼손에 그리기
@@ -154,5 +161,10 @@ public class Player extends Move implements ClickEvent {
             int handY = characterY + 15;
             g2d.drawImage(holdItemR, handX, handY, 40, 40, null);
         }
+
+        g2d.dispose();
+
+        // 최종적으로 화면에 그리기
+        g.drawImage(buffer, 0, 0, null);
     }
 }
