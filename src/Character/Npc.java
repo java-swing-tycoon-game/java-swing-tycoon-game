@@ -36,7 +36,7 @@ public class Npc extends Move implements ClickEvent {
     protected boolean active; // npc 상태
     protected boolean isMoving = false; // 이동 중인지
 
-    protected static Player player;
+    public static Player player;
 
     // 생성자
     public Npc(Player player) {

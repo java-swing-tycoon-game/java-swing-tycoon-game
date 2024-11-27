@@ -1,6 +1,7 @@
 package GameManager;
 
 import Character.Place;
+import Character.Move;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,15 +9,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ItemManager {
+    public static ArrayList<Image> itemImages; // 아이템 이미지
+
     private ArrayList<Place> places; // Place 객체 리스트
-    private static ArrayList<Image> itemImages; // 아이템 이미지
-
     private HashMap<Place, Image> placeItemMap; // Place와 아이템 매핑
-    private boolean[] visibleItems; // 아이템 가시성 관리
 
+    private boolean[] visibleItems; // 보이나요
+
+    // 장소랑 아이템 연결 및 3개 보이게 세팅
     public ItemManager() {
         places = Place.createPlaces();
-
         setItemList();
 
         // Place와 아이템 매핑
@@ -25,7 +27,7 @@ public class ItemManager {
             placeItemMap.put(places.get(i+1), itemImages.get(i));
         }
 
-        // 초기 가시성 설정
+        // 처음 3개 아이템만 보이게 스타트
         visibleItems = new boolean[itemImages.size()];
         for (int i = 0; i < 3; i++) {
             visibleItems[i] = true;
@@ -45,19 +47,14 @@ public class ItemManager {
         itemImages.add(new ImageIcon("assets/img/item/deco.png").getImage());
     }
 
-    // 아이템의 가시성 설정
+    // 아이템 보여줄지 안 보여줄지
     public void setVisibleItem(int index, boolean visible) {
             visibleItems[index] = visible;
     }
 
     // 특정 아이템이 보이는지 확인
-    public boolean isVisible(int index) {
+    public boolean getVisible(int index) {
         return visibleItems[index];
-    }
-
-    // Place 리스트 반환
-    public ArrayList<Place> getPlaces() {
-        return places;
     }
 
     // Place에 매핑된 아이템 반환
@@ -65,8 +62,8 @@ public class ItemManager {
         return placeItemMap.get(place);
     }
 
-    // 모든 아이템 이미지 반환
-    public ArrayList<Image> getItemImages() {
-        return itemImages;
+    // Place 리스트 반환
+    public ArrayList<Place> getPlaces() {
+        return places;
     }
 }

@@ -10,6 +10,10 @@ import java.awt.image.BufferedImage;
 
 public class Player extends Move implements ClickEvent {
     private final Image characterImg = new ImageIcon("assets/img/playerCharacter.png").getImage();
+
+    private Image walkingImg;
+    private int walkingIndex = 0;
+
     private Image holdItemL = null; // 왼손
     private Image holdItemR = null; // 오른손
     private PickDrop pickDrop;
@@ -21,7 +25,7 @@ public class Player extends Move implements ClickEvent {
         super(512, 330); // 초기 좌표 설정
         setOpaque(false);
         walkingAnimation();
-        pickDrop = new PickDrop(this, itemManager);
+        pickDrop = new PickDrop(itemManager);
     }
 
     public void setHoldItemL(Image item) {
@@ -42,7 +46,7 @@ public class Player extends Move implements ClickEvent {
 
     @Override
     public Rectangle setBounds() {
-        return new Rectangle(characterX-120/2, characterY-150/2, getWidth(), getHeight());
+        return new Rectangle(0, 0, getWidth(), getHeight());
     }
 
     @Override
@@ -57,23 +61,18 @@ public class Player extends Move implements ClickEvent {
         for (Place place : getPlaces()) {
             if (place.contains(clickPoint.x, clickPoint.y)) {
                 boolean viaCenter = lastVisitedCase != place.getNum();
-
-                System.out.println("다시 시작~!");
-                System.out.println("직전 방문 case: " + (lastVisitedCase != -1 ? lastVisitedCase : "없음"));
-                System.out.println("현재 case: " + place.getNum());
+                System.out.println("같은 장소 방문: " + !viaCenter);
 
                 switch (place.getNum()) {
                     case 1 -> { // 아이템
-                        System.out.println(viaCenter);
                         moveToDest(place, viaCenter, () -> {
                                 pickDrop.handleItemClick(clickPoint); // 아이템 자동 집기
                                 repaint();
-                            //checkNpcRequest(clickPoint);
                         });
                     }
                     case 2 -> { // 룸 3곳
                         moveToDest(place, viaCenter, () -> {
-                            //checkNpcRequest(clickPoint); // NPC 요청 확인
+
                         });
                     }
                     case 3 -> { // 대기 구역
@@ -93,7 +92,6 @@ public class Player extends Move implements ClickEvent {
                     }
                 }
                 lastVisitedCase = place.getNum();
-                System.out.println("업데이트 된 방문 장소: " + lastVisitedCase);
                 break;
             }
         }
@@ -112,9 +110,6 @@ public class Player extends Move implements ClickEvent {
             }
         });
     }
-
-    private Image walkingImg;
-    private int walkingIndex = 0;
 
     private void walkingAnimation() {
             Timer walkingTimer = new Timer(200, e -> {
