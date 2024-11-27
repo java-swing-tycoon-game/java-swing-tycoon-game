@@ -1,15 +1,14 @@
 package Goods;
 
 import Character.Place;
+import Character.Move;
 import GameManager.ItemManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
 public class Goods extends JPanel {
-
-    private ItemManager itemManager;
+    private final ItemManager itemManager;
 
     public Goods(ItemManager itemManager) {
         this.itemManager = itemManager;
@@ -19,14 +18,12 @@ public class Goods extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        ArrayList<Place> places = itemManager.getPlaces();
-        ArrayList<Image> itemImages = itemManager.getItemImages();
-
-        for (int i = 0; i < itemImages.size(); i++) {
+        for (int i = 0; i < ItemManager.itemImages.size(); i++) {
             // visible 상태인 아이템만 화면에 표시
-            if (itemManager.isVisible(i)) {
-                Place place = places.get(i+1);
-                Image itemImage = itemImages.get(i);
+            if (itemManager.getVisible(i)) {
+                // 맵에서 아이템 위치만 가져옴
+                Place place = Move.places.get(i+1);
+                Image itemImage = ItemManager.itemImages.get(i);
 
                 // 아이템 이미지를 Place 위치에 맞게 그림
                 int drawX = place.getX() - place.getRadius();
