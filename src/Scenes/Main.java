@@ -1,5 +1,7 @@
 package Scenes;
 
+import GameManager.StartManager;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
@@ -51,7 +53,7 @@ public class Main extends JFrame {
         // 게임시작 버튼 클릭 시 이벤트
         button2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new Play();
+                new StartManager();
                 dispose(); // 현재 창 닫기
             }
         });
