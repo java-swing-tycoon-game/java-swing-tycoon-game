@@ -22,6 +22,12 @@ public class DayManager {
         return day;
     }
 
+    // 다음 Day로 이동하고 이미지 업데이트
+    public void nextDay() {
+        day++; // Day 증가
+        dayPanel.updateDayImage(day); // 새로운 Day 이미지로 업데이트
+    }
+
     // 데이 이미지 관련 클래스
     public class ImageDayPanel extends JPanel {
         private JLabel dayLabel;
