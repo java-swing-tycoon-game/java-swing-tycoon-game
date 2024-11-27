@@ -1,40 +1,28 @@
 package Character;
 
-import javax.swing.*;
-import java.awt.*;
-
 import GameManager.ClickEvent;
 import Goods.PickDrop;
 import GameManager.ItemManager;
 
+import javax.swing.*;
+import java.awt.*;
+
 public class Player extends Move implements ClickEvent {
-    private Image characterImg = new ImageIcon("assets/img/playerCharacter.png").getImage();
+    private final Image characterImg = new ImageIcon("assets/img/playerCharacter.png").getImage();
     private Image holdItemL = null; // 왼손
     private Image holdItemR = null; // 오른손
     private PickDrop pickDrop;
 
     public Player(ItemManager itemManager) {
         super(512, 330); // 초기 좌표 설정
-        this.characterImg = new ImageIcon("assets/img/playerCharacter.png").getImage();
         setOpaque(false);
 
         pickDrop = new PickDrop(this, itemManager);
     }
 
-    @Override
-    public Rectangle setBounds() {
-        return new Rectangle(0, 0, getWidth(), getHeight());
-    }
-
-    @Override
-    public int getPriority() {
-        return 1; // 높은 우선순위
-    }
-
     public void setHoldItemL(Image item) {
         this.holdItemL = item;
     }
-
     public void setHoldItemR(Image item) {
         this.holdItemR = item;
     }
@@ -42,11 +30,22 @@ public class Player extends Move implements ClickEvent {
     public Image getHoldItemL() {
         return holdItemL;
     }
-
     public Image getHoldItemR() {
         return holdItemR;
     }
-    public boolean vistRoom = false;
+
+    @Override
+    public Rectangle setBounds() {
+        return new Rectangle(characterX-120/2, characterY-150/2, getWidth(), getHeight());
+    }
+
+    @Override
+    public int getPriority() {
+        return 1;
+    }
+
+    ////// 클릭에 따라 player 이동 //////
+    // 이전 방문 장소(Num)을 저장
     private int lastVisitedCase = -1;
 
     @Override
