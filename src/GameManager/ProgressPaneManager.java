@@ -11,12 +11,19 @@ import Scenes.Play;
 public class ProgressPaneManager {
     private int realTime; // 현재 남은 시간
     private int day = 1;  // 현재 데이 (1부터 시작)
-    private final int[] dayTimes = {600, 600, 60, 60, 60, 60, 60}; // 각 day의 초기 시간 (디버깅용)
+    private final int[] dayTimes = {6, 600, 60, 60, 60, 60, 60}; // 각 day의 초기 시간 (디버깅용)
     private Timer dayTimer; // 날짜 타이머
     private DayManager dayManager = new DayManager();
     private CoinManager coinManager = new CoinManager();
 
     private ImageProgressPane progressPane;
+    private Play playInstance; // Play 인스턴스 추가
+
+    // 생성자에서 Play 인스턴스를 전달받음
+    public ProgressPaneManager(Play playInstance) {
+        this.playInstance = playInstance; // Play 인스턴스 저장
+        this.progressPane = new ImageProgressPane(); // progressPane 초기화
+    }
 
     public ProgressPaneManager() {
         this.progressPane = new ImageProgressPane(); // progressPane 초기화
@@ -35,7 +42,10 @@ public class ProgressPaneManager {
     private void showEndingScreen() {
         SwingUtilities.invokeLater(() -> {
             // Play 화면을 닫고 게임 오버 화면을 띄우기
-            // Play.dispose();  // Play 화면 닫기
+            if (playInstance != null) {
+                playInstance.dispose();  // Play 화면 닫기
+            }
+
             EndingManager endingManager = new EndingManager(dayManager, coinManager);  // EndingManager 생성
             endingManager.setVisible(true);  // 게임 오버 화면 띄우기
         });
@@ -109,8 +119,8 @@ public class ProgressPaneManager {
             });
 
             // 다음 Day로 이동
-            day++;
-            startDayTimer();
+            dayManager.nextDay(); // DayManager가 데이와 이미지를 관리
+            startDayTimer();      // 새로운 Day
         }
 
 

@@ -687,7 +687,7 @@ public class Deco extends JFrame {
     public void dispose() {
         super.dispose();
         if (gameResult != null) {
-            System.out.println(gameResult ? "참" : "거짓");
+            System.out.println(gameResult ? "맞았습니다" : "틀렸습니다");
         }
     }
     public static void main(String[] args) {

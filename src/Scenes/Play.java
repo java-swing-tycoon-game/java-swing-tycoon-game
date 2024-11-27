@@ -2,6 +2,7 @@ package Scenes;
 
 import Character.Player;
 import GameManager.FontManager;
+import GameManager.StartManager;
 import GameManager.*;
 import Goods.Goods;
 
@@ -22,6 +23,7 @@ public class Play extends JFrame {
     private DayManager dayManager;
     private ProgressPaneManager progressPaneManager;
 
+
     public Play() {
         setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다");
         // playBgm();
@@ -30,6 +32,9 @@ public class Play extends JFrame {
         showCharacter();
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        this.progressPaneManager = new ProgressPaneManager(this);
+
         setSize(1038, 805);
         setVisible(true);
     }
@@ -79,6 +84,7 @@ public class Play extends JFrame {
     }
 
     void setMainPanel() {
+
         mainPanel = new JLayeredPane();
         mainPanel.setOpaque(false);
         mainPanel.setLayout(null);
@@ -86,6 +92,7 @@ public class Play extends JFrame {
         showBackground();
 
         setContentPane(mainPanel);
+
     }
 
     void showBackground()
@@ -160,10 +167,10 @@ public class Play extends JFrame {
         timePanel = new JPanel();
         timePanel.setOpaque(false);    // 해당 패널 배경 투명도
         timePanel.add(time); // TIME 이미지 따로 먼저 추가
-        
+
         // timePanel 관련 요소들 추가하기
         bottom.add(timePanel, BorderLayout.WEST);
-        
+
         // ProgressPane 추가
         ProgressPaneManager progressManager = new ProgressPaneManager();
         JPanel progressPane = progressManager.getProgressPane();
@@ -171,7 +178,7 @@ public class Play extends JFrame {
 
         // 코인 관리
         coinManager = new CoinManager();  // CoinManager 객체 생성
-        
+
         // 코인 관련 요소들 추가하기
         bottom.add(coinManager.getCoinPanel(), BorderLayout.EAST);
 
@@ -201,6 +208,6 @@ public class Play extends JFrame {
     }*/
 
     public static void main(String[] args) {
-        new Play();
+        new StartManager();
     }
 }
