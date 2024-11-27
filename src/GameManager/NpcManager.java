@@ -21,7 +21,6 @@ public class NpcManager {
     private final Map<Place, Npc> placeToNpcMap;
     private final Map<Npc, Place> npcToWaitRoomMap = new HashMap<>(); // NPC와 대기 구역 매핑 추가
 
-
     private ClickManager clickManager;
     private Timer spawnTimer;
 
