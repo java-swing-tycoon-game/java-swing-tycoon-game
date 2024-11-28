@@ -33,7 +33,7 @@ public class Play extends JFrame {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        this.progressPaneManager = new ProgressPaneManager(this);
+        // this.progressPaneManager = new ProgressPaneManager(this);
 
         setSize(1038, 805);
         setVisible(true);
@@ -133,8 +133,8 @@ public class Play extends JFrame {
         top.setLayout(new BorderLayout());
 
         // 데이
-        DayManager dayManager = new DayManager();
-        JPanel dayPanel = dayManager.getDayPanel();
+        ProgressPaneManager progressManager = new ProgressPaneManager();
+        JPanel dayPanel = progressManager.getDayPanel();
 
         // 아이템
         JPanel itemPanel = new JPanel();
