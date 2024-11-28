@@ -78,28 +78,24 @@ public class Request {
 
     // 대기 중 요청을 랜덤으로 선택
     private Image setWaitingRequest() {
-        System.out.println("대기 요청 발생");
         Random random = new Random();
         return new ImageIcon(itemRequestList[random.nextInt(2)]).getImage();
     }
 
     // 무비 중 요청을 랜덤으로 선택
     private Image setMovieRequest() {
-        System.out.println("무비 요청 발생");
         Random random = new Random();
         return new ImageIcon(itemRequestList[random.nextInt(2, 4)]).getImage();
     }
 
     // 굿즈 중 요청을 랜덤으로 선택
     private Image setGoodsRequest() {
-        System.out.println("굿즈 요청 발생");
         Random random = new Random();
         return new ImageIcon(itemRequestList[random.nextInt(4, 6)]).getImage();
     }
 
     // 데코 요청
     private Image setDecoRequest() {
-        System.out.println("꾸미기 요청 발생");
         return new ImageIcon(itemRequestList[6]).getImage();
     }
 

@@ -18,7 +18,7 @@ public class Move extends JPanel {
     // 이동 속도
     protected int moveSpeed = 5;
     // 이동에 필요한 타이머
-    private Timer moveTimer;
+    protected Timer moveTimer;
 
     public Move() {
         places = Place.createPlaces();
@@ -44,7 +44,7 @@ public class Move extends JPanel {
     }
 
     // 캐릭터 이동 시키는 함수
-    private void moveCharacter() {
+    protected void moveCharacter() {
         int dx = targetX - characterX;
         int dy = targetY - characterY;
         double distance = Math.sqrt(dx * dx + dy * dy);
