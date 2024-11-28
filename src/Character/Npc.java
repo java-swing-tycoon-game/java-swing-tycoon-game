@@ -95,36 +95,29 @@ public class Npc extends Move implements ClickEvent {
         return clickBounds;
     }
 
-    // 수정 필요!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     @Override // 클릭 되면 요청 완료 처리
     public void onClick(Point clickPoint) {
-        if (request != null && request.getActive()) {
-            // Player를 NPC 위치로 이동
-            player.moveToDest(new Place(0, characterX, characterY, 0, characterX, characterY), true, () -> {
-                // Player 이동 완료 후 요청 비교
-                if (request.getActive()) {
-                    if (giveItem(player)) {
-                        request.completeRequest(); // 요청 완료 처리
-                        requestCount++;
-                        System.out.println("NPC 요청 완료! 현재 요청 횟수: " + requestCount);
+        // Player를 NPC 위치로 이동
+        player.moveToDest(new Place(0, characterX, characterY, 0, characterX-50, characterY-100), true, () -> {
+            // Player 이동 완료 후 요청 비교
+            if (request.getActive()) {
+                if (giveItem(player)) {
+                    // 요청 완료 처리
+                    request.completeRequest();
+                    requestCount++;
+                    System.out.println("NPC 요청 완료! 현재 요청 횟수: " + requestCount);
 
-                        // 최대 요청 횟수 도달 시 NPC 비활성화
-                        if (requestCount >= MAX_REQUESTS) {
-                            active = false;
-                            removeFromParent();
-                            System.out.println("NPC가 비활성화되었습니다.");
-                        }
-                    } else {
-                        //System.out.println("Player의 아이템이 요청과 일치하지 않습니다.");
+                    // 최대 요청 횟수 도달 시 NPC 비활성화
+                    if (requestCount >= MAX_REQUESTS) {
+                        active = false;
+                        removeFromParent();
+                        System.out.println("NPC가 비활성화되었습니다.");
                     }
-                }else {
-                    System.out.println("요청이 이미 완료되었습니다.");
                 }
-
-            });
-        }else {
-            System.out.println("NPC 요청이 활성화되지 않았거나 Player가 처리 중입니다.");
-        }
+            } else {
+                System.out.println("요청이 없슨데.");
+            }
+        });
     }
 
     @Override

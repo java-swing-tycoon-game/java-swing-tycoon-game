@@ -64,7 +64,7 @@ public class NpcManager {
         Npc npc;
 
         // 20% 확률로 블랙 컨슈머 생성
-        if (Math.random() < 0.6) {
+        if (Math.random() < 0.1) {
             if (bcActive) {
                 System.out.println("블랙 컨슈머가 이미 존재합니다. 새 블랙 컨슈머 생성 중단.");
                 return; // 기존 블랙 컨슈머가 있을 경우 생성 중단
@@ -98,7 +98,7 @@ public class NpcManager {
     {
         npc.setBounds(0, 0, 1024, 768);
         npc.setOpaque(false);
-        parentPanel.add(npc, Integer.valueOf(100));
+        parentPanel.add(npc, Integer.valueOf(110));
     }
 
     private void moveBcToPlayer(Npc npc) {

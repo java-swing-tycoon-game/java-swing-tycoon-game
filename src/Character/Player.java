@@ -8,7 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class Player extends Move implements ClickEvent {
+public class Player extends MovePlayer implements ClickEvent {
     private final Image characterImg = new ImageIcon("assets/img/playerCharacter.png").getImage();
 
     private Image walkingImg;
@@ -72,21 +72,16 @@ public class Player extends Move implements ClickEvent {
                     }
                     case 2 -> { // 룸 3곳
                         moveToDest(place, viaCenter, () -> {
-
+System.out.println(place.targetX);
                         });
                     }
-                    case 3 -> { // 대기 구역
-                        moveToDest(place, viaCenter, () -> {
-
-                        });
-                    }
+                    // 대기구역은 npc에서 처리 중
                     case 4 -> { // 쓰레기통
                         moveToDest(place, viaCenter, () -> {
                             pickDrop.dropItem(); // 아이템 자동 버리기
                             repaint();
                         });
                     }
-                    // 필요한 경우 다른 행동 추가
                     default -> {
                         System.out.println("디폴트 실행 중");
                     }
