@@ -1,9 +1,12 @@
 package Scenes;
 
 import GameManager.FontManager;
+import GameManager.ProgressPaneManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class Buy extends JFrame {
     private String[] itemImgPath = {"assets/img/item/slogan.png", "assets/img/item/tshirts.png", "assets/img/item/stick.png", "assets/img/item/doll.png", "assets/img/item/bag.png", "assets/img/item/album.png"};
@@ -79,6 +82,15 @@ public class Buy extends JFrame {
         JButton nextButton = new JButton(new ImageIcon("assets/img/button/nextButton.png"));
         nextButton.setBorderPainted(false);
         nextButton.setContentAreaFilled(false);
+
+        // 다음으로 버튼을 눌렀을 때 현재 buy 창이 꺼지기
+        nextButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dispose(); // 현재 Buy 창 닫기
+                //progressPaneManager.startDayTimer(); // ProgressPaneManager에서 타이머 시작
+            }
+        });
+
 
         // 오른쪽 담당 패널에 코인과 버튼 추가
         rightPanel.add(coinPanel);
