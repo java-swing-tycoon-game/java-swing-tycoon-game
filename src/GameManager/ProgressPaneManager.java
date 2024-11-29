@@ -105,10 +105,16 @@ public class ProgressPaneManager {
             SwingUtilities.invokeLater(() -> {
                 Buy buyPopup = new Buy();
                 buyPopup.setVisible(true);
+
+                // Buy 창이 닫힌 후 버튼 클릭 상태 확인
+                if (buyPopup.isNextButtonClicked()) {
+                    //startDayTimer(); // 새로운 Day 타이머 시작
+                    dayManager.nextDay(); // 다음 Day로 이동
+                    new StartManager();
+                }
             });
 
-            dayManager.nextDay(); // 다음 Day로 이동
-            // startDayTimer();      // 새로운 Day 타이머 시작 --> BUY 에서 다음으로 버튼 누르면 스타트하기!!
+            // dayManager.nextDay(); // 다음 Day로 이동
         }
 
         private void resetDay() {
@@ -122,7 +128,6 @@ public class ProgressPaneManager {
                 } else {
                     dayTimer.stop();
                     showBuyScreen(); // Buy 창 표시
-
                     // dayManager.nextDay();  // 다음 day로 이동
                 }
             } else {
@@ -130,7 +135,7 @@ public class ProgressPaneManager {
                 return;
             }
 
-            startDayTimer(); // 새로운 Day 타이머 시작
+            // startDayTimer(); // 새로운 Day 타이머 시작
 
             // 데이 이미지 변경
             dayPanel.updateDayImage(getDay());

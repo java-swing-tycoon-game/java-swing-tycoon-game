@@ -1,7 +1,6 @@
 package Scenes;
 
 import Character.Player;
-import GameManager.FontManager;
 import GameManager.StartManager;
 import GameManager.*;
 import Goods.Goods;
@@ -20,7 +19,7 @@ public class Play extends JFrame {
     private CoinManager coinManager;
     private NpcManager npcManager;
     private ClickManager clickManager;
-    private DayManager dayManager;
+    private static DayManager dayManager;
     private ProgressPaneManager progressPaneManager;
 
 

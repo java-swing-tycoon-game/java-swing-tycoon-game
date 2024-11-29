@@ -1,7 +1,9 @@
 package Scenes;
 
+import GameManager.CoinManager;
 import GameManager.FontManager;
 import GameManager.ProgressPaneManager;
+import GameManager.StartManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,6 +12,8 @@ import java.awt.event.ActionListener;
 
 public class Buy extends JFrame {
     private String[] itemImgPath = {"assets/img/item/slogan.png", "assets/img/item/tshirts.png", "assets/img/item/stick.png", "assets/img/item/doll.png", "assets/img/item/bag.png", "assets/img/item/album.png"};
+    private boolean nextButtonClicked = false; // 버튼 클릭 상태
+    CoinManager coinManager = new CoinManager();
 
     public Buy() {
         showPopup();
@@ -68,7 +72,7 @@ public class Buy extends JFrame {
         JLabel coinImgLabel = new JLabel(new ImageIcon("assets/img/coinImage.png"));
 
         Font font = FontManager.loadFont(40);
-        JLabel coinTxt = new JLabel("100만원");
+        JLabel coinTxt = new JLabel(coinManager.getCoinAmount() + "만원");
         coinTxt.setFont(font);
 
         haveCoinPanel.add(coinImgLabel);
@@ -86,8 +90,9 @@ public class Buy extends JFrame {
         // 다음으로 버튼을 눌렀을 때 현재 buy 창이 꺼지기
         nextButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                nextButtonClicked = true; // 버튼 클릭 상태 업데이트
                 dispose(); // 현재 Buy 창 닫기
-                //progressPaneManager.startDayTimer(); // ProgressPaneManager에서 타이머 시작
+                // progressPaneManager.startDayTimer(); // ProgressPaneManager에서 타이머 시작
             }
         });
 
@@ -105,6 +110,10 @@ public class Buy extends JFrame {
         buyPopup.getContentPane().add(backgroundLabel, BorderLayout.CENTER);
 
         buyPopup.setVisible(true);
+    }
+
+    public boolean isNextButtonClicked() {
+        return nextButtonClicked; // 버튼 클릭 상태 반환
     }
 
     public static void main(String[] args) {
