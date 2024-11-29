@@ -26,10 +26,11 @@ public class Play extends JFrame {
 
     public Play() {
         setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다");
-        // playBgm();
 
         setMainPanel();
         showCharacter();
+
+        playBgm();
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -48,6 +49,16 @@ public class Play extends JFrame {
         bgm = new bgmManager("assets/bgm/playBgm.wav", true);
         bgm.toggleMusic(); // 음악 자동 재생
 
+        JLabel musicLabel = bgm.createMusicLabel();
+
+        JPanel musicPanel = new JPanel();
+        musicPanel.setOpaque(false);
+        musicPanel.setLayout(new BorderLayout());
+        musicPanel.add(musicLabel, BorderLayout.CENTER);
+        musicPanel.setBounds(30 + 900, 0, 100, 100);
+
+        mainPanel.add(musicPanel, Integer.valueOf(100));
+
         // m 누르면 재생/정지
         addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
@@ -57,6 +68,9 @@ public class Play extends JFrame {
                 }
             }
         });
+
+        setFocusable(true);
+        requestFocusInWindow();
     }
 
     void showCharacter()
