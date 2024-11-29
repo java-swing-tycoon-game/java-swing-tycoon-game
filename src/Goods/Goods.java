@@ -12,6 +12,8 @@ public class Goods extends JPanel {
 
     public Goods(ItemManager itemManager) {
         this.itemManager = itemManager;
+        System.out.println("Goods에서의 itemManager: " + itemManager);
+
     }
 
     @Override
@@ -22,7 +24,7 @@ public class Goods extends JPanel {
             // visible 상태인 아이템만 화면에 표시
             if (itemManager.getVisible(i)) {
                 // 맵에서 아이템 위치만 가져옴
-                Place place = Move.places.get(i+1);
+                Place place = Move.places.get(i + 1);
                 Image itemImage = ItemManager.itemImages.get(i);
 
                 // 아이템 이미지를 Place 위치에 맞게 그림
@@ -33,5 +35,4 @@ public class Goods extends JPanel {
         }
     }
 }
-
 
