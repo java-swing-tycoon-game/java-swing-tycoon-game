@@ -23,6 +23,7 @@ public class Play extends JFrame {
     private DayManager dayManager;
     private ProgressPaneManager progressPaneManager;
 
+    private ItemManager itemManager; // ItemManager 인스턴스를 여기에 추가
 
     public Play() {
         setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다");
@@ -78,7 +79,7 @@ public class Play extends JFrame {
         setupClickManager();
 
         // ItemManager 생성
-        ItemManager itemManager = new ItemManager();
+        ItemManager itemManager = ItemManager.getInstance();
 
         // Player 생성
         Player player = new Player(itemManager);
