@@ -9,8 +9,8 @@ import java.util.Map;
 
 public class FontManager {
     /////////// 폰트 관련 ///////////
-    private static Map<String, Font> fontCache = new HashMap<>();
-    private static Font customFont;
+    public static Map<String, Font> fontCache = new HashMap<>();
+    public static Font customFont;
     
 
     // 폰트 로드
@@ -38,7 +38,7 @@ public class FontManager {
         return customFont;
     }
 
-    public  void loadCustomFont() {
+    public static void loadCustomFont() {
         try (InputStream is = FontManager.class.getResourceAsStream("/path/to/font.ttf")) {
             customFont = Font.createFont(Font.TRUETYPE_FONT, is);
         } catch (Exception e) {
