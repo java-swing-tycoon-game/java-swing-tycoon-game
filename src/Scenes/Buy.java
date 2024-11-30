@@ -166,14 +166,23 @@ public class Buy extends JFrame {
             "assets/img/item/stick.png", "assets/img/item/doll.png",
             "assets/img/item/bag.png", "assets/img/item/album.png"
     };
-  
+
     private boolean nextButtonClicked = false; // 버튼 클릭 상태
-    CoinManager coinManager = new CoinManager();   
+    private Runnable onDisposeAction; // dispose 시 실행할 동작
+    CoinManager coinManager = new CoinManager();
     private ItemManager itemManager; // ItemManager 인스턴스 변수 추가
     private Goods goodsPanel;
 
     public Buy() {
         showPopup();
+    }
+
+    public void setOnDisposeAction(Runnable onDisposeAction) {
+        this.onDisposeAction = onDisposeAction;
+    }
+
+    public boolean isNextButtonClicked() {
+        return nextButtonClicked; // 버튼 클릭 상태 반환
     }
 
     private void showPopup() {
@@ -270,22 +279,36 @@ public class Buy extends JFrame {
                 if (selectedIndex == 3 || selectedIndex == 4 || selectedIndex == 5) {
                     itemManager.setVisibleItem(selectedIndex, true);
                     System.out.println("아이템 인덱스 " + selectedIndex + "이(가) 화면에 보이도록 설정되었습니다.");
-//                    SwingUtilities.invokeLater(() -> {
-                    goodsPanel.repaint();
-//                        System.out.println("repaint 호출됨");
-//                    });
+
+                    // 코인 차감 로직 추가
+                    int currentCoins = coinManager.getCoinAmount();
+                    if (currentCoins >= 10) { // 코인이 충분한 경우
+                        // coinManager.setCoinAmount(currentCoins - 10);
+                        System.out.println("코인 차감 완료: 현재 코인 " + coinManager.getCoinAmount());
+
+                        goodsPanel.repaint(); // 화면 갱신
+                    } else {
+                        System.out.println("코인이 부족합니다. 현재 코인: " + currentCoins);
+                    }
                 } else {
                     System.out.println("아이템 인덱스 " + selectedIndex + "은(는) 화면에 표시되지 않습니다.");
                 }
             }
         });
 
+
         // 다음으로 버튼을 눌렀을 때 현재 buy 창이 꺼지기
-        nextButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                nextButtonClicked = true; // 버튼 클릭 상태 업데이트
-                dispose(); // 현재 Buy 창 닫기
-                // progressPaneManager.startDayTimer(); // ProgressPaneManager에서 타이머 시작
+        nextButton.addActionListener(e -> {
+            nextButtonClicked = true;
+            dispose();
+        });
+
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                if (onDisposeAction != null) {
+                    onDisposeAction.run();
+                }
             }
         });
 
@@ -302,10 +325,6 @@ public class Buy extends JFrame {
         buyPopup.getContentPane().add(backgroundLabel, BorderLayout.CENTER);
 
         buyPopup.setVisible(true);
-    }
-
-    public boolean isNextButtonClicked() {
-        return nextButtonClicked; // 버튼 클릭 상태 반환
     }
 
     public static void main(String[] args) {

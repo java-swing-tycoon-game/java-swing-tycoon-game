@@ -9,7 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Play extends JFrame {
-    private JLayeredPane mainPanel;
+    private static JLayeredPane mainPanel;
 
     private JLabel time; // 시간바
     private JPanel timePanel;
@@ -19,25 +19,26 @@ public class Play extends JFrame {
     private CoinManager coinManager;
     private NpcManager npcManager;
     private ClickManager clickManager;
-    private static DayManager dayManager;
+    private DayManager dayManager;
     private ProgressPaneManager progressPaneManager;
 
     private ItemManager itemManager; // ItemManager 인스턴스를 여기에 추가
 
     public Play() {
         setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        dayManager = new DayManager(); // DayManager 초기화
+        progressPaneManager = new ProgressPaneManager(dayManager); // ProgressPaneManager 초기화
 
         setMainPanel();
         showCharacter();
-
         playBgm();
-
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        // this.progressPaneManager = new ProgressPaneManager(this);
 
         setSize(1038, 805);
         setVisible(true);
+
+        progressPaneManager.startDayTimer(); // 게임 시작과 함께 Day 타이머 시작
     }
 
     void setupClickManager() {
@@ -147,8 +148,7 @@ public class Play extends JFrame {
         top.setLayout(new BorderLayout());
 
         // 데이
-        ProgressPaneManager progressManager = new ProgressPaneManager();
-        JPanel dayPanel = progressManager.getDayPanel();
+        JPanel dayPanel = dayManager.getDayPanel();
 
         // 아이템
         JPanel itemPanel = new JPanel();
@@ -186,8 +186,7 @@ public class Play extends JFrame {
         bottom.add(timePanel, BorderLayout.WEST);
 
         // ProgressPane 추가
-        ProgressPaneManager progressManager = new ProgressPaneManager();
-        JPanel progressPane = progressManager.getProgressPane();
+        JPanel progressPane = progressPaneManager.getProgressPane();
         bottom.add(progressPane, BorderLayout.CENTER);  // progressPane을 하단 패널 중앙에 추가
 
         // 코인 관리
