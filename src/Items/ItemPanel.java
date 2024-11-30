@@ -17,7 +17,7 @@ public class ItemPanel extends JPanel {
         setOpaque(false);
         instance = this;
         setLayout(new FlowLayout(FlowLayout.RIGHT, 15, 0)); // 아이템 간격 설정
-        refreshItems();
+       refreshItems();
     }
     public void refreshItems() {
         removeAll(); // 기존 아이템 제거

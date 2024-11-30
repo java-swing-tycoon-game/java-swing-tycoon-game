@@ -137,7 +137,6 @@ public class Play extends JFrame {
         top.setBounds(65, 0, 900, 100); // 위치와 크기를 설정하여 mapPanel과 겹치도록 설정
         mainPanel.add(top, Integer.valueOf(100));  // 위쪽 레이어
 
-        // bottom 패널을 layeredPane에 추가
         JPanel bottom = showBottom();
         bottom.setBounds(65, 700, 900, 100); // 위치와 크기를 설정하여 mapPanel과 겹치도록 설정
         mainPanel.add(bottom, Integer.valueOf(100));  // 위쪽 레이어
@@ -172,38 +171,42 @@ public class Play extends JFrame {
 
     JPanel showBottom()
     {
-        // 하단 패널
         JPanel bottom = new JPanel();
         bottom.setOpaque(false);
         bottom.setLayout(new BorderLayout());
 
-        // 시간
+
         time = new JLabel(new ImageIcon("assets/img/time.png"));
-        time.setBounds(-2, 9, time.getIcon().getIconWidth(), time.getIcon().getIconHeight()); // TIME 이미지
+        time.setBounds(-2, 9, time.getIcon().getIconWidth(), time.getIcon().getIconHeight());
 
         timePanel = new JPanel();
-        timePanel.setOpaque(false);    // 해당 패널 배경 투명도
-        timePanel.add(time); // TIME 이미지 따로 먼저 추가
+        timePanel.setOpaque(false);
+        timePanel.add(time);
 
-        // timePanel 관련 요소들 추가하기
         bottom.add(timePanel, BorderLayout.WEST);
+
+
+        ProgressPaneManager progressManager = new ProgressPaneManager();
+        JPanel progressPane = progressManager.getProgressPane();
+        bottom.add(progressPane, BorderLayout.CENTER);
+
 
         // ProgressPane 추가
         JPanel progressPane = progressPaneManager.getProgressPane();
         bottom.add(progressPane, BorderLayout.CENTER);  // progressPane을 하단 패널 중앙에 추가
 
-        // 코인 관리
-        coinManager = new CoinManager();  // CoinManager 객체 생성
 
-        // 코인 관련 요소들 추가하기
+
         bottom.add(coinManager.getCoinPanel(), BorderLayout.EAST);
 
         return bottom;
     }
 
-    // 코인 금액 변경될 때 함수
+
     void updateCoinAmount(int amount) {
+
         CoinManager.updateCoinAmount(amount);  // CoinManager를 통해 코인 금액 업데이트
+
     }
 
     void ItemUse(){

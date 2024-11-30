@@ -38,11 +38,19 @@ public class FontManager {
         return customFont;
     }
 
-    public static void loadCustomFont() {
+    public  void loadCustomFont() {
         try (InputStream is = FontManager.class.getResourceAsStream("/path/to/font.ttf")) {
             customFont = Font.createFont(Font.TRUETYPE_FONT, is);
         } catch (Exception e) {
             customFont = new Font("assets/font/ChangwonDangamAsac-Bold_0712.ttf", Font.PLAIN, 12);
+        }
+    }
+    public Font loadCustomFont(float size) {
+        try {
+            return FontManager.loadFont(size);
+        } catch (Exception e) {
+            System.err.println("커스텀 폰트 로드 실패. 기본 폰트를 사용합니다.");
+            return new Font("Arial", Font.PLAIN, (int) size);
         }
     }
 
