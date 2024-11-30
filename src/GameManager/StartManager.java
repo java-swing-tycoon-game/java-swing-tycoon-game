@@ -20,12 +20,14 @@ public class StartManager extends JFrame {
     private DayManager dayManager;
 
     public StartManager() {
-        dayManager = new DayManager();
+        this.dayManager = new DayManager();
 
         setTitle("Start Manager");
-        setSize(1024, 768);
+        setSize(1038, 805);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+
+        // setLocationRelativeTo(null); --> 메인이랑 위치 맞출라구 주석 처리 했어여
         setLayout(null);
 
         contentPanel = new JPanel();

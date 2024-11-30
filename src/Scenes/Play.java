@@ -1,16 +1,19 @@
 package Scenes;
 
 import Character.Player;
-import GameManager.FontManager;
 import GameManager.StartManager;
 import GameManager.*;
 import Goods.Goods;
-
+import Items.ItemPanel;
+import Character.bcAns;
+import Character.MovePlayer;
+import Items.LightStick;
 import javax.swing.*;
 import java.awt.*;
 
 public class Play extends JFrame {
-    private JLayeredPane mainPanel;
+    private static JLayeredPane mainPanel;
+    public static Play instance;
 
     private JLabel time; // 시간바
     private JPanel timePanel;
@@ -22,21 +25,36 @@ public class Play extends JFrame {
     private ClickManager clickManager;
     private DayManager dayManager;
     private ProgressPaneManager progressPaneManager;
+    public static boolean[] itemArray = {true, false, false, false}; // 기본값 false
+    private String[] itemIcons = {
+            "assets/img/item/itemCircle.png",
+            "assets/img/item/sloganItem.png",
+            "assets/img/item/stickItem.png",
+            "assets/img/item/tshirtItem.png"
+    };
+    private ItemPanel itemPanel;
 
+    private ItemManager itemManager; // ItemManager 인스턴스를 여기에 추가
 
     public Play() {
         setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다");
-        // playBgm();
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        dayManager = new DayManager(); // DayManager 초기화
+        progressPaneManager = new ProgressPaneManager(dayManager); // ProgressPaneManager 초기화
 
         setMainPanel();
         showCharacter();
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        this.progressPaneManager = new ProgressPaneManager(this);
+        instance = this;
+        ItemUse();
+        playBgm();
 
         setSize(1038, 805);
         setVisible(true);
+
+        progressPaneManager.startDayTimer(); // 게임 시작과 함께 Day 타이머 시작
     }
 
     void setupClickManager() {
@@ -48,6 +66,16 @@ public class Play extends JFrame {
         bgm = new bgmManager("assets/bgm/playBgm.wav", true);
         bgm.toggleMusic(); // 음악 자동 재생
 
+        JLabel musicLabel = bgm.createMusicLabel();
+
+        JPanel musicPanel = new JPanel();
+        musicPanel.setOpaque(false);
+        musicPanel.setLayout(new BorderLayout());
+        musicPanel.add(musicLabel, BorderLayout.CENTER);
+        musicPanel.setBounds(940, -5, 100, 100);
+
+        mainPanel.add(musicPanel, Integer.valueOf(100));
+
         // m 누르면 재생/정지
         addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
@@ -57,6 +85,9 @@ public class Play extends JFrame {
                 }
             }
         });
+
+        setFocusable(true);
+        requestFocusInWindow();
     }
 
     void showCharacter()
@@ -64,7 +95,7 @@ public class Play extends JFrame {
         setupClickManager();
 
         // ItemManager 생성
-        ItemManager itemManager = new ItemManager();
+        ItemManager itemManager = ItemManager.getInstance();
 
         // Player 생성
         Player player = new Player(itemManager);
@@ -92,7 +123,6 @@ public class Play extends JFrame {
         showBackground();
 
         setContentPane(mainPanel);
-
     }
 
     void showBackground()
@@ -125,28 +155,15 @@ public class Play extends JFrame {
         return mapPanel;
     }
 
-    JPanel showTop()
-    {
-        //상단 패널
+    JPanel showTop() {
         JPanel top = new JPanel();
         top.setOpaque(false);
         top.setLayout(new BorderLayout());
 
         // 데이
-        DayManager dayManager = new DayManager();
         JPanel dayPanel = dayManager.getDayPanel();
 
-        // 아이템
-        JPanel itemPanel = new JPanel();
-        itemPanel.setOpaque(false);
-        itemPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-
-        JLabel item = new JLabel(new ImageIcon("assets/img/item.png"));
-        JLabel itemCircle = new JLabel(new ImageIcon("assets/img/itemCircle.png"));
-        itemCircle.setBorder(BorderFactory.createEmptyBorder(0 , 10, 0 , 0));
-        itemPanel.add(item);
-        itemPanel.add(itemCircle);
-
+        itemPanel = new ItemPanel();
         top.add(dayPanel, BorderLayout.WEST);
         top.add(itemPanel, BorderLayout.EAST);
 
@@ -172,8 +189,7 @@ public class Play extends JFrame {
         bottom.add(timePanel, BorderLayout.WEST);
 
         // ProgressPane 추가
-        ProgressPaneManager progressManager = new ProgressPaneManager();
-        JPanel progressPane = progressManager.getProgressPane();
+        JPanel progressPane = progressPaneManager.getProgressPane();
         bottom.add(progressPane, BorderLayout.CENTER);  // progressPane을 하단 패널 중앙에 추가
 
         // 코인 관리
@@ -188,6 +204,21 @@ public class Play extends JFrame {
     // 코인 금액 변경될 때 함수
     void updateCoinAmount(int amount) {
         CoinManager.updateCoinAmount(amount);  // CoinManager를 통해 코인 금액 업데이트
+    }
+
+    void ItemUse(){
+        if(itemArray[1] == true){
+            bcAns.stop();
+        }
+        else if (itemArray[2] == true){
+          // MovePlayer.fastMove();
+        }
+        else if (itemArray[3] == true){
+        LightStick.use();
+        }
+        else{
+
+        }
     }
 
     /*
@@ -205,7 +236,8 @@ public class Play extends JFrame {
             updateTimeBar();
         }
         else realTime = 60;
-    }*/
+
+     */
 
     public static void main(String[] args) {
         new StartManager();

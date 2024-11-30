@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ItemManager {
+    private static ItemManager instance; // 싱글톤 인스턴스
     public static ArrayList<Image> itemImages; // 아이템 이미지
 
     private ArrayList<Place> places; // Place 객체 리스트
@@ -28,6 +29,11 @@ public class ItemManager {
 
         // 처음 3개 아이템만 보이게 스타트
         visibleItems = new boolean[itemImages.size()];
+
+        System.out.println("itemImages 크기: " + itemImages.size());
+        System.out.println("visibleItems 크기: " + visibleItems.length);
+
+
         for (int i = 0; i < 3; i++) {
             visibleItems[i] = true;
         }
@@ -44,6 +50,14 @@ public class ItemManager {
         itemImages.add(new ImageIcon("assets/img/item/bag.png").getImage());
         itemImages.add(new ImageIcon("assets/img/item/album.png").getImage());
         itemImages.add(new ImageIcon("assets/img/item/deco.png").getImage());
+    }
+
+    // 싱글톤 인스턴스를 반환하는 메서드
+    public static ItemManager getInstance() {
+        if (instance == null) {
+            instance = new ItemManager();
+        }
+        return instance;
     }
 
     // 아이템 보여줄지 안 보여줄지

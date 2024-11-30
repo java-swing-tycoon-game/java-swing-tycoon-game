@@ -3,7 +3,8 @@ package GameManager;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class DayManager {
@@ -34,9 +35,8 @@ public class DayManager {
 
         public ImageDayPanel() {
             setLayout(new FlowLayout(FlowLayout.LEFT));
-            setOpaque(false);
-
             dayLabel = new JLabel();
+            setOpaque(false);
             updateDayImage(day);    // 데이 이미지 초기화
             add(dayLabel);
         }
