@@ -157,7 +157,9 @@ public class Npc extends Move implements ClickEvent {
 
         // deco 게임 요청
         if (requestedItem.equals(ItemManager.itemImages.getLast())) {
-            new Deco();
+           // new Deco();
+            JFrame parentFrame = Play.instance;  // Play 클래스의 JFrame을 가져오기
+            new Deco((JFrame) parentFrame); // 다이얼로그 방식으로 생성
         }
 
         // 요청 아이템과 양 손 모두 불일치

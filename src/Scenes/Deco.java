@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 
 import GameManager.FontManager;
 
-public class Deco extends JFrame {
+public class Deco extends JDialog {
     public Boolean gameResult = null;
     private JButton nextButton;
     public static Font customFont;
@@ -23,11 +23,13 @@ public class Deco extends JFrame {
     private final String[] colors = { "벚꽃", "푸른", "레몬" };
     private final String[] themes = { "공주", "바다", "진주" };
 
-    public Deco() {
+    public Deco(JFrame parentFrame) {
+        super(parentFrame, "탑로더를 꾸며보아요!", true); // 다이얼로그로 설정 (모달)
+
         loadCustomFont();
         Arrays.fill(currentList, 3);
 
-        setTitle("탑로더를 꾸며보아요!");
+        //setTitle("탑로더를 꾸며보아요!");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -689,7 +691,13 @@ public class Deco extends JFrame {
         }
     }
     public static void main(String[] args) {
-         new Deco();
+         //new Deco();
 
+        JFrame parent = new JFrame(); // 부모 프레임 (숨겨놓을 수도 있음)
+        parent.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        parent.setSize(800, 600);
+        parent.setVisible(false); // 부모는 보이지 않도록 설정
+
+        new Deco(parent);
     }
 }
