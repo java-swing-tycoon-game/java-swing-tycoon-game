@@ -1,7 +1,6 @@
 package GameManager;
 
 import Character.Place;
-import Character.Move;
 
 import javax.swing.*;
 import java.awt.*;
