@@ -183,6 +183,7 @@ public class Buy extends JFrame {
         buyPopup.setLocationRelativeTo(null); // 화면 중앙에 배치
         buyPopup.setResizable(false);
         buyPopup.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        buyPopup.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 
         // 배경 설정
         buyPopup.getContentPane().setBackground(Color.decode("#D5F2FF"));
