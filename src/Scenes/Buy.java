@@ -155,6 +155,8 @@ import GameManager.ProgressPaneManager;
 import GameManager.StartManager;
 import GameManager.ItemManager;
 import Goods.Goods;
+import Items.ItemPanel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -192,6 +194,7 @@ public class Buy extends JFrame {
         buyPopup.setLocationRelativeTo(null); // 화면 중앙에 배치
         buyPopup.setResizable(false);
         buyPopup.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        buyPopup.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 
         // 배경 설정
         buyPopup.getContentPane().setBackground(Color.decode("#D5F2FF"));
@@ -272,26 +275,25 @@ public class Buy extends JFrame {
         // Buy 버튼 클릭 리스너
         buyButton.addActionListener(e -> {
             if (selectedItemIndex[0] == -1) {
-                // 아이템이 선택되지 않음
+                JOptionPane.showMessageDialog(this, "구매할 아이템을 선택하세요.", "알림", JOptionPane.WARNING_MESSAGE);
             } else {
                 int selectedIndex = selectedItemIndex[0];
-                // 인덱스가 3(인형), 4(가방), 5(앨범)인 경우만 보이게 설정
                 if (selectedIndex == 3 || selectedIndex == 4 || selectedIndex == 5) {
                     itemManager.setVisibleItem(selectedIndex, true);
                     System.out.println("아이템 인덱스 " + selectedIndex + "이(가) 화면에 보이도록 설정되었습니다.");
-
-                    // 코인 차감 로직 추가
-                    int currentCoins = coinManager.getCoinAmount();
-                    if (currentCoins >= 10) { // 코인이 충분한 경우
-                        // coinManager.setCoinAmount(currentCoins - 10);
-                        System.out.println("코인 차감 완료: 현재 코인 " + coinManager.getCoinAmount());
-
-                        goodsPanel.repaint(); // 화면 갱신
-                    } else {
-                        System.out.println("코인이 부족합니다. 현재 코인: " + currentCoins);
-                    }
                 } else {
-                    System.out.println("아이템 인덱스 " + selectedIndex + "은(는) 화면에 표시되지 않습니다.");
+                    // ItemPanel.itemArray 업데이트
+                    ItemPanel.itemArray[selectedIndex + 1] = true;
+
+                    // ItemPanel UI 업데이트 호출
+                    SwingUtilities.invokeLater(() -> {
+                        if (ItemPanel.instance != null) {
+                            ItemPanel.instance.refreshItems();
+                        } else {
+                            System.err.println("ItemPanel 인스턴스가 존재하지 않습니다.");
+                        }
+                    });
+                    System.out.println("아이템 인덱스 " + selectedIndex + "은(는) itemArray에 추가되었습니다.");
                 }
             }
         });

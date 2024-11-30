@@ -3,6 +3,7 @@ package Scenes;
 import javax.swing.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -15,18 +16,16 @@ public class Deco extends JFrame {
     private JButton nextButton;
     public static Font customFont;
     private int clickCount = 0;
-    private JLayeredPane layeredPane;
-    private int[] selectedItems = new int[3];
-    private int[] currentList = new int[3];
+    private final JLayeredPane layeredPane;
+    private final int[] selectedItems = new int[3];
+    private final int[] currentList = new int[3];
     private final String[] films = { "사랑하는 마음이 담긴", "내 스타를 위한", "하늘에 수놓은 비단같은" };
     private final String[] colors = { "벚꽃", "푸른", "레몬" };
     private final String[] themes = { "공주", "바다", "진주" };
 
     public Deco() {
         loadCustomFont();
-        for (int i = 0; i < currentList.length; i++) {
-            currentList[i] = 3;
-        }
+        Arrays.fill(currentList, 3);
 
         setTitle("탑로더를 꾸며보아요!");
         setSize(800, 600);
@@ -34,8 +33,7 @@ public class Deco extends JFrame {
         setLocationRelativeTo(null);
 
         ImageIcon originalIcon = new ImageIcon("assets/img/decoItem/Frame2.png");
-        Image scaledImage = originalIcon.getImage().getScaledInstance(800, 600, Image.SCALE_SMOOTH);
-        Image backgroundImage = scaledImage;
+        Image backgroundImage = originalIcon.getImage().getScaledInstance(800, 600, Image.SCALE_SMOOTH);
 
         layeredPane = new JLayeredPane();
         setContentPane(layeredPane);

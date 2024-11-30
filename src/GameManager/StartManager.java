@@ -25,6 +25,8 @@ public class StartManager extends JFrame {
         setTitle("Start Manager");
         setSize(1038, 805);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+
         // setLocationRelativeTo(null); --> 메인이랑 위치 맞출라구 주석 처리 했어여
         setLayout(null);
 

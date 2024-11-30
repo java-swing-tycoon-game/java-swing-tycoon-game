@@ -60,7 +60,6 @@ public class Player extends MovePlayer implements ClickEvent {
         for (Place place : getPlaces()) {
             if (place.contains(clickPoint.x, clickPoint.y)) {
                 boolean viaCenter = lastVisitedCase != place.getNum();
-                System.out.println("같은 장소 방문: " + !viaCenter);
 
                 switch (place.getNum()) {
                     case 1 -> { // 아이템
