@@ -1,6 +1,9 @@
 package Character;
 
 import GameManager.ClickEvent;
+import GameManager.ItemManager;
+import GameManager.NpcManager;
+import Scenes.Deco;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,10 +19,6 @@ public class Npc extends Move implements ClickEvent {
             new ImageIcon("assets/img/npc/walking2.png").getImage(),
             new ImageIcon("assets/img/npc/leg.png").getImage(),
     };
-    private final static String[] eyeImgPath = {"assets/img/npc/eye1.png", "assets/img/npc/eye2.png"};
-    private final static String[] hairImgPath = {"assets/img/npc/hair1.png", "assets/img/npc/hair2.png"};
-    private final static String[] shirtsImgPath = {"assets/img/npc/shirts1.png", "assets/img/npc/shirts2.png"};
-    private final static String[] pantsImgPath = {"assets/img/npc/pants1.png", "assets/img/npc/pants2.png"};
 
     private Image eyeImg, hairImg, shirtsImg, pantsImg;
     private Image walkingImg;
@@ -51,22 +50,24 @@ public class Npc extends Move implements ClickEvent {
     }
 
     public boolean getActive() { return active; }
+    public int getRequestCount() { return requestCount; }
+
     protected void finishNpc() { active = false; }
 
     ////////// NPC 이미지 관련 //////////
     // NPC 이미지 조합하기
     private void randomSetNpc()
     {
-        eyeImg = setRandomImage(eyeImgPath);
-        hairImg = setRandomImage(hairImgPath);
-        shirtsImg = setRandomImage(shirtsImgPath);
-        pantsImg = setRandomImage(pantsImgPath);
+        eyeImg = setRandomImage("eye");
+        hairImg = setRandomImage("hair");
+        shirtsImg = setRandomImage("shirts");
+        pantsImg = setRandomImage("pants");
     }
 
     // 랜덤으로 이미지 설정
-    private Image setRandomImage(String[] imageParts) {
+    private Image setRandomImage(String imageParts) {
         Random random = new Random();
-        String path = imageParts[random.nextInt(imageParts.length)];
+        String path = "assets/img/npc/" + imageParts + random.nextInt(1,5) + ".png";
         return new ImageIcon(path).getImage();
     }
 
@@ -98,7 +99,7 @@ public class Npc extends Move implements ClickEvent {
     @Override // 클릭 되면 요청 완료 처리
     public void onClick(Point clickPoint) {
         // Player를 NPC 위치로 이동
-        player.moveToDest(new Place(0, characterX, characterY, 0, characterX-50, characterY-100), true, () -> {
+        player.movePlayer(clickPoint, () -> {
             // Player 이동 완료 후 요청 비교
             if (request.getActive()) {
                 if (giveItem(player)) {
@@ -107,11 +108,16 @@ public class Npc extends Move implements ClickEvent {
                     requestCount++;
                     System.out.println("NPC 요청 완료! 현재 요청 횟수: " + requestCount);
 
+                    if(requestCount >= 1) {
+                        NpcManager.moveNpcToRoom(this);
+                    }
+
                     // 최대 요청 횟수 도달 시 NPC 비활성화
                     if (requestCount >= MAX_REQUESTS) {
                         active = false;
-                        removeFromParent();
                         System.out.println("NPC가 비활성화되었습니다.");
+                        NpcManager.finishNpc(this);
+                        removeFromParent();
                     }
                 }
             } else {
@@ -144,6 +150,11 @@ public class Npc extends Move implements ClickEvent {
         if (requestedItem.equals(rightItem)) {
             player.setHoldItemR(null); // 오른손 아이템 제거
             return true;
+        }
+
+        // deco 게임 요청
+        if (requestedItem.equals(ItemManager.itemImages.getLast())) {
+            new Deco();
         }
 
         // 요청 아이템과 양 손 모두 불일치
