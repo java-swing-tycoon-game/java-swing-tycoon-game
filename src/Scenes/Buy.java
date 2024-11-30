@@ -155,6 +155,8 @@ import GameManager.ProgressPaneManager;
 import GameManager.StartManager;
 import GameManager.ItemManager;
 import Goods.Goods;
+import Items.ItemPanel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -264,22 +266,29 @@ public class Buy extends JFrame {
         // Buy 버튼 클릭 리스너
         buyButton.addActionListener(e -> {
             if (selectedItemIndex[0] == -1) {
-                // 아이템이 선택되지 않음
+                JOptionPane.showMessageDialog(this, "구매할 아이템을 선택하세요.", "알림", JOptionPane.WARNING_MESSAGE);
             } else {
                 int selectedIndex = selectedItemIndex[0];
-                // 인덱스가 3(인형), 4(가방), 5(앨범)인 경우만 보이게 설정
                 if (selectedIndex == 3 || selectedIndex == 4 || selectedIndex == 5) {
                     itemManager.setVisibleItem(selectedIndex, true);
                     System.out.println("아이템 인덱스 " + selectedIndex + "이(가) 화면에 보이도록 설정되었습니다.");
-//                    SwingUtilities.invokeLater(() -> {
-                    goodsPanel.repaint();
-//                        System.out.println("repaint 호출됨");
-//                    });
                 } else {
-                    System.out.println("아이템 인덱스 " + selectedIndex + "은(는) 화면에 표시되지 않습니다.");
+                    // ItemPanel.itemArray 업데이트
+                    ItemPanel.itemArray[selectedIndex + 1] = true;
+
+                    // ItemPanel UI 업데이트 호출
+                    SwingUtilities.invokeLater(() -> {
+                        if (ItemPanel.instance != null) {
+                            ItemPanel.instance.refreshItems();
+                        } else {
+                            System.err.println("ItemPanel 인스턴스가 존재하지 않습니다.");
+                        }
+                    });
+                    System.out.println("아이템 인덱스 " + selectedIndex + "은(는) itemArray에 추가되었습니다.");
                 }
             }
         });
+
 
         // 다음으로 버튼을 눌렀을 때 현재 buy 창이 꺼지기
         nextButton.addActionListener(new ActionListener() {

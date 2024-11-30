@@ -4,13 +4,16 @@ import Character.Player;
 import GameManager.StartManager;
 import GameManager.*;
 import Goods.Goods;
-
+import Items.ItemPanel;
+import Character.bcAns;
+import Character.MovePlayer;
+import Items.LightStick;
 import javax.swing.*;
 import java.awt.*;
 
 public class Play extends JFrame {
-    private JLayeredPane mainPanel;
-
+    private static JLayeredPane mainPanel;
+    public static Play instance;
     private JLabel time; // 시간바
     private JPanel timePanel;
     private int coinAmount = 0;  // 초기 코인 금액
@@ -21,14 +24,23 @@ public class Play extends JFrame {
     private ClickManager clickManager;
     private static DayManager dayManager;
     private ProgressPaneManager progressPaneManager;
+    public static boolean[] itemArray = {true, false, false, false}; // 기본값 false
+    private String[] itemIcons = {
+            "assets/img/item/itemCircle.png",
+            "assets/img/item/sloganItem.png",
+            "assets/img/item/stickItem.png",
+            "assets/img/item/tshirtItem.png"
+    };
+    private ItemPanel itemPanel;
 
     private ItemManager itemManager; // ItemManager 인스턴스를 여기에 추가
 
     public Play() {
         setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다");
-
+        instance = this;
         setMainPanel();
         showCharacter();
+        ItemUse();
 
         playBgm();
 
@@ -106,7 +118,6 @@ public class Play extends JFrame {
         showBackground();
 
         setContentPane(mainPanel);
-
     }
 
     void showBackground()
@@ -139,28 +150,16 @@ public class Play extends JFrame {
         return mapPanel;
     }
 
-    JPanel showTop()
-    {
-        //상단 패널
+    JPanel showTop() {
         JPanel top = new JPanel();
         top.setOpaque(false);
         top.setLayout(new BorderLayout());
 
-        // 데이
         ProgressPaneManager progressManager = new ProgressPaneManager();
         JPanel dayPanel = progressManager.getDayPanel();
 
-        // 아이템
-        JPanel itemPanel = new JPanel();
-        itemPanel.setOpaque(false);
-        itemPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
-        JLabel item = new JLabel(new ImageIcon("assets/img/item.png"));
-        JLabel itemCircle = new JLabel(new ImageIcon("assets/img/itemCircle.png"));
-        itemCircle.setBorder(BorderFactory.createEmptyBorder(0 , 10, 0 , 0));
-        itemPanel.add(item);
-        itemPanel.add(itemCircle);
-
+        itemPanel = new ItemPanel();
         top.add(dayPanel, BorderLayout.WEST);
         top.add(itemPanel, BorderLayout.EAST);
 
@@ -204,6 +203,21 @@ public class Play extends JFrame {
         coinManager.updateCoinAmount(amount);  // CoinManager를 통해 코인 금액 업데이트
     }
 
+    void ItemUse(){
+        if(itemArray[1] == true){
+            bcAns.stop();
+        }
+        else if (itemArray[2] == true){
+          // MovePlayer.fastMove();
+        }
+        else if (itemArray[3] == true){
+        LightStick.use();
+        }
+        else{
+
+        }
+    }
+
     /*
     추후에 수정해야 할 것 같아서! 그냥 냅둬주세요!!
     // 하단 시간바 크기 조정
@@ -219,7 +233,8 @@ public class Play extends JFrame {
             updateTimeBar();
         }
         else realTime = 60;
-    }*/
+
+     */
 
     public static void main(String[] args) {
         new StartManager();
