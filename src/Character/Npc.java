@@ -2,6 +2,7 @@ package Character;
 
 import GameManager.*;
 import Scenes.Deco;
+import Scenes.Play;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,12 +34,11 @@ public class Npc extends Move implements ClickEvent {
     protected boolean active; // npc 상태
     protected boolean isMoving = false; // 이동 중인지
 
-    public static Player player;
+    public Player player;
 
     // 생성자
-    public Npc(Player player) {
+    public Npc() {
         super(960, 600); // 초기 좌표 설정
-        Npc.player = player;
 
         randomSetNpc(); // npc 이미지 조합
         walkingAnimation();
@@ -97,10 +97,10 @@ public class Npc extends Move implements ClickEvent {
     @Override // 클릭 되면 요청 완료 처리
     public void onClick(Point clickPoint) {
         // Player를 NPC 위치로 이동
-        player.movePlayer(clickPoint, () -> {
+        Play.player.movePlayer(clickPoint, () -> {
             // Player 이동 완료 후 요청 비교
             if (request.getActive()) {
-                if (giveItem(player)) {
+                if (giveItem(Play.player)) {
                     // 요청 완료 처리
                     request.completeRequest();
                     requestCount++;
@@ -165,18 +165,25 @@ public class Npc extends Move implements ClickEvent {
     }
 
     private void showCoinImage() {
+        // parent가 null인 경우 Play 클래스의 mainPanel을 사용
+        Container parent = getParent() != null ? getParent() : Play.instance.getMainPanel();
+
+        if (parent == null) {
+            System.err.println("Cannot show coin image because both parent and mainPanel are null.");
+            return;
+        }
+
         ImageIcon coinIcon = new ImageIcon("assets/img/coinImage.png"); // 이미지 경로
         JLabel coinLabel = new JLabel(coinIcon);
-        coinLabel.setBounds(characterX, characterY, 50, 50); // 화면 중앙에 위치 (크기와 좌표 조정 가능)
+        coinLabel.setBounds(characterX, characterY, 50, 50); // 캐릭터 위치에 맞게 조정
         coinLabel.setOpaque(false);
 
-        // 이미지를 부모 패널에 추가
-        Container parent = getParent();
+        // 코인 이미지를 부모 컨테이너에 추가
         parent.add(coinLabel, Integer.valueOf(300));
         parent.revalidate();
         parent.repaint();
 
-        // 2초 후 이미지 제거
+        // 2.5초 후 코인 이미지 제거
         Timer timer = new Timer(2500, e -> {
             parent.remove(coinLabel);
             parent.revalidate();
@@ -185,6 +192,7 @@ public class Npc extends Move implements ClickEvent {
         timer.setRepeats(false);
         timer.start();
     }
+
 
     @Override
     public void moveToDest(Place place, boolean viaCenter, Runnable callback) {
@@ -245,6 +253,19 @@ public class Npc extends Move implements ClickEvent {
     public void removeFromParent() {
         Container parent = getParent();
 
+        if (parent == null) {
+            // parent가 null인 경우 Play 클래스의 mainPanel 사용
+            if (Play.instance != null) {
+                parent = Play.instance.getMainPanel();
+            }
+
+            if (parent == null) {
+                System.err.println("Cannot remove NPC because both parent and mainPanel are null.");
+                return; // 더 이상 처리할 수 없음
+            }
+        }
+
+        // parent가 유효한 경우 제거 작업 수행
         parent.remove(this); // 이미지 제거
         parent.revalidate(); // 레이아웃 재계산
         parent.repaint(); // 화면 갱신
@@ -254,4 +275,5 @@ public class Npc extends Move implements ClickEvent {
             parent.getComponent(0).requestFocusInWindow(); // 첫 번째 컴포넌트에 포커스 설정
         }
     }
+
 }

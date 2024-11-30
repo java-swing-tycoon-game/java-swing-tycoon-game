@@ -3,6 +3,7 @@ package Goods;
 import Character.Place;
 import Character.Player;
 import Character.Move;
+import Scenes.Play;
 import GameManager.ItemManager;
 import Character.Npc;
 
@@ -28,20 +29,20 @@ public class PickDrop extends JPanel {
 
     // 아이템 집기
     public void pickUpItemLeft(Image item) {
-        Npc.player.setHoldItemL(item);
-        Npc.player.repaint();
+        Play.player.setHoldItemL(item);
+        Play.player.repaint();
     }
 
     public void pickUpItemRight(Image item) {
-        Npc.player.setHoldItemR(item);
-        Npc.player.repaint();
+        Play.player.setHoldItemR(item);
+        Play.player.repaint();
     }
 
     // 아이템 버리기 (양손 모두 버림)
     public void dropItem() {
-        Npc.player.setHoldItemL(null);
-        Npc.player.setHoldItemR(null);
-        Npc.player.repaint();
+        Play.player.setHoldItemL(null);
+        Play.player.setHoldItemR(null);
+        Play.player.repaint();
     }
 
     public void handleItemClick(Point clickPoint) {
@@ -52,17 +53,17 @@ public class PickDrop extends JPanel {
                 // 아이템이 존재하고 visible 상태인지 확인
                 if (item != null && itemManager.getVisible(itemManager.getPlaces().indexOf(place)-1)) {
                     // 왼손이 비어 있으면 왼손에 들기
-                    if (Npc.player.getHoldItemL() == null) {
+                    if (Play.player.getHoldItemL() == null) {
                         pickUpItemLeft(item);
                     }
                     // 오른손이 비어 있으면 오른손에 들기
-                    else if (Npc.player.getHoldItemR() == null) {
+                    else if (Play.player.getHoldItemR() == null) {
                         pickUpItemRight(item);
                     }
                     else {
                         System.out.println("양손이 이미 차 있습니다.");
                     }
-                    Npc.player.repaint();
+                    Play.player.repaint();
                 }
                 break;
             }

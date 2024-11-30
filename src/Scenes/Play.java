@@ -8,6 +8,8 @@ import Items.ItemPanel;
 import Character.bcAns;
 import Character.MovePlayer;
 import Items.LightStick;
+import Items.Tshirt;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -34,6 +36,8 @@ public class Play extends JFrame {
     };
     private ItemPanel itemPanel;
 
+    public static Player player;
+
     private ItemManager itemManager; // ItemManager 인스턴스를 여기에 추가
 
     public Play() {
@@ -48,7 +52,6 @@ public class Play extends JFrame {
         showCharacter();
 
         instance = this;
-        ItemUse();
         playBgm();
 
         setSize(1038, 805);
@@ -103,7 +106,7 @@ public class Play extends JFrame {
         ItemManager itemManager = ItemManager.getInstance();
 
         // Player 생성
-        Player player = new Player(itemManager);
+        player = new Player(itemManager);
         player.setBounds(0, 0, 1024, 768);
         player.setOpaque(false);
         mainPanel.add(player, Integer.valueOf(110));
@@ -210,22 +213,7 @@ public class Play extends JFrame {
     void updateCoinAmount(int amount) {
         CoinManager.updateCoinAmount(amount);  // CoinManager를 통해 코인 금액 업데이트
     }
-
-    void ItemUse(){
-        if(itemArray[1] == true){
-            bcAns.stop();
-        }
-        else if (itemArray[2] == true){
-            // MovePlayer.fastMove();
-        }
-        else if (itemArray[3] == true){
-            LightStick.use();
-        }
-        else{
-
-        }
-    }
-
+  
     /*
     추후에 수정해야 할 것 같아서! 그냥 냅둬주세요!!
     // 하단 시간바 크기 조정
