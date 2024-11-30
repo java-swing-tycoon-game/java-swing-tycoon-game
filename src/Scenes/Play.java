@@ -8,6 +8,8 @@ import Items.ItemPanel;
 import Character.bcAns;
 import Character.MovePlayer;
 import Items.LightStick;
+import Items.Tshirt;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -34,6 +36,8 @@ public class Play extends JFrame {
     };
     private ItemPanel itemPanel;
 
+    public static Player player;
+
     private ItemManager itemManager; // ItemManager 인스턴스를 여기에 추가
 
     public Play() {
@@ -48,13 +52,16 @@ public class Play extends JFrame {
         showCharacter();
 
         instance = this;
-        ItemUse();
         playBgm();
 
         setSize(1038, 805);
         setVisible(true);
 
         progressPaneManager.startDayTimer(); // 게임 시작과 함께 Day 타이머 시작
+    }
+
+    public JLayeredPane getMainPanel() {
+        return mainPanel;
     }
 
     void setupClickManager() {
@@ -98,7 +105,7 @@ public class Play extends JFrame {
         ItemManager itemManager = ItemManager.getInstance();
 
         // Player 생성
-        Player player = new Player(itemManager);
+        player = new Player(itemManager);
         player.setBounds(0, 0, 1024, 768);
         player.setOpaque(false);
         mainPanel.add(player, Integer.valueOf(110));
@@ -204,21 +211,6 @@ public class Play extends JFrame {
     // 코인 금액 변경될 때 함수
     void updateCoinAmount(int amount) {
         CoinManager.updateCoinAmount(amount);  // CoinManager를 통해 코인 금액 업데이트
-    }
-
-    void ItemUse(){
-        if(itemArray[1] == true){
-            bcAns.stop();
-        }
-        else if (itemArray[2] == true){
-          // MovePlayer.fastMove();
-        }
-        else if (itemArray[3] == true){
-        LightStick.use();
-        }
-        else{
-
-        }
     }
 
     /*
