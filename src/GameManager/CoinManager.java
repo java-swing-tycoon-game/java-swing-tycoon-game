@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class CoinManager {
-    private int coinAmount = 5;  // 초기 코인 금액
+    private int coinAmount = 98;  // 초기 코인 금액
     private JLabel coinTxt;      // 코인 금액을 표시
     private JPanel coinPanel;    // 하단에 코인 요소들을 포함한 패널
     int[] coins = {5, 10, 20, 50, 75, 90, 100};
