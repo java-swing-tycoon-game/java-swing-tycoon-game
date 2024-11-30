@@ -6,6 +6,8 @@ import javax.swing.*;
 import javax.swing.Timer;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
 
 public class NpcManager {
     private JLayeredPane parentPanel;
@@ -15,115 +17,183 @@ public class NpcManager {
 
     // npc(여러명이라 리스트)
     private List<Npc> npcList;
-    private int maxNpcs;
+
+    private int maxNpc; // 데이별로 maxNpc 다름
     private int npcCount = 0;
 
     // bc는 한 번에 1명만 등장
     private static boolean bcActive = false;
 
-    private final ArrayList<Place> room;
+    // 장소와 들어간 npc 관리
+    private static ArrayList<Place> room = null;
     private final ArrayList<Place> waitRoom;
-    private final Map<Place, Npc> placeToNpcMap;
-    private final Map<Npc, Place> npcToWaitRoomMap = new HashMap<>(); // NPC와 대기 구역 매핑 추가
+    private static Map<Place, Npc> roomToNpcMap = Map.of();
+    private static Map<Place, Npc> waitRoomToNpcMap = Map.of();
 
-    private ClickManager clickManager;
-    private Timer spawnTimer;
+    private static Timer spawnTimer;
+    private static Timer moveRoomTimer;
 
-    public NpcManager(JLayeredPane parentPanel, Player player, int maxNpcs, ClickManager clickManager) {
+    // 병렬 처리
+    private final ExecutorService executor = Executors.newFixedThreadPool(4);
+
+    // 생성자
+    public NpcManager(JLayeredPane parentPanel, Player player, int maxNpc) {
         this.parentPanel = parentPanel;
         this.player = player;
-        this.maxNpcs = maxNpcs;
-        this.clickManager = clickManager;
+        this.maxNpc = maxNpc;
 
         this.npcList = new ArrayList<>();
         this.room = Npc.places
                 .stream()
                 .filter(place -> place.getNum() == 2) // 룸만 넣기
                 .collect(Collectors.toCollection(ArrayList::new));
-        this.waitRoom = Place.createPlaces()
+        this.waitRoom = Npc.places
                 .stream()
                 .filter(place -> place.getNum() == 3) // 대기존 2개
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        this.placeToNpcMap = new HashMap<>();
+        this.roomToNpcMap = new HashMap<>();
+        this.waitRoomToNpcMap = new HashMap<>();
 
         startNpcSpawnTimer();
     }
 
+    // bc 존재 여부
+    public static void setBcActive(boolean active) {
+        bcActive = active;
+    }
+
+    // 맵에 NPC 추가
+    private static void setNpcToMap(Map<Place, Npc> map, Place place, Npc npc) {
+        if (!map.containsKey(place)) { // 중복 방지
+            map.put(place, npc);
+        }
+    }
+
+    // 맵이 차있는지 리턴
+    private static boolean getMapNpc(Map<Place, Npc> map, Place place) {
+        return map.containsKey(place);
+    }
+
+    // value인 npc 값으로 맵 뒤지기
+    private static Place findNpc(Map<Place, Npc> map, Npc npc) {
+        return map.entrySet().stream()
+                .filter(entry -> entry.getValue().equals(npc))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElse(null);
+    }
+
+    // 맵에서 NPC 제거
+    private static void removeNpcFromMap(Map<Place, Npc> map, Place place) {
+        if (map.containsKey(place)) {
+            map.remove(place);
+            System.out.println("NPC 제거 완료: " + place);
+        }
+    }
+
+    // npc 삭제
+    public void removeNpc(Npc npc) {
+        executor.submit(() -> {
+            npcList.remove(npc);
+            SwingUtilities.invokeLater(() -> {
+                parentPanel.remove(npc);
+                parentPanel.revalidate();
+                parentPanel.repaint();
+            });
+
+            ClickManager.removeClickEventList(npc);
+            if (npc instanceof BlackConsumer) {
+                bcActive = false; // 블랙 컨슈머 플래그 초기화
+            }
+            moveRoomTimer.start();
+        });
+    }
+
+    // npc 완료 후 맵에서 삭제하고 사라지기, npc class용
+    public static void finishNpc(Npc npc) {
+        if(!npc.getActive()) {
+            if(findNpc(roomToNpcMap, npc) != null) {
+                removeNpcFromMap(roomToNpcMap, findNpc(roomToNpcMap, npc));
+            }
+            else {
+                removeNpcFromMap(waitRoomToNpcMap, findNpc(waitRoomToNpcMap, npc));
+            }
+        }
+    }
+
+    // 생성 시작
     private void startNpcSpawnTimer() {
-        spawnNpc();
-        spawnTimer = new Timer(3000, e -> {
-            if (npcList.size() < maxNpcs) {
+        spawnNpc(); // 첫 1회는 바로 등장
+        spawnTimer = new Timer(15000, e -> {
+            if (npcList.size() < maxNpc) {
                 spawnNpc();
             }
         });
         spawnTimer.start();
     }
 
+    // 생성
     private void spawnNpc() {
-        Npc npc;
+        executor.submit(() -> {
+            Npc npc;
 
-        // 20% 확률로 블랙 컨슈머 생성
-        if (Math.random() < 0.1) {
-            if (bcActive) {
-                System.out.println("블랙 컨슈머가 이미 존재합니다. 새 블랙 컨슈머 생성 중단.");
-                return; // 기존 블랙 컨슈머가 있을 경우 생성 중단
+            // 10% 확률로 블랙 컨슈머 생성
+            if (Math.random() < 0.1) {
+                if (bcActive) {
+                    return; // 기존 블랙 컨슈머가 있을 경우 생성 중단
+                }
+
+                npc = new BlackConsumer();
+                bcActive = true;
+                addNpcPanel(npc, 200);
+                moveBcToPlayer(npc);
             }
+            // 일반 npc
+            else {
+                npc = new Npc(player);
 
-            npc = new BlackConsumer();
-            bcActive = true;
-            addBcPanel(npc);
-            moveBcToPlayer(npc);
-        } else { // 일반 npc
-            npc = new Npc(player);
-
-            npcCount++;
-            npcList.add(npc);
+                npcList.add(npc);
+                npcCount++;
+                addNpcPanel(npc, 100);
+                moveNpcToWait(npc);
+            }
             ClickManager.setClickEventList(npc);
-            addNpcPanel(npc);
-            moveNpcToWait(npc);
-        }
-        ClickManager.setClickEventList(npc);
-        new bgmManager("assets/bgm/door.wav", false).toggleMusic();
-    }
-
-    private void addBcPanel(Npc npc)
-    {
-        npc.setBounds(0, 0, 1024, 768);
-        npc.setOpaque(false);
-        parentPanel.add(npc, Integer.valueOf(200));
-    }
-
-    private void addNpcPanel(Npc npc)
-    {
-        npc.setBounds(0, 0, 1024, 768);
-        npc.setOpaque(false);
-        parentPanel.add(npc, Integer.valueOf(110));
-    }
-
-    private void moveBcToPlayer(Npc npc) {
-        npc.moveToDest(Move.places.getLast(), false, ()->{
-            npc.setupRequest();
         });
     }
 
+    // npc를 화면에 띄운다
+    private void addNpcPanel(Npc npc , int zIndex)
+    {
+        SwingUtilities.invokeLater(() -> {
+            npc.setBounds(0, 0, 1024, 768);
+            npc.setOpaque(false);
+            parentPanel.add(npc, Integer.valueOf(zIndex));
+        });
+    }
+
+    // bc를 화면 중앙 bc위치로 이동
+    private void moveBcToPlayer(Npc npc) {
+        executor.submit(() -> npc.moveToDest(Move.places.getLast(), false, ()-> {
+            npc.setupRequest();
+        }));
+    }
+
+    // 대기 구역으로 이동
     private void moveNpcToWait(Npc npc) {
         // 빈 대기 구역 찾기
         Optional<Place> emptyWaitRoom = waitRoom.stream()
-                .filter(place -> !isPlaceOccupied(place))
+                .filter(place -> !getMapNpc(waitRoomToNpcMap, place))
                 .findFirst();
 
         if (emptyWaitRoom.isPresent()) {
             Place targetWaitRoom = emptyWaitRoom.get();
-            assignNpcToPlace(npc, targetWaitRoom); // NPC를 대기 구역에 배치
-            npcToWaitRoomMap.put(npc, targetWaitRoom);
-            npc.moveToTarget(targetWaitRoom, null); // 대기 구역으로 이동
-            System.out.println("NPC가 대기 구역으로 이동합니다");
+            setNpcToMap(waitRoomToNpcMap, targetWaitRoom, npc); // NPC를 대기 구역에 배치
+            new bgmManager("assets/bgm/door.wav", false).toggleMusic();
 
-            // 10초 대기 후 비어있는 룸으로 이동 시도
-            Timer waitTimer = new Timer(5000, e -> moveNpcToRoom(npc));
-            waitTimer.setRepeats(false);
-            waitTimer.start();
+            // 대기 구역으로 이동
+            npc.moveToTarget(targetWaitRoom, null);
+            checkAndMoveToRoom(npc,targetWaitRoom);
         } else {
             System.out.println("대기 구역이 모두 가득 찼습니다. NPC 생성 중지.");
             spawnTimer.stop(); // 모든 대기 구역이 차 있으면 타이머 정지
@@ -131,81 +201,49 @@ public class NpcManager {
         }
     }
 
-    private void moveNpcToRoom(Npc npc) {
-        // 빈 룸 찾기
+    // 대기 했는지 확인 후 룸으로 보내기 시도
+    private void checkAndMoveToRoom(Npc npc, Place targetWaitRoom) {
+        moveRoomTimer = new Timer(5000, e -> {
+            if (npc.getRequestCount() >= 1) { // 요청이 1번 이상 발생 후
+                removeNpcFromMap(waitRoomToNpcMap, targetWaitRoom);
+                spawnTimer.start();
+                moveRoomTimer.stop();
+            }
+        });
+    }
+
+    // 룸으로 보냄
+    static int n = 1;
+    public static void moveNpcToRoom(Npc npc) {
         List<Place> emptyRooms = room.stream()
-                .filter(place -> !isPlaceOccupied(place))
-                .collect(Collectors.toList());
-
-        Place currentWaitRoom = npcToWaitRoomMap.get(npc);
-
-        // currentWaitRoom이 null인 경우 처리
-        if (currentWaitRoom == null) {
-            System.out.println("NPC가 대기 구역에 배치되지 않았습니다. 이동 중단.");
-            return;
-        }
+                .filter(place -> !getMapNpc(roomToNpcMap,place))
+                .toList();
 
         if (!emptyRooms.isEmpty()) {
-            // 랜덤으로 빈 룸 선택
-            Random random = new Random();
-            Place targetRoom = emptyRooms.get(random.nextInt(emptyRooms.size()));
+            Place targetRoom = emptyRooms.get(n % emptyRooms.size());
 
-            // NPC를 해당 룸으로 이동
+            // 이전 룸 찾기 및 제거
+            Place currentRoom = roomToNpcMap.entrySet().stream()
+                    .filter(entry -> entry.getValue().equals(npc))
+                    .map(Map.Entry::getKey)
+                    .findFirst()
+                    .orElse(null);
+
+            if (currentRoom != null) {
+                roomToNpcMap.remove(currentRoom);
+                System.out.println("이전 룸 비워짐: " + currentRoom);
+            }
+
+            setNpcToMap(roomToNpcMap,targetRoom, npc); // 룸에 추가
+
             npc.moveToDest(targetRoom, true, () -> {
-                removeNpcFromPlace(currentWaitRoom); // 나갔으니까 대기 구역 비움
-                npcToWaitRoomMap.remove(npc); // NPC와 대기 구역 매핑 제거
-                assignNpcToPlace(npc, targetRoom);
-                System.out.println("NPC가 룸으로 이동합니다. npc 좌표: " + npc.characterX + ", " + npc.characterY);
+                spawnTimer.start();
             });
-//            removeNpcFromPlace(currentWaitRoom); // 나갔으니까 대기 구역 비움
-//            npcToWaitRoomMap.remove(npc); // NPC와 대기 구역 매핑 제거
-//            assignNpcToPlace(npc, targetRoom);
-//            npc.moveToDest(targetRoom, true, null); // 룸으로 이동
-//            System.out.println("NPC가 룸으로 이동합니다. npc 좌표: " + npc.characterX);
         } else {
-            System.out.println("모든 룸이 가득 찼습니다. NPC는 대기 구역에서 계속 대기합니다.");
-            // 대기 상태 유지
-            Timer recheckTimer = new Timer(10000, e -> moveNpcToRoom(npc));
-            recheckTimer.setRepeats(false);
-            recheckTimer.start();
+            System.out.println("대기 구역에서 계속 대기");
+            moveRoomTimer.stop();
         }
+        n++;
     }
 
-    private void removeNpcFromPlace(Place place) {
-        placeToNpcMap.remove(place);
-        System.out.println("NPC가 장소에서 제거되었습니다: " + place);
-    }
-
-    // room이 가득 참
-    public boolean areAllPlacesFull() {
-        return room.stream().allMatch(this::isPlaceOccupied);
-    }
-
-    public boolean isPlaceOccupied(Place place) {
-        return placeToNpcMap.containsKey(place);
-    }
-
-    public void assignNpcToPlace(Npc npc, Place place) {
-        placeToNpcMap.put(place, npc);
-    }
-
-    public void removeNpc(Npc npc) {
-        npcList.remove(npc);
-        ClickManager.removeClickEventList(npc);
-        parentPanel.remove(npc);
-        parentPanel.revalidate();
-        parentPanel.repaint();
-        if (npc instanceof BlackConsumer) {
-            bcActive = false; // 블랙 컨슈머 플래그 초기화
-        }
-    }
-
-    // 플래그를 외부에서 제어할 수 있도록 추가
-    public static void setBcActive(boolean active) {
-        bcActive = active;
-    }
-
-    public List<Place> getRoom() {
-        return room;
-    }
 }

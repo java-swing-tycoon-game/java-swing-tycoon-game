@@ -22,13 +22,15 @@ public class Play extends JFrame {
     private static DayManager dayManager;
     private ProgressPaneManager progressPaneManager;
 
+    private ItemManager itemManager; // ItemManager 인스턴스를 여기에 추가
 
     public Play() {
         setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다");
-        // playBgm();
 
         setMainPanel();
         showCharacter();
+
+        playBgm();
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -47,6 +49,16 @@ public class Play extends JFrame {
         bgm = new bgmManager("assets/bgm/playBgm.wav", true);
         bgm.toggleMusic(); // 음악 자동 재생
 
+        JLabel musicLabel = bgm.createMusicLabel();
+
+        JPanel musicPanel = new JPanel();
+        musicPanel.setOpaque(false);
+        musicPanel.setLayout(new BorderLayout());
+        musicPanel.add(musicLabel, BorderLayout.CENTER);
+        musicPanel.setBounds(940, -5, 100, 100);
+
+        mainPanel.add(musicPanel, Integer.valueOf(100));
+
         // m 누르면 재생/정지
         addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
@@ -56,6 +68,9 @@ public class Play extends JFrame {
                 }
             }
         });
+
+        setFocusable(true);
+        requestFocusInWindow();
     }
 
     void showCharacter()
@@ -63,17 +78,17 @@ public class Play extends JFrame {
         setupClickManager();
 
         // ItemManager 생성
-        ItemManager itemManager = new ItemManager();
+        ItemManager itemManager = ItemManager.getInstance();
 
         // Player 생성
         Player player = new Player(itemManager);
         player.setBounds(0, 0, 1024, 768);
         player.setOpaque(false);
-        mainPanel.add(player, Integer.valueOf(100));
+        mainPanel.add(player, Integer.valueOf(110));
         ClickManager.setClickEventList(player);
 
         // npc 생성
-        npcManager = new NpcManager(mainPanel, player, 5, clickManager);
+        npcManager = new NpcManager(mainPanel, player, 5);
 
         // Goods 생성
         Goods goods = new Goods(itemManager);
