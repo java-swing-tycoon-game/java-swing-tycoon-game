@@ -200,7 +200,7 @@ public class Play extends JFrame {
 
     // 코인 금액 변경될 때 함수
     void updateCoinAmount(int amount) {
-        coinManager.updateCoinAmount(amount);  // CoinManager를 통해 코인 금액 업데이트
+        CoinManager.updateCoinAmount(amount);  // CoinManager를 통해 코인 금액 업데이트
     }
 
     void ItemUse(){

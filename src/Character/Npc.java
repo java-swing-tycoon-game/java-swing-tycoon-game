@@ -1,8 +1,6 @@
 package Character;
 
-import GameManager.ClickEvent;
-import GameManager.ItemManager;
-import GameManager.NpcManager;
+import GameManager.*;
 import Scenes.Deco;
 
 import javax.swing.*;
@@ -30,8 +28,8 @@ public class Npc extends Move implements ClickEvent {
 
     // 요청 클래스
     public Request request;
-    private int requestCount = 0; // 요청 횟수
-    private static int MAX_REQUESTS = 4; // 최대 요청 횟수
+    public int requestCount = 0; // 요청 횟수
+    public static final int MAX_REQUESTS = 1; // 최대 요청 횟수
     protected boolean active; // npc 상태
     protected boolean isMoving = false; // 이동 중인지
 
@@ -49,10 +47,10 @@ public class Npc extends Move implements ClickEvent {
         setupRequest();
     }
 
+    public void setActive(boolean a) {active = a; System.out.println(active);}
+
     public boolean getActive() { return active; }
     public int getRequestCount() { return requestCount; }
-
-    protected void finishNpc() { active = false; }
 
     ////////// NPC 이미지 관련 //////////
     // NPC 이미지 조합하기
@@ -117,6 +115,11 @@ public class Npc extends Move implements ClickEvent {
                         active = false;
                         System.out.println("NPC가 비활성화되었습니다.");
                         NpcManager.finishNpc(this);
+
+                        // 돈을 벌었어요^^
+                        CoinManager.updateCoinAmount(5);
+                        new bgmManager("assets/bgm/finish.wav", false).toggleMusic();
+                        showCoinImage();
                         removeFromParent();
                     }
                 }
@@ -159,6 +162,28 @@ public class Npc extends Move implements ClickEvent {
 
         // 요청 아이템과 양 손 모두 불일치
         return false;
+    }
+
+    private void showCoinImage() {
+        ImageIcon coinIcon = new ImageIcon("assets/img/coinImage.png"); // 이미지 경로
+        JLabel coinLabel = new JLabel(coinIcon);
+        coinLabel.setBounds(characterX, characterY, 50, 50); // 화면 중앙에 위치 (크기와 좌표 조정 가능)
+        coinLabel.setOpaque(false);
+
+        // 이미지를 부모 패널에 추가
+        Container parent = getParent();
+        parent.add(coinLabel, Integer.valueOf(300));
+        parent.revalidate();
+        parent.repaint();
+
+        // 2초 후 이미지 제거
+        Timer timer = new Timer(2500, e -> {
+            parent.remove(coinLabel);
+            parent.revalidate();
+            parent.repaint();
+        });
+        timer.setRepeats(false);
+        timer.start();
     }
 
     @Override

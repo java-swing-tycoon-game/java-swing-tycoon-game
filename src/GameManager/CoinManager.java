@@ -39,8 +39,9 @@ public class CoinManager {
     }
 
     // 코인 금액 업데이트
-    public void updateCoinAmount(int amount) {
+    public static void updateCoinAmount(int amount) {
         coinAmount += amount;  // 코인 금액 +/- 업데이트
         coinTxt.setText("x " + coinAmount + "만원");  // 코인 금액 업데이트
+        System.out.println(coinAmount);
     }
 }
