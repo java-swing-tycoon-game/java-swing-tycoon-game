@@ -7,6 +7,8 @@ public class Tshirt {
 
     public static void applyEffect(MovePlayer player) {
 
+        //player.fastMove();
+
         System.out.println("티셔츠 효과 적용 완료.");
     }
 }
