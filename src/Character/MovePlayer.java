@@ -10,15 +10,26 @@ public class MovePlayer extends Move {
         this.places = new ArrayList<>();
 
         for (Place place : Move.places) {
-            if (place.getNum() == 2)
+            if (place.getNum() == 2) // 룸
             {
                 this.places.add(new Place(
                         place.getNum(),
                         place.getX(),
                         place.getY(),
                         place.getRadius(),
-                        place.getTargetX() + 100,
+                        place.getTargetX() - 100,
                         place.getTargetY() + 50
+                ));
+            }
+            if (place.getNum() == 3) // 대기 구역
+            {
+                this.places.add(new Place(
+                        place.getNum(),
+                        place.getX(),
+                        place.getY(),
+                        place.getRadius(),
+                        place.getTargetX() + 50,
+                        place.getTargetY() - 100
                 ));
             }
             else{

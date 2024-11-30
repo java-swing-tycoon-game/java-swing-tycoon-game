@@ -56,8 +56,7 @@ public class Player extends MovePlayer implements ClickEvent {
 
     ////// 클릭에 따라 player 이동 //////
     @Override
-    public void onClick(Point clickPoint) {
-        // 클릭된 좌표가 특정 Place 안에 있는지 확인
+    public void onClick(Point clickPoint) {// 클릭된 좌표가 특정 Place 안에 있는지 확인
         for (Place place : getPlaces()) {
             if (place.contains(clickPoint.x, clickPoint.y)) {
                 boolean viaCenter = lastVisitedCase != place.getNum();
@@ -66,16 +65,10 @@ public class Player extends MovePlayer implements ClickEvent {
                 switch (place.getNum()) {
                     case 1 -> { // 아이템
                         moveToDest(place, viaCenter, () -> {
-                                pickDrop.handleItemClick(clickPoint); // 아이템 자동 집기
-                                repaint();
+                            pickDrop.handleItemClick(clickPoint); // 아이템 자동 집기
+                            repaint();
                         });
                     }
-                    case 2 -> { // 룸 3곳
-                        moveToDest(place, viaCenter, () -> {
-System.out.println(place.targetX);
-                        });
-                    }
-                    // 대기구역은 npc에서 처리 중
                     case 4 -> { // 쓰레기통
                         moveToDest(place, viaCenter, () -> {
                             pickDrop.dropItem(); // 아이템 자동 버리기
@@ -83,7 +76,38 @@ System.out.println(place.targetX);
                         });
                     }
                     default -> {
-                        System.out.println("디폴트 실행 중");
+                        System.out.println("장소 디폴트 실행 중");
+                    }
+                }
+                lastVisitedCase = place.getNum();
+                break;
+            }
+        }}
+
+    public void movePlayer(Point clickPoint, Runnable callback) {
+        // 클릭된 좌표가 특정 Place 안에 있는지 확인
+        for (Place place : getPlaces()) {
+            if (place.contains(clickPoint.x, clickPoint.y)) {
+                boolean viaCenter = lastVisitedCase != place.getNum();
+                System.out.println("같은 장소 방문: " + !viaCenter);
+
+                switch (place.getNum()) {
+                    case 2 -> { // 룸 3곳
+                        moveToDest(place, viaCenter, () -> {
+                            if (callback != null) {
+                                callback.run();
+                            }
+                        });
+                    }
+                    case 3 -> { // 대기구역
+                        moveToDest(place, viaCenter, () -> {
+                            if (callback != null) {
+                                callback.run();
+                            }
+                        });
+                    }
+                    default -> {
+                        System.out.println("요청 디폴트 실행 중");
                     }
                 }
                 lastVisitedCase = place.getNum();

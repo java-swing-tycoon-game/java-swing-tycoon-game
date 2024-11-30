@@ -85,11 +85,11 @@ public class Play extends JFrame {
         Player player = new Player(itemManager);
         player.setBounds(0, 0, 1024, 768);
         player.setOpaque(false);
-        mainPanel.add(player, Integer.valueOf(100));
+        mainPanel.add(player, Integer.valueOf(110));
         ClickManager.setClickEventList(player);
 
         // npc 생성
-        npcManager = new NpcManager(mainPanel, player, 5, clickManager);
+        npcManager = new NpcManager(mainPanel, player, 5);
 
         // Goods 생성
         Goods goods = new Goods(itemManager);

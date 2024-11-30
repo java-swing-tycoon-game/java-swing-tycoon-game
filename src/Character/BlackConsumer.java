@@ -34,12 +34,14 @@ public class BlackConsumer extends Npc {
 
     @Override // 타자게임 시작
     public void onClick(Point clickPoint) {
-        if (request != null && !ans.ansActive) {
-            ans.ansActive = true;
+        player.moveToCenter(() -> {
+            if (request != null && !ans.ansActive) {
+                ans.ansActive = true;
 
-            requestFocusInWindow();
-            repaint();
-        }
+                requestFocusInWindow();
+                repaint();
+            }
+        });
     }
 
     @Override
