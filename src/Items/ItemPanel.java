@@ -30,11 +30,6 @@ public class ItemPanel extends JPanel {
 
         itemArray[0] = !(itemArray[1] || itemArray[2] || itemArray[3]);
 
-        // 티셔츠 아이템 자동 클릭
-        if (itemArray[2]) {
-            onItemClicked(2);
-        }
-
         for (int i = 0; i < itemArray.length; i++) {
             if (itemArray[i]) {
                 add(createItemButton(i));
@@ -71,7 +66,7 @@ public class ItemPanel extends JPanel {
             itemArray[3] = false;
         }
 
-        //refreshItems();
+        refreshItems();
     }
 
     private void addDefaultItem() {
