@@ -56,7 +56,7 @@ public class Play extends JFrame {
         musicPanel.setOpaque(false);
         musicPanel.setLayout(new BorderLayout());
         musicPanel.add(musicLabel, BorderLayout.CENTER);
-        musicPanel.setBounds(30 + 900, 0, 100, 100);
+        musicPanel.setBounds(940, -5, 100, 100);
 
         mainPanel.add(musicPanel, Integer.valueOf(100));
 

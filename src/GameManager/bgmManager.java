@@ -8,8 +8,8 @@ import java.io.IOException;
 public class bgmManager {
     private Clip clip;
     private boolean isPlaying = false; // 재생 상태
-    private final ImageIcon musicOnIcon = new ImageIcon("assets/img/musicOn.png");
-    private final ImageIcon musicOffIcon = new ImageIcon("assets/img/musicOff.png");
+    private final ImageIcon musicOnIcon = new ImageIcon("assets/img/bgmOn.png");
+    private final ImageIcon musicOffIcon = new ImageIcon("assets/img/bgmOff.png");
     private JLabel musicLabel;
 
     public bgmManager(String filePath, boolean loop) {
