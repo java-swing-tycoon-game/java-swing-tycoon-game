@@ -55,6 +55,7 @@ public class Play extends JFrame {
         playBgm();
 
         setSize(1038, 805);
+        setLocationRelativeTo(null);
         setVisible(true);
 
         progressPaneManager.startDayTimer(); // 게임 시작과 함께 Day 타이머 시작
@@ -212,7 +213,7 @@ public class Play extends JFrame {
     void updateCoinAmount(int amount) {
         CoinManager.updateCoinAmount(amount);  // CoinManager를 통해 코인 금액 업데이트
     }
-
+  
     /*
     추후에 수정해야 할 것 같아서! 그냥 냅둬주세요!!
     // 하단 시간바 크기 조정
