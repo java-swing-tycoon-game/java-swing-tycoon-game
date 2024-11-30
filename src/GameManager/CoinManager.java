@@ -4,8 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class CoinManager {
-    private int coinAmount = 0;  // 초기 코인 금액
-    private JLabel coinTxt;      // 코인 금액을 표시
+    private static int coinAmount = 0;  // 초기 코인 금액
+    private static JLabel coinTxt;      // 코인 금액을 표시
     private JPanel coinPanel;    // 하단에 코인 요소들을 포함한 패널
 
     public CoinManager() {
@@ -38,8 +38,9 @@ public class CoinManager {
     }
 
     // 코인 금액 업데이트
-    public void updateCoinAmount(int amount) {
+    public static void updateCoinAmount(int amount) {
         coinAmount += amount;  // 코인 금액 +/- 업데이트
         coinTxt.setText("x " + coinAmount + "만원");  // 코인 금액 업데이트
+        System.out.println(coinAmount);
     }
 }

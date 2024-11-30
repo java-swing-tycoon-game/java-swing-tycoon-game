@@ -32,6 +32,12 @@ public class BlackConsumer extends Npc {
         request = new bcRequest(this, ans);
     }
 
+    @Override // bc만 클릭 되도록
+    public Rectangle setBounds() {
+        clickBounds = new Rectangle(characterX, characterY, 1024, 800);
+        return clickBounds;
+    }
+
     @Override // 타자게임 시작
     public void onClick(Point clickPoint) {
         player.moveToCenter(() -> {
@@ -79,8 +85,6 @@ public class BlackConsumer extends Npc {
 
         // 클릭 이벤트 추가 처리
         ClickManager.removeClickEventList(this);
-        System.out.println("Removed from ClickManager: " + this);
-        System.out.println(ClickManager.ClickEventList);
 
         // NpcManager의 블랙 컨슈머 추가 처리
         if (this instanceof BlackConsumer) {

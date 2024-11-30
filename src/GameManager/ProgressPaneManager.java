@@ -11,7 +11,7 @@ import Scenes.Play;
 public class ProgressPaneManager {
     private int realTime; // 현재 남은 시간
     private int day = 1;  // 현재 데이 (1부터 시작)
-    private final int[] dayTimes = {6, 600, 60, 60, 60, 60, 60}; // 각 day의 초기 시간 (디버깅용)
+    private final int[] dayTimes = {6000, 600, 60, 60, 60, 60, 60}; // 각 day의 초기 시간 (디버깅용)
     private Timer dayTimer; // 날짜 타이머
     private DayManager dayManager = new DayManager();
     private CoinManager coinManager = new CoinManager();

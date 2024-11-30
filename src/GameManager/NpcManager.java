@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 
 public class NpcManager {
-    private JLayeredPane parentPanel;
+    private final JLayeredPane parentPanel;
 
     // 플레이어
     private Player player;
@@ -32,6 +32,8 @@ public class NpcManager {
 
     private static Timer spawnTimer;
     private static Timer moveRoomTimer;
+
+    private Npc npc = null;
 
     // 병렬 처리
     private final ExecutorService executor = Executors.newFixedThreadPool(4);
@@ -69,7 +71,6 @@ public class NpcManager {
             map.put(place, npc);
         }
     }
-
     // 맵이 차있는지 리턴
     private static boolean getMapNpc(Map<Place, Npc> map, Place place) {
         return map.containsKey(place);
@@ -105,6 +106,14 @@ public class NpcManager {
             ClickManager.removeClickEventList(npc);
             if (npc instanceof BlackConsumer) {
                 bcActive = false; // 블랙 컨슈머 플래그 초기화
+
+                // 다른거 클릭 복원
+                ClickManager.onlyBcClick = false;
+                ClickManager.clearClickEventList();
+
+                for (Npc otherNpc : npcList) {
+                    ClickManager.setClickEventList(otherNpc);
+                }
             }
             moveRoomTimer.start();
         });
@@ -136,30 +145,41 @@ public class NpcManager {
     // 생성
     private void spawnNpc() {
         executor.submit(() -> {
-            Npc npc;
-
             // 10% 확률로 블랙 컨슈머 생성
             if (Math.random() < 0.1) {
-                if (bcActive) {
-                    return; // 기존 블랙 컨슈머가 있을 경우 생성 중단
-                }
-
-                npc = new BlackConsumer();
-                bcActive = true;
-                addNpcPanel(npc, 200);
-                moveBcToPlayer(npc);
+                npc = createBc(npc);
             }
             // 일반 npc
             else {
-                npc = new Npc(player);
-
-                npcList.add(npc);
-                npcCount++;
-                addNpcPanel(npc, 100);
-                moveNpcToWait(npc);
+                npc = createNpc(npc);
             }
             ClickManager.setClickEventList(npc);
         });
+    }
+
+    private Npc createBc(Npc npc) {
+        if (bcActive) {
+            return null; // 기존 블랙 컨슈머가 있을 경우 생성 중단
+        }
+
+        npc = new BlackConsumer();
+        bcActive = true;
+        ClickManager.onlyBcClick = true;
+        addNpcPanel(npc, 200);
+        moveBcToPlayer(npc);
+
+        return npc;
+    }
+
+    private Npc createNpc(Npc npc) {
+        npc = new Npc(player);
+
+        npcList.add(npc);
+        npcCount++;
+        addNpcPanel(npc, 100);
+        moveNpcToWait(npc);
+
+        return npc;
     }
 
     // npc를 화면에 띄운다
@@ -176,6 +196,11 @@ public class NpcManager {
     private void moveBcToPlayer(Npc npc) {
         executor.submit(() -> npc.moveToDest(Move.places.getLast(), false, ()-> {
             npc.setupRequest();
+
+            // bc 등장 시 다른 클릭 이벤트 제거
+            ClickManager.clearClickEventList();
+            ClickManager.setClickEventList(npc); // bc만 추가
+            ClickManager.onlyBcClick = true;
         }));
     }
 
