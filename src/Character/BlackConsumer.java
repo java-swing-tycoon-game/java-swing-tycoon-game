@@ -2,6 +2,7 @@ package Character;
 
 import GameManager.ClickManager;
 import GameManager.NpcManager;
+import Scenes.Play;
 
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -13,7 +14,7 @@ public class BlackConsumer extends Npc {
 
     // 생성자
     public BlackConsumer() {
-        super(player);
+        super();
 
         // 타자 입력 받을 리스너
         addKeyListener(new KeyAdapter() {
@@ -40,7 +41,7 @@ public class BlackConsumer extends Npc {
 
     @Override // 타자게임 시작
     public void onClick(Point clickPoint) {
-        player.moveToCenter(() -> {
+        Play.player.moveToCenter(() -> {
             if (request != null && !ans.ansActive) {
                 ans.ansActive = true;
 

@@ -12,9 +12,6 @@ import java.util.concurrent.ExecutorService;
 public class NpcManager {
     private final JLayeredPane parentPanel;
 
-    // 플레이어
-    private Player player;
-
     // npc(여러명이라 리스트)
     private List<Npc> npcList;
 
@@ -41,7 +38,6 @@ public class NpcManager {
     // 생성자
     public NpcManager(JLayeredPane parentPanel, Player player, int maxNpc) {
         this.parentPanel = parentPanel;
-        this.player = player;
         this.maxNpc = maxNpc;
 
         this.npcList = new ArrayList<>();
@@ -175,7 +171,7 @@ public class NpcManager {
     }
 
     private Npc createNpc(Npc npc) {
-        npc = new Npc(player);
+        npc = new Npc();
 
         npcList.add(npc);
         npcCount++;
