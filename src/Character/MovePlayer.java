@@ -45,6 +45,10 @@ public class MovePlayer extends Move {
         }
     }
 
+    public void setSpeed(int speed) {
+        this.moveSpeed = speed;
+    }
+
     @Override
     public ArrayList<Place> getPlaces() {
         return this.places;
