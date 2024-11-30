@@ -24,6 +24,7 @@ public class StartManager extends JFrame {
 
         setTitle("Start Manager");
         setSize(1038, 805);
+        setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         setLayout(null);
