@@ -14,7 +14,7 @@ public class bcAns {
     private final String bcAns; // 목표 텍스트
     public static String userInput = ""; // 입력 받은 텍스트
 
-    public boolean ansActive; // 타자 게임 활성화 여부
+    public static boolean ansActive; // 타자 게임 활성화 여부
 
     private final Image request = new ImageIcon("assets/img/npc/bcAns.png").getImage();
 
@@ -67,7 +67,7 @@ public class bcAns {
         }
     }
 
-    public void stop() { ansActive = false; }
+    public static void stop() { ansActive = false; }
 
     public void draw(Graphics2D g2d, int x, int y) {
         if (ansActive) {
