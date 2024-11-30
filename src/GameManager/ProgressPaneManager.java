@@ -2,6 +2,8 @@ package GameManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import javax.imageio.ImageIO;
@@ -9,20 +11,21 @@ import Scenes.Buy;
 import Scenes.Play;
 
 public class ProgressPaneManager {
-    private int realTime; // 현재 남은 시간
-    // private final int[] dayTimes = {60, 50, 45, 40, 35, 30, 25}; // 각 day의 초기 시간 final int 배열로 고정..
     private final int[] dayTimes = {6,6,6,6,6,6,6}; // 각 day의 초기 시간 final int 배열로 고정.. (디버깅용)
+    private int realTime; // 현재 남은 시간
     private Timer dayTimer; // 날짜 타이머
-    private DayManager dayManager = new DayManager();
+    private DayManager dayManager;
+    private boolean isBuyPopupOpen = false; // Buy 팝업 중복 방지 플래그
     private CoinManager coinManager = new CoinManager();
+    private ImageProgressPane progressPane;
 
     private ImageDayPanel dayPanel;
     private Play playInstance; // Play 인스턴스 추가
-    private ImageProgressPane progressPane;
 
-    public ProgressPaneManager(Play playInstance) {
-        this.playInstance = playInstance; // Play 인스턴스 저장
-        this.progressPane = new ImageProgressPane(); // progressPane 초기화
+
+    public ProgressPaneManager(DayManager dayManager) {
+        this.dayManager = dayManager;
+        this.progressPane = new ImageProgressPane();
     }
 
     public ProgressPaneManager() {
@@ -32,6 +35,51 @@ public class ProgressPaneManager {
 
     public JPanel getProgressPane() {
         return progressPane; // 시간바 관련
+    }
+
+    public void startDayTimer() {
+        if (dayTimer != null) {
+            dayTimer.cancel();
+        }
+
+        realTime = dayTimes[dayManager.getDay() - 1];
+        progressPane.updateProgress(100);
+
+        dayTimer = new Timer();
+        dayTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                realTime--;
+                int progress = (int) ((realTime / (double) dayTimes[dayManager.getDay() - 1]) * 100);
+                progressPane.updateProgress(progress);
+
+                if (realTime <= 0) {
+                    dayTimer.cancel();
+                    showBuyScreen();
+                }
+            }
+        }, 1000, 1000);
+    }
+
+    private void showBuyScreen() {
+        if (isBuyPopupOpen) {
+            return; // 중복 생성 방지
+        }
+        isBuyPopupOpen = true;
+
+        SwingUtilities.invokeLater(() -> {
+            Buy buyPopup = new Buy();
+
+            buyPopup.setOnDisposeAction(() -> {
+                isBuyPopupOpen = false;
+                if (buyPopup.isNextButtonClicked()) {
+                    dayManager.nextDay();
+                    startDayTimer();
+                }
+            });
+
+            buyPopup.setVisible(true);
+        });
     }
 
     public JPanel getDayPanel() {
@@ -79,73 +127,10 @@ public class ProgressPaneManager {
 
             // 이미지들 패널에 추가
             add(progressBar);
-
-            startDayTimer();
         }
 
-        private void startDayTimer() {
-            realTime = dayTimes[getDay() - 1];   // 현재 데이의 초기 시간
-            progressBar.setValue(100);  // 진행률 이미지 다시 100으로 초기화하기
-
-            dayTimer = new Timer(1000, e -> {
-                realTime--;
-                updateTimeBar();
-
-                if (realTime <= 0) {
-                    dayTimer.stop();
-                    System.out.println("Day " + getDay() + " 종료! 다음 Day로 이동");   // 데이 종료된 거 콘솔 출력 확인용 입니다!!!
-                    resetDay(); // 타이머 종료 후 다음 day로 초기화
-                }
-            });
-
-            dayTimer.start();
-        }
-
-        private void showBuyScreen() {
-            SwingUtilities.invokeLater(() -> {
-                Buy buyPopup = new Buy();
-                buyPopup.setVisible(true);
-
-                // Buy 창이 닫힌 후 버튼 클릭 상태 확인
-                if (buyPopup.isNextButtonClicked()) {
-                    //startDayTimer(); // 새로운 Day 타이머 시작
-                    dayManager.nextDay(); // 다음 Day로 이동
-                    new StartManager();
-                }
-            });
-
-            // dayManager.nextDay(); // 다음 Day로 이동
-        }
-
-        private void resetDay() {
-            if (coinManager.getCoinAmount() >= coinManager.coins[getDay() - 1]) {
-                if (getDay() == dayTimes.length) {
-                    showEndingScreen(); // 마지막 Day 엔딩 처리
-                    if (dayTimer != null) {
-                        dayTimer.stop();
-                    }
-                    return;
-                } else {
-                    dayTimer.stop();
-                    showBuyScreen(); // Buy 창 표시
-                    // dayManager.nextDay();  // 다음 day로 이동
-                }
-            } else {
-                showEndingScreen(); // 기준 미달 시 Game Over
-                return;
-            }
-
-            // startDayTimer(); // 새로운 Day 타이머 시작
-
-            // 데이 이미지 변경
-            dayPanel.updateDayImage(getDay());
-        }
-
-        private void updateTimeBar() {
-            // 진행률 업데이트
-            int initialTime = dayTimes[getDay() - 1];
-            int progress = (int) ((realTime / (double) initialTime) * 100);
-            progressBar.setValue(progress);
+        public void updateProgress(int value) {
+            progressBar.setValue(value);
             repaint();
         }
 

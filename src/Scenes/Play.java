@@ -14,6 +14,7 @@ import java.awt.*;
 public class Play extends JFrame {
     private static JLayeredPane mainPanel;
     public static Play instance;
+
     private JLabel time; // 시간바
     private JPanel timePanel;
     private int coinAmount = 0;  // 초기 코인 금액
@@ -22,7 +23,7 @@ public class Play extends JFrame {
     private CoinManager coinManager;
     private NpcManager npcManager;
     private ClickManager clickManager;
-    private static DayManager dayManager;
+    private DayManager dayManager;
     private ProgressPaneManager progressPaneManager;
     public static boolean[] itemArray = {true, false, false, false}; // 기본값 false
     private String[] itemIcons = {
@@ -37,19 +38,23 @@ public class Play extends JFrame {
 
     public Play() {
         setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다");
-        instance = this;
-        setMainPanel();
-        showCharacter();
-        ItemUse();
-
-        playBgm();
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // this.progressPaneManager = new ProgressPaneManager(this);
+        dayManager = new DayManager(); // DayManager 초기화
+        progressPaneManager = new ProgressPaneManager(dayManager); // ProgressPaneManager 초기화
+
+        setMainPanel();
+        showCharacter();
+
+        instance = this;
+        ItemUse();
+        playBgm();
 
         setSize(1038, 805);
         setVisible(true);
+
+        progressPaneManager.startDayTimer(); // 게임 시작과 함께 Day 타이머 시작
     }
 
     void setupClickManager() {
@@ -155,9 +160,8 @@ public class Play extends JFrame {
         top.setOpaque(false);
         top.setLayout(new BorderLayout());
 
-        ProgressPaneManager progressManager = new ProgressPaneManager();
-        JPanel dayPanel = progressManager.getDayPanel();
-
+        // 데이
+        JPanel dayPanel = dayManager.getDayPanel();
 
         itemPanel = new ItemPanel();
         top.add(dayPanel, BorderLayout.WEST);
@@ -185,8 +189,7 @@ public class Play extends JFrame {
         bottom.add(timePanel, BorderLayout.WEST);
 
         // ProgressPane 추가
-        ProgressPaneManager progressManager = new ProgressPaneManager();
-        JPanel progressPane = progressManager.getProgressPane();
+        JPanel progressPane = progressPaneManager.getProgressPane();
         bottom.add(progressPane, BorderLayout.CENTER);  // progressPane을 하단 패널 중앙에 추가
 
         // 코인 관리
