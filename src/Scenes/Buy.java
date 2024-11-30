@@ -7,6 +7,7 @@ import GameManager.StartManager;
 import GameManager.ItemManager;
 import Goods.Goods;
 import Items.ItemPanel;
+import GameManager.CoinManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,6 +28,8 @@ public class Buy extends JFrame {
     private Goods goodsPanel;
 
     private boolean[] itemPurchased = new boolean[6]; // 각 아이템의 구매 여부를 추적
+
+    private int[] itemPrices = {50, 200, 300, 400, 500, 600}; // 각 아이템의 가격
 
     public Buy() {
         showPopup();
@@ -74,7 +77,7 @@ public class Buy extends JFrame {
             itemBox.setContentAreaFilled(false);
 
             Font font = FontManager.loadFont(20);
-            JLabel itemLabel = new JLabel("100만원", new ImageIcon(itemImgPath[i]), SwingConstants.CENTER);
+            JLabel itemLabel = new JLabel(itemPrices[i] + "만원", new ImageIcon(itemImgPath[i]), SwingConstants.CENTER);
             itemLabel.setHorizontalTextPosition(SwingConstants.CENTER);
             itemLabel.setVerticalTextPosition(SwingConstants.BOTTOM);
             itemLabel.setFont(font);
@@ -165,37 +168,43 @@ public class Buy extends JFrame {
                 if (itemPurchased[selectedIndex]) {
                     JOptionPane.showMessageDialog(this, "이미 구매한 아이템입니다.", "알림", JOptionPane.WARNING_MESSAGE);
                 } else {
-                    // 아이템 구매 처리
-                    itemPurchased[selectedIndex] = true; // 해당 아이템을 구매했다고 표시
+                    if (coinManager.getCoinAmount() >= itemPrices[selectedIndex]) {
+                        // 아이템 구매 처리
+                        itemPurchased[selectedIndex] = true; // 해당 아이템을 구매했다고 표시
 
-                    if (selectedIndex == 3 || selectedIndex == 4 || selectedIndex == 5) {
-                        itemManager.setVisibleItem(selectedIndex, true);
-                        System.out.println("아이템 인덱스 " + selectedIndex + "이(가) 화면에 보이도록 설정되었습니다.");
-                    } else {
-                        // ItemPanel.itemArray 업데이트
-                        ItemPanel.itemArray[selectedIndex + 1] = true;
+                        if (selectedIndex == 3 || selectedIndex == 4 || selectedIndex == 5) {
+                            itemManager.setVisibleItem(selectedIndex, true);
+                            System.out.println("아이템 인덱스 " + selectedIndex + "이(가) 화면에 보이도록 설정되었습니다.");
+                        } else {
+                            // ItemPanel.itemArray 업데이트
+                            ItemPanel.itemArray[selectedIndex + 1] = true;
 
-                        // ItemPanel UI 업데이트 호출
-                        SwingUtilities.invokeLater(() -> {
-                            if (ItemPanel.instance != null) {
-                                ItemPanel.instance.refreshItems();
-                            } else {
-                                System.err.println("ItemPanel 인스턴스가 존재하지 않습니다.");
-                            }
-                        });
-                        System.out.println("아이템 인덱스 " + selectedIndex + "은(는) itemArray에 추가되었습니다.");
-                    }
-
-                    // 아이템 박스를 비활성화하여 더 이상 클릭되지 않도록
-                    Component[] components = itemPanel.getComponents();
-                    for (Component component : components) {
-                        if (component instanceof JButton) {
-                            JButton button = (JButton) component;
-                            int index = (int) button.getClientProperty("itemIndex");
-                            if (index == selectedIndex) {
-                                button.setEnabled(false); // 이미 구매된 아이템은 클릭할 수 없게 함
+                            // ItemPanel UI 업데이트 호출
+                            SwingUtilities.invokeLater(() -> {
+                                if (ItemPanel.instance != null) {
+                                    ItemPanel.instance.refreshItems();
+                                } else {
+                                    System.err.println("ItemPanel 인스턴스가 존재하지 않습니다.");
+                                }
+                            });
+                            System.out.println("아이템 인덱스 " + selectedIndex + "은(는) itemArray에 추가되었습니다.");
+                        }
+                        // 아이템 박스를 비활성화하여 더 이상 클릭되지 않도록
+                        Component[] components = itemPanel.getComponents();
+                        for (Component component : components) {
+                            if (component instanceof JButton) {
+                                JButton button = (JButton) component;
+                                int index = (int) button.getClientProperty("itemIndex");
+                                if (index == selectedIndex) {
+                                    button.setEnabled(false); // 이미 구매된 아이템은 클릭할 수 없게 함
+                                }
                             }
                         }
+                        coinManager.updateCoinAmount(-itemPrices[selectedIndex]);
+                        coinTxt.setText(coinManager.getCoinAmount() + "만원");  // 새로운 코인 금액 표시
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(this, "코인이 부족합니다.", "알림", JOptionPane.WARNING_MESSAGE);
                     }
                 }
             }
