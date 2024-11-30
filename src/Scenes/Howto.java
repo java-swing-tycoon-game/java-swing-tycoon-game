@@ -9,6 +9,7 @@ public class Howto extends JFrame {
     public Howto() {
         setTitle("How to Scenes.Play");
         setSize(1024, 768);
+        setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(null);
         getContentPane().setBackground(Color.decode("#D5F2FF"));

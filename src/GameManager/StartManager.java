@@ -24,10 +24,9 @@ public class StartManager extends JFrame {
 
         setTitle("Start Manager");
         setSize(1038, 805);
+        setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 
-        // setLocationRelativeTo(null); --> 메인이랑 위치 맞출라구 주석 처리 했어여
         setLayout(null);
 
         contentPanel = new JPanel();
@@ -39,16 +38,16 @@ public class StartManager extends JFrame {
         ImageIcon originalIcon = new ImageIcon("assets/img/GameStart.png");
         imageLabel = new JLabel(originalIcon);
         updateImageSize();
-
         contentPanel.add(imageLabel);
 
         textLabel = new JLabel("", SwingConstants.CENTER);
-        textLabel.setFont(new Font("Arial", Font.BOLD, 150));
+        textLabel.setFont(FontManager.loadFont(150f));
         textLabel.setForeground(Color.BLACK);
         textLabel.setVisible(false);
         contentPanel.add(textLabel);
 
         setVisible(true);
+
         startAnimation();
     }
 
@@ -67,32 +66,98 @@ public class StartManager extends JFrame {
     }
 
     private void showSecondStage() {
-        Timer secondStageTimer = new Timer(2000, e -> {
+        Timer secondStageTimer = new Timer(2500, e -> {
             ((Timer) e.getSource()).stop();
 
-            ImageIcon secondIcon = new ImageIcon("assets/img/coinGoal.png");
-            Image scaledImage = secondIcon.getImage().getScaledInstance(200, 80, Image.SCALE_SMOOTH);
-            imageLabel.setIcon(new ImageIcon(scaledImage));
+            contentPanel = new JPanel() {
+                @Override
+                protected void paintComponent(Graphics g) {
+                    super.paintComponent(g);
+                    Image backgroundImage = new ImageIcon("assets/img/coinGoal.png").getImage();
+                    g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+                }
+            };
+            contentPanel.setLayout(null);
+            contentPanel.setBounds(0, 0, 1024, 768);
+            setContentPane(contentPanel);
 
-            imageLabel.setBounds(262, 150, 500, 200);
+            contentPanel.removeAll();
 
             int day = dayManager.getDay();
             int coinValue = (day > 0 && day <= coins.length) ? coins[day - 1] : 0;
-            textLabel.setText(String.valueOf(coinValue));
-            textLabel.setBounds(0, 320, 1024, 120);
-            textLabel.setVisible(true);
-            textLabel.setForeground(Color.decode("#E9DB47"));
 
-            Timer playTimer = new Timer(2000, event -> {
-                dispose();
-                new Play();
+            RotatingTextLabel rotatingTextLabel = new RotatingTextLabel(String.valueOf(coinValue));
+            rotatingTextLabel.setBounds(0, 200, 1024, 768);
+            contentPanel.add(rotatingTextLabel);
+
+            Timer rotationTimer = new Timer(5, rotationEvent -> {
+                rotatingTextLabel.setAngle((rotatingTextLabel.getAngle() + 20) % 360);
             });
-            playTimer.setRepeats(false);
-            playTimer.start();
+            rotationTimer.start();
+
+            Timer stopRotationTimer = new Timer(1500, stopEvent -> {
+                rotationTimer.stop();
+                rotatingTextLabel.setAngle(0);
+
+                Timer scaleUpTimer = new Timer(10, scaleEvent -> {
+                    float currentFontSize = rotatingTextLabel.getFont().getSize2D();
+                    if (currentFontSize < 200f) {
+                        rotatingTextLabel.setFont(FontManager.loadFont(currentFontSize + 2));
+                        rotatingTextLabel.repaint();
+                    } else {
+                        ((Timer) scaleEvent.getSource()).stop();
+
+                        Timer playTimer = new Timer(500, playEvent -> {
+                            dispose();
+                            new Play();
+                        });
+                        playTimer.setRepeats(false);
+                        playTimer.start();
+                    }
+                });
+                scaleUpTimer.start();
+            });
+            stopRotationTimer.setRepeats(false);
+            stopRotationTimer.start();
         });
         secondStageTimer.setRepeats(false);
         secondStageTimer.start();
     }
+
+
+    class RotatingTextLabel extends JLabel {
+        private double angle = 0; // 회전 각도
+
+        public RotatingTextLabel(String text) {
+            super(text, SwingConstants.CENTER);
+            setFont(FontManager.loadFont(150f));
+            setForeground(Color.decode("#FD3D39"));
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2d = (Graphics2D) g.create();
+            int centerX = getWidth() / 2;
+            int centerY = getHeight() / 2;
+            g2d.setFont(getFont());
+            g2d.setColor(getForeground());
+            g2d.translate(centerX, centerY);
+            g2d.rotate(Math.toRadians(angle));
+            g2d.translate(-centerX, -centerY);
+            g2d.drawString(getText(), centerX - g2d.getFontMetrics().stringWidth(getText()) / 2, centerY);
+            g2d.dispose();
+        }
+
+        public double getAngle() {
+            return angle;
+        }
+
+        public void setAngle(double angle) {
+            this.angle = angle;
+            repaint();
+        }
+    }
+
 
     private void updateImageSize() {
         ImageIcon originalIcon = new ImageIcon("assets/img/GameStart.png");
