@@ -1,5 +1,7 @@
 package Character;
 
+import GameManager.NpcManager;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -37,12 +39,12 @@ public class Request {
         requestImage = loadImage("assets/img/npc/request.png");
 
         // 60초 실패 여부 판단
-        failTimer = new Timer(60000, e -> {
+        failTimer = new Timer(30000, e -> {
             failRequest(); // 요청 실패 처리
         });
 
         progressTimer = new Timer(1000, e -> {
-            progress = Math.min(progress + (100 / 60), 100); // 최대 100까지 증가
+            progress = Math.min(progress + (100 / 30), 100); // 최대 100까지 증가
             updateProgressImage();
         });
 
@@ -156,8 +158,10 @@ public class Request {
             progressTimer.stop();   // 진행도 업데이트 중지
             failTimer.stop();       // 실패 타이머 중지
 
-            // 요청 실패 처리 (NPC 요청 횟수 설정)
-            npc.requestCount = Npc.MAX_REQUESTS;
+            // 요청 실패 처리
+            //npc.requestCount = Npc.MAX_REQUESTS;
+            npc.setActive(false);
+            NpcManager.finishNpc(npc);
         }
     }
 

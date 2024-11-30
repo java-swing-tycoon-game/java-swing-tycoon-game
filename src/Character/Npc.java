@@ -47,6 +47,8 @@ public class Npc extends Move implements ClickEvent {
         setupRequest();
     }
 
+    public void setActive(boolean a) {active = a; System.out.println(active);}
+
     public boolean getActive() { return active; }
     public int getRequestCount() { return requestCount; }
 

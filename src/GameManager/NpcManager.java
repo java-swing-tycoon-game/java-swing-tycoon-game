@@ -129,6 +129,9 @@ public class NpcManager {
                 removeNpcFromMap(waitRoomToNpcMap, findNpc(waitRoomToNpcMap, npc));
             }
         }
+
+        // UI에서 NPC 제거
+        npc.removeFromParent();
     }
 
     // 생성 시작
