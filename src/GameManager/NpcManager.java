@@ -12,10 +12,10 @@ import java.util.concurrent.ExecutorService;
 import static Scenes.Play.player;
 
 public class NpcManager {
-    private final JLayeredPane parentPanel;
+    private static JLayeredPane parentPanel = null;
 
     // npc(여러명이라 리스트)
-    private List<Npc> npcList;
+    private static List<Npc> npcList;
 
     private int maxNpc; // 데이별로 maxNpc 다름
     private int npcCount = 0;
@@ -35,7 +35,7 @@ public class NpcManager {
     private Npc npc = null;
 
     // 병렬 처리
-    private final ExecutorService executor = Executors.newFixedThreadPool(4);
+    private static final ExecutorService executor = Executors.newFixedThreadPool(4);
 
     // 생성자
     public NpcManager(JLayeredPane parentPanel, Player player, int maxNpc) {
@@ -92,7 +92,7 @@ public class NpcManager {
     }
 
     // npc 삭제
-    public void removeNpc(Npc npc) {
+    public static void removeNpc(Npc npc) {
         executor.submit(() -> {
             npcList.remove(npc);
             SwingUtilities.invokeLater(() -> {
@@ -105,9 +105,17 @@ public class NpcManager {
 
             if (npc instanceof BlackConsumer) {
                 bcActive = false; // 블랙 컨슈머 플래그 초기화
-
                 // 다른거 클릭 복원
                 ClickManager.onlyBcClick = false;
+
+                // 디버깅용 로그
+                System.out.println("블랙컨슈머 제거됨. 클릭 상태 복구 중...");
+
+                // 기존 클릭 이벤트 복구
+                for (Npc otherNpc : npcList) {
+                    ClickManager.setClickEventList(otherNpc);
+                }
+                ClickManager.setClickEventList(player); // 플레이어 클릭 복구
             }
             moveRoomTimer.start();
         });

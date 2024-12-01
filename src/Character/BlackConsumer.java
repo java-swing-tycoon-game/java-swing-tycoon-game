@@ -62,6 +62,7 @@ public class BlackConsumer extends Npc {
             if (!ans.ansActive) {
                 request.completeRequest(); // 요청 완료
                 active = false;
+                NpcManager.removeNpc(this);
                 removeFromParent();
 
                 repaint();
