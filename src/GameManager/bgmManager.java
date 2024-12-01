@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class bgmManager {
     private Clip clip;
-    private boolean isPlaying = false; // 재생 상태
+    public boolean isPlaying = false; // 재생 상태
     private final ImageIcon musicOnIcon = new ImageIcon("assets/img/bgmOn.png");
     private final ImageIcon musicOffIcon = new ImageIcon("assets/img/bgmOff.png");
     private JLabel musicLabel;
@@ -57,5 +57,10 @@ public class bgmManager {
         if (musicLabel != null) {
             musicLabel.setIcon(isPlaying ? musicOnIcon : musicOffIcon);
         }
+    }
+
+    // 다시 시작 시 노래 제거
+    public void turnOff() {
+        isPlaying = false;
     }
 }
