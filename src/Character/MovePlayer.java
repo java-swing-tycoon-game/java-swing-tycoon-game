@@ -28,7 +28,7 @@ public class MovePlayer extends Move {
                         place.getX(),
                         place.getY(),
                         place.getRadius(),
-                        place.getTargetX() + 50,
+                        place.getTargetX() + 40,
                         place.getTargetY() - 100
                 ));
             }
