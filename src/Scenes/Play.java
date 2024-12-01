@@ -21,7 +21,7 @@ public class Play extends JFrame {
     private JPanel timePanel;
     private int coinAmount = 0;  // 초기 코인 금액
 
-    private bgmManager bgm;
+    private static bgmManager bgm;
     private CoinManager coinManager;
     private NpcManager npcManager;
     private ClickManager clickManager;
@@ -72,7 +72,7 @@ public class Play extends JFrame {
         mainPanel.addMouseListener(clickManager); // MouseListener 등록
     }
 
-    void playBgm() {
+    public void playBgm() {
         bgm = new bgmManager("assets/bgm/playBgm.wav", true);
         bgm.toggleMusic(); // 음악 자동 재생
 
@@ -97,6 +97,7 @@ public class Play extends JFrame {
         });
 
         setFocusable(true);
+
         requestFocusInWindow();
     }
 
@@ -221,8 +222,6 @@ public class Play extends JFrame {
     void updateCoinAmount(int amount) {
         CoinManager.updateCoinAmount(amount);  // CoinManager를 통해 코인 금액 업데이트
     }
-
-
 
 
     public static void main(String[] args) {

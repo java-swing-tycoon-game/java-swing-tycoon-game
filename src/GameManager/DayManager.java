@@ -9,7 +9,6 @@ import javax.imageio.ImageIO;
 
 public class DayManager {
     private static DayManager instance; // 싱글톤 인스턴스
-    CoinManager coinManager = new CoinManager();
     private SimplePlaceManager placeManager; // 장소 관리
     private static int day = 1; // 현재 날짜 (1부터 시작)
     private ImageDayPanel dayPanel;
@@ -19,7 +18,7 @@ public class DayManager {
 
     public DayManager() {
 
-        this.dayPanel = new ImageDayPanel(); // dayPanel 초기화
+        dayPanel = new ImageDayPanel(); // dayPanel 초기화
 
         this.placeManager = new SimplePlaceManager();
 
@@ -47,18 +46,19 @@ public class DayManager {
     public int getDay() {
         return day;
     }
-    public void setDay() {day = 1;}
+    public void setDay() {day = 0;}
 
     // 다음 Day로 이동하고 이미지 업데이트
     public void nextDay() {
         day++; // Day 증가
 
-        dayPanel.updateDayImage(day);
-        // Day 변경에 따라 장소 가시성 갱신
+        System.out.println("Current day: " + day); // day 값 출력
+        dayPanel.updateDayImage(day);             // day 값으로 이미지 업데이트
+
+        // Day 변경에 따라 장소 띄우기
         if (day == 2 || day == 3) {
             placeManager.setPlaceVisible(day - 2, true); // Day 2부터 장소 보이기
         }
-        dayPanel.updateDayImage(day); // 새로운 Day 이미지로 업데이트
 
       for(int i=0; i < 6; i++) {
             hasPurchasedToday[i] = false;
@@ -94,7 +94,7 @@ public class DayManager {
             setLayout(new FlowLayout(FlowLayout.LEFT));
             dayLabel = new JLabel();
             setOpaque(false);
-            updateDayImage(day);    // 데이 이미지 초기화
+            updateDayImage(getDay());    // 데이 이미지 초기화
             add(dayLabel);
         }
 
@@ -102,7 +102,9 @@ public class DayManager {
         public void updateDayImage(int day) {
             try {
                 // Day 이미지 업데이트
+                day = getDay();
                 String dayImagePath = "assets/img/day" + day + ".png";
+                if (day == 1) dayImagePath = "assets/img/day1.png";
                 BufferedImage dayImage = ImageIO.read(new File(dayImagePath));
                 dayLabel.setIcon(new ImageIcon(dayImage));
             } catch (IOException ex) {

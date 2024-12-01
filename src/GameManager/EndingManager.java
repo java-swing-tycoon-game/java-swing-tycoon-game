@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import GameManager.bgmManager;
+import Scenes.Play;
 
 public class EndingManager extends JDialog {
     private JLabel endingLabel;
@@ -13,6 +15,8 @@ public class EndingManager extends JDialog {
 
     private DayManager dayManager;  // DayManager 인스턴스
     private CoinManager coinManager;  // CoinManager 인스턴스
+
+    private Play play; // Play 객체를 멤버 변수로 선언
 
     public EndingManager(JFrame parent, DayManager dayManager, CoinManager coinManager) {
         super(parent, true); // Modal Dialog로 설정
@@ -58,7 +62,7 @@ public class EndingManager extends JDialog {
     private void updateEndingImage() {
         String imagePath = "";
         int day = dayManager.getDay(); // 현재 Day
-        boolean isSuccess = (totalCoin >= 100 && day >= 7); // 성공 조건 변경
+        boolean isSuccess = (totalCoin >= 100 && day == 7); // 성공 조건 변경
 
         if (isSuccess) {
             imagePath = "assets/img/ending-clear.png";
@@ -72,8 +76,9 @@ public class EndingManager extends JDialog {
         endingLabel.setVerticalAlignment(SwingConstants.CENTER);
     }
 
-
     private void closeAllWindowsAndRestart() {
+        // if (dayManager.getDay() == 1) play.playBgm().bgm.toggleMusic();
+
         // 모든 창 닫기
         Window[] windows = Window.getWindows();
         for (Window window : windows) {
