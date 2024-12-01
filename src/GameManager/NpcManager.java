@@ -150,29 +150,28 @@ public class NpcManager {
     // 생성
     private void spawnNpc() {
         executor.submit(() -> {
-            // 10% 확률로 블랙 컨슈머 생성
-            if (Math.random() < 0.8 && !bcActive) {
-                npc = createBc(npc);
-            }
-            // 일반 npc
-            else {
+            if(player.isMoving) {// 일반 npc
                 npc = createNpc(npc);
+            }
+            else {
+                // 플레이어 멈춰있고 50% 확률로 블랙 컨슈머 생성
+                if (Math.random() < 0.5 && !bcActive) {
+                    npc = createBc();
+                }
+                else npc = createNpc(npc);
             }
             ClickManager.setClickEventList(npc);
         });
     }
 
-    private Npc createBc(Npc npc) {
-//        if (bcActive) {
-//            return null; // 기존 블랙 컨슈머가 있을 경우 생성 중단
-//        }
-
-        npc = new BlackConsumer();
+    private Npc createBc() {
+        BlackConsumer npc = new BlackConsumer();
         bcActive = true;
         ClickManager.onlyBcClick = true;
         addNpcPanel(npc, 200);
         moveBcToPlayer(npc);
-        player.moveToCenter(null); // 플레이어가 블랙컨슈머와 상호작용
+        npc.bcAuto();
+        //player.moveToCenter(null); // 플레이어가 블랙컨슈머와 상호작용
 
         return npc;
     }
