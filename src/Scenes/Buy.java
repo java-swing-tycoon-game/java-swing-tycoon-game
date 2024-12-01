@@ -190,11 +190,76 @@ public class Buy extends JFrame {
                         coinManager.updateCoinAmount(-itemPrices[selectedIndex]);
                         coinTxt.setText(coinManager.getCoinAmount() + "만원");  // 새로운 코인 금액 표시
                     }
-                    else{
-                        JOptionPane.showMessageDialog(this, "돈이 부족합니다.", "알림", JOptionPane.WARNING_MESSAGE);
-                      }
+                }
+                else{
+                    JOptionPane.showMessageDialog(this, "돈이 부족합니다.", "알림", JOptionPane.WARNING_MESSAGE);
+                }
             }
         });
+
+
+//        // 수정된 Buy 버튼 클릭 리스너
+//        buyButton.addActionListener(e -> {
+//            if (selectedItemIndex[0] == -1) {
+//                JOptionPane.showMessageDialog(this, "구매할 아이템을 선택하세요.", "알림", JOptionPane.WARNING_MESSAGE);
+//            } else {
+//                int selectedIndex = selectedItemIndex[0];
+//                DayManager dayManager = DayManager.getInstance();
+//
+//                if (coinManager.getCoinAmount() >= itemPrices[selectedIndex]) {
+//                    // 하루에 하나만 구매
+//                    if (dayManager.hasPurchasedToday(selectedIndex)) {
+//                        JOptionPane.showMessageDialog(this, "이미 아이템을 구매하셨습니다.", "알림", JOptionPane.WARNING_MESSAGE);
+//                    } else if (dayManager.isItemPurchased(selectedIndex)) {
+//                        JOptionPane.showMessageDialog(this, "이미 구매한 아이템입니다.", "알림", JOptionPane.WARNING_MESSAGE);
+//                    } else {
+//                        if (selectedIndex < 3) {
+//                            if (selectedIndex == 1) {
+//                                dayManager.setItemPurchased(selectedIndex, true);
+//                            }
+//                            dayManager.setHasPurchasedToday(selectedIndex, true);
+//
+//                            //ItemPanel.itemArray 업데이트
+//                            ItemPanel.itemArray[selectedIndex + 1] = true;
+//
+//                            // ItemPanel UI 업데이트 호출
+//                            SwingUtilities.invokeLater(() -> {
+//                                if (ItemPanel.instance != null) {
+//                                    ItemPanel.instance.refreshItems();
+//                                } else {
+//                                    System.err.println("ItemPanel 인스턴스가 존재하지 않습니다.");
+//                                }
+//                            });
+//                            System.out.println("아이템 인덱스 " + selectedIndex + "은(는) itemArray에 추가되었습니다.");
+//                        } else {
+//                            dayManager.setItemPurchased(selectedIndex, true);
+//                            dayManager.setHasPurchasedToday(selectedIndex, true);
+//                            itemManager.setVisibleItem(selectedIndex, true);
+//                            System.out.println("아이템 인덱스 " + selectedIndex + "이(가) 화면에 보이도록 설정되었습니다.");
+//                        }
+//
+//                        JOptionPane.showMessageDialog(this, "구매가 완료되었습니다.", "알림", JOptionPane.WARNING_MESSAGE);
+//
+//                        // 구매 후 UI 처리
+//                        Component[] components = itemPanel.getComponents();
+//                        for (Component component : components) {
+//                            if (component instanceof JButton) {
+//                                JButton button = (JButton) component;
+//                                //button.setEnabled(false); // 구매 후 모든 버튼 비활성화
+//                                int index = (int) button.getClientProperty("itemIndex"); // 버튼의 아이템 인덱스 가져오기
+//                                if (index == selectedIndex) { // 선택된 아이템만 비활성화
+//                                    button.setEnabled(false);
+//                                }
+//                            }
+//                        }
+//                        coinManager.updateCoinAmount(-itemPrices[selectedIndex]);
+//                        coinTxt.setText(coinManager.getCoinAmount() + "만원");  // 새로운 코인 금액 표시
+//                    }
+//                    else{
+//                        JOptionPane.showMessageDialog(this, "돈이 부족합니다.", "알림", JOptionPane.WARNING_MESSAGE);
+//                      }
+//            }
+//        });
 
         // 다음으로 버튼을 눌렀을 때 현재 buy 창이 꺼지기
         nextButton.addActionListener(e -> {
