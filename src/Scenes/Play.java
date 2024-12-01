@@ -178,7 +178,7 @@ public class Play extends JFrame {
         // 데이
         JPanel dayPanel = dayManager.getDayPanel();
 
-        itemPanel = new ItemPanel();
+        itemPanel = new ItemPanel(progressPaneManager);
         top.add(dayPanel, BorderLayout.WEST);
         top.add(itemPanel, BorderLayout.EAST);
 
