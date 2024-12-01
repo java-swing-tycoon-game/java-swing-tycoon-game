@@ -84,7 +84,6 @@ public class Request {
             if (requestItemPath.equals(ItemManager.getItemPath(3))) npc.specialCoin += 2;
             if (requestItemPath.equals(ItemManager.getItemPath(4))) npc.specialCoin += 5;
             if (requestItemPath.equals(ItemManager.getItemPath(5))) npc.specialCoin += 7;
-            System.out.println("makeRequest(): 요청 경로: " + requestItemPath + ", 이미지: " + requestItemImage);
 
             active = true;
 
