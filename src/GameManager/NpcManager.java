@@ -135,14 +135,14 @@ public class NpcManager {
 
     // npc 완료 후 맵에서 삭제하고 사라지기, npc class용
     public static void finishNpc(Npc npc) {
-        if(!npc.getActive()) {
+        //if(!npc.getActive()) {
             if(findNpc(roomToNpcMap, npc) != null) {
                 removeNpcFromMap(roomToNpcMap, findNpc(roomToNpcMap, npc));
             }
             else {
                 removeNpcFromMap(waitRoomToNpcMap, findNpc(waitRoomToNpcMap, npc));
             }
-        }
+        //}
 
         // UI에서 NPC 제거
         npc.removeFromParent();
@@ -168,19 +168,18 @@ public class NpcManager {
         executor.submit(() -> {
             if(player.isMoving) {// 일반 npc
                 npc = createNpc(npc);
-                bcChance += 0.02;
+                bcChance += 0.05;
             }
             else {
-                // 플레이어 멈춰있고 50% 확률로 블랙 컨슈머 생성
+                // 플레이어 멈춰있고 확률로 블랙 컨슈머 생성
                 if (Math.random() < bcChance  && !bcActive) {
                     bc = createBc();
-                    //ClickManager.setClickEventList(bc);
-                    bcChance -= 0.01;
+                    bcChance -= 0.07;
                 }
                 else {
                     npc = createNpc(npc);
                     ClickManager.setClickEventList(npc);
-                    bcChance += 0.02;
+                    bcChance += 0.05;
                 }
             }
             ClickManager.setClickEventList(npc);
@@ -388,23 +387,7 @@ public class NpcManager {
 
         // 기존 NPC 초기화
         clearAllNpcs();
-
-        // 새로운 데이에 맞게 설정
-        int maxNpc;
-        switch (day) {
-            case 1 -> {
-                maxNpc = 5;
-                bcChance = 0.2;
-            }
-            case 2 -> {
-                maxNpc = 8;
-                bcChance = 0.3;
-            }
-            default -> {
-                maxNpc = 10;
-                bcChance = 0.5;
-            }
-        }
+        maxNpc = 10;
 
         // NpcManager 설정 갱신
         initializeManager(parentPanel, maxNpc);
