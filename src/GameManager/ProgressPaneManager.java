@@ -28,11 +28,6 @@ public class ProgressPaneManager {
         this.dayManager = dayManager.getInstance();
         this.progressPane = new ImageProgressPane();
     }
-
-    public ProgressPaneManager() {
-        this.dayPanel = new ImageDayPanel(); // dayPanel 초기화
-        this.progressPane = new ImageProgressPane(); // progressPane 초기화
-    }
   
     public JPanel getProgressPane() {
         return progressPane;
