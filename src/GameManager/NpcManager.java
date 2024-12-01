@@ -266,7 +266,16 @@ public class NpcManager {
     // 룸으로 보냄
     static int n = 1;
     public static void moveNpcToRoom(Npc npc) {
-        List<Place> emptyRooms = room.stream()
+        int currentDay = DayManager.getDay();
+
+        // 현재 날짜에 따라 이동 가능한 룸 필터링
+        List<Place> validRooms = switch (currentDay) {
+            case 1 -> List.of(room.get(2)); // 1일차: 2번 인덱스 룸만
+            case 2 -> List.of(room.get(0), room.get(2)); // 2일차: 0번, 2번 인덱스 룸
+            default -> room; // 3일차 이후: 모든 룸
+        };
+
+        List<Place> emptyRooms = validRooms.stream()
                 .filter(place -> !getMapNpc(roomToNpcMap,place))
                 .toList();
 
@@ -290,8 +299,6 @@ public class NpcManager {
             }
 
             setNpcToMap(roomToNpcMap,targetRoom, npc); // 룸에 추가
-
-
         } else {
             System.out.println("대기 구역에서 계속 대기");
             moveRoomTimer.stop();

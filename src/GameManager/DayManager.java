@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 
 public class DayManager {
     private static DayManager instance; // 싱글톤 인스턴스
-    private int day = 1; // 현재 날짜 (1부터 시작)
+    private static int day = 1; // 현재 날짜 (1부터 시작)
     private ImageDayPanel dayPanel;
 
     public DayManager() {
@@ -28,7 +28,7 @@ public class DayManager {
         return dayPanel; // 데이 이미지 관련
     }
 
-    public int getDay() {
+    public static int getDay() {
         return day;
     }
 

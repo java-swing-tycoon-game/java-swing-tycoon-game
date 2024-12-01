@@ -43,9 +43,4 @@ public class ClickManager extends MouseAdapter {
             }
         }
     }
-
-    // 디버깅용: 현재 등록된 클릭 이벤트 반환
-    public static List<ClickEvent> getEventList() {
-        return new ArrayList<>(ClickEventList);
-    }
 }
