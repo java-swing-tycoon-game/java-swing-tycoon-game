@@ -65,8 +65,8 @@ public class EndingManager extends JFrame {
 
     private void updateEndingImage() {
         String imagePath = "";
-        int day = dayManager.getDay();  // 현재 Day
-        boolean isSuccess = (totalCoin >= 100 && day == 7); // 최종 성공 조건
+        int day = dayManager.getDay(); // 현재 Day
+        boolean isSuccess = (totalCoin >= 100 && day >= 7); // 성공 조건 변경
 
         if (isSuccess) {
             imagePath = "assets/img/ending-clear.png";
