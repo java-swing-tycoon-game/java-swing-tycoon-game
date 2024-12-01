@@ -1,5 +1,7 @@
 package GameManager;
 
+import Character.BlackConsumer;
+
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -21,11 +23,6 @@ public class ClickManager extends MouseAdapter {
         ClickEventList.remove(event);
     }
 
-    // 클릭 이벤트 모두 제거
-    public static void clearClickEventList() {
-        ClickEventList.clear();
-    }
-
     // 클릭 이벤트 처리
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -33,8 +30,10 @@ public class ClickManager extends MouseAdapter {
         if (onlyBcClick) {
             // bc만 클릭 가능
             for (ClickEvent click : ClickEventList) {
+                if (click instanceof BlackConsumer && click.setBounds().contains(clickPoint)) {
                     click.onClick(clickPoint);
                     break;
+                }
             }
         } else {
             for (ClickEvent click : ClickEventList) {
@@ -43,5 +42,10 @@ public class ClickManager extends MouseAdapter {
                 }
             }
         }
+    }
+
+    // 디버깅용: 현재 등록된 클릭 이벤트 반환
+    public static List<ClickEvent> getEventList() {
+        return new ArrayList<>(ClickEventList);
     }
 }

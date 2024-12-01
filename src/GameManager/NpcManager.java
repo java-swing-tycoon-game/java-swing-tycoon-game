@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 
+import static Scenes.Play.player;
+
 public class NpcManager {
     private final JLayeredPane parentPanel;
 
@@ -100,16 +102,12 @@ public class NpcManager {
             });
 
             ClickManager.removeClickEventList(npc);
+
             if (npc instanceof BlackConsumer) {
                 bcActive = false; // 블랙 컨슈머 플래그 초기화
 
                 // 다른거 클릭 복원
                 ClickManager.onlyBcClick = false;
-                ClickManager.clearClickEventList();
-
-                for (Npc otherNpc : npcList) {
-                    ClickManager.setClickEventList(otherNpc);
-                }
             }
             moveRoomTimer.start();
         });
@@ -145,7 +143,7 @@ public class NpcManager {
     private void spawnNpc() {
         executor.submit(() -> {
             // 10% 확률로 블랙 컨슈머 생성
-            if (Math.random() < 0.1) {
+            if (Math.random() < 0.8 && !bcActive) {
                 npc = createBc(npc);
             }
             // 일반 npc
@@ -157,15 +155,16 @@ public class NpcManager {
     }
 
     private Npc createBc(Npc npc) {
-        if (bcActive) {
-            return null; // 기존 블랙 컨슈머가 있을 경우 생성 중단
-        }
+//        if (bcActive) {
+//            return null; // 기존 블랙 컨슈머가 있을 경우 생성 중단
+//        }
 
         npc = new BlackConsumer();
         bcActive = true;
         ClickManager.onlyBcClick = true;
         addNpcPanel(npc, 200);
         moveBcToPlayer(npc);
+        player.moveToCenter(null); // 플레이어가 블랙컨슈머와 상호작용
 
         return npc;
     }
@@ -195,11 +194,6 @@ public class NpcManager {
     private void moveBcToPlayer(Npc npc) {
         executor.submit(() -> npc.moveToDest(Move.places.getLast(), false, ()-> {
             npc.setupRequest();
-
-            // bc 등장 시 다른 클릭 이벤트 제거
-            ClickManager.clearClickEventList();
-            ClickManager.setClickEventList(npc); // bc만 추가
-            ClickManager.onlyBcClick = true;
         }));
     }
 
