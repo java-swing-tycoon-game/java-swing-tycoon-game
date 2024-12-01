@@ -35,6 +35,8 @@ public class Npc extends Move implements ClickEvent {
     protected boolean active; // npc 상태
     protected boolean isMoving = false; // 이동 중인지
 
+    public int specialCoin = 0;
+
     // 생성자
     public Npc() {
         super(960, 600); // 초기 좌표 설정
@@ -116,7 +118,7 @@ public class Npc extends Move implements ClickEvent {
                         NpcManager.finishNpc(this);
 
                         // 돈을 벌었어요^^
-                        CoinManager.updateCoinAmount(5);
+                        CoinManager.updateCoinAmount(5 + specialCoin);
                         new bgmManager("assets/bgm/finish.wav", false).toggleMusic();
                         showCoinImage();
                         removeFromParent();
