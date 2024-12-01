@@ -11,9 +11,11 @@ import Scenes.Buy;
 import Scenes.Play;
 
 public class ProgressPaneManager {
-    private final int[] dayTimes = {60, 50, 45, 40, 35, 30, 25};
-    private int realTime;
-    private Timer dayTimer;
+    // private final int[] dayTimes = {60, 50, 45, 40, 35, 30, 25}; // 각 day의 초기 시간 final int 배열로 고정..
+    private final int[] dayTimes = {6, 6, 6, 6, 6, 6, 6};
+    private int realTime; // 현재 남은 시간
+    private Timer dayTimer; // 날짜 타이머
+
     private DayManager dayManager;
     private boolean isBuyPopupOpen = false;
     private CoinManager coinManager = new CoinManager();
@@ -23,10 +25,15 @@ public class ProgressPaneManager {
     private Play playInstance;
 
     public ProgressPaneManager(DayManager dayManager) {
-        this.dayManager = dayManager;
+        this.dayManager = dayManager.getInstance();
         this.progressPane = new ImageProgressPane();
     }
 
+    public ProgressPaneManager() {
+        this.dayPanel = new ImageDayPanel(); // dayPanel 초기화
+        this.progressPane = new ImageProgressPane(); // progressPane 초기화
+    }
+  
     public JPanel getProgressPane() {
         return progressPane;
     }
@@ -79,14 +86,17 @@ public class ProgressPaneManager {
 
         SwingUtilities.invokeLater(() -> {
             Buy buyPopup = new Buy();
-
             buyPopup.setOnDisposeAction(() -> {
                 isBuyPopupOpen = false;
 
                 if (buyPopup.isNextButtonClicked()) {
-                    DayManager.getInstance().nextDay();
-                    new StartManager(DayManager.getInstance(), dayManager.getDay() == 1);
-                    startDayTimer();
+                    DayManager.getInstance().nextDay(); // DayManager의 상태를 증가
+
+                    if (dayManager.getDay() == 1) {new StartManager(DayManager.getInstance(), true);}
+                    else {new StartManager(DayManager.getInstance(), false);} // 증가된 상태로 StartManager 시작
+
+                    startDayTimer(); // 새로운 Day와 관련된 타이머 시작
+                    // new StartManager(DayManager.getInstance(), dayManager.getDay() == 1);
                 }
             });
 
@@ -99,9 +109,8 @@ public class ProgressPaneManager {
             if (playInstance != null) {
                 playInstance.dispose();
             }
-
-            EndingManager endingManager = new EndingManager(dayManager, coinManager);
-            endingManager.setVisible(true);
+            EndingManager endingManager = new EndingManager(dayManager, coinManager);  // EndingManager 생성
+            endingManager.setVisible(true);  // 게임 오버 화면 띄우기
         });
     }
 
@@ -160,5 +169,33 @@ public class ProgressPaneManager {
 
             g2d.dispose();
         }
+    }
+
+    // 데이 이미지 관련
+    public class ImageDayPanel extends JPanel {
+        private JLabel dayLabel;
+
+        public ImageDayPanel() {
+            setLayout(new FlowLayout(FlowLayout.LEFT));
+            setOpaque(false);
+
+            dayLabel = new JLabel();
+            updateDayImage(dayManager.getDay());    // 데이 이미지 초기화
+            add(dayLabel);
+        }
+
+        // Day 변경 시 데이 이미지와 장소 가시성을 함께 변경
+        public void updateDayImage(int day) {
+            try {
+                // Day 이미지 업데이트
+                String dayImagePath = "assets/img/day" + day + ".png";
+                BufferedImage dayImage = ImageIO.read(new File(dayImagePath));
+                dayLabel.setIcon(new ImageIcon(dayImage));
+            } catch (IOException ex) {
+                System.err.println("이미지 로드 실패: " + ex.getMessage());
+                dayLabel.setIcon(null); // 이미지 로드 실패 시 초기화
+            }
+        }
+
     }
 }
