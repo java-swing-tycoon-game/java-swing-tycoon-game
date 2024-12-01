@@ -9,10 +9,12 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Player extends MovePlayer implements ClickEvent {
-    private final Image characterImg = new ImageIcon("assets/img/playerCharacter.png").getImage();
+    public Image characterImg = new ImageIcon("assets/img/playerCharacter.png").getImage();
 
     private Image walkingImg;
     private int walkingIndex = 0;
+
+    private BufferedImage buffer;
 
     private Image holdItemL = null; // 왼손
     private Image holdItemR = null; // 오른손
@@ -42,7 +44,9 @@ public class Player extends MovePlayer implements ClickEvent {
         return holdItemR;
     }
 
-    private BufferedImage buffer;
+    public void imageChange (String path) {
+        characterImg = new ImageIcon(path).getImage();
+    }
 
     @Override
     public Rectangle setBounds() {
