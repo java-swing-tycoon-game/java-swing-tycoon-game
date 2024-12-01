@@ -39,6 +39,7 @@ public class StartManager extends JDialog {
     }
 
     private void startAnimation() {
+        if(dayManager.getDay() >7)return;
         if (isFirstDay) {
             // 첫날: GameStart.png 애니메이션 실행
             animationTimer = new Timer(animationSpeed, e -> {
@@ -55,6 +56,7 @@ public class StartManager extends JDialog {
 
         } else {
             showCoinGoalStage();
+
         }
     }
 
@@ -79,40 +81,49 @@ public class StartManager extends JDialog {
         int day = dayManager.getDay();
         int coinValue = (day > 0 && day <= coins.length) ? coins[day - 1] : 0;
 
-        // Coin 목표값 회전 텍스트
-        RotatingTextLabel rotatingTextLabel = new RotatingTextLabel(String.valueOf(coinValue));
-        rotatingTextLabel.setBounds(0, 200, 1024, 768);
-        contentPanel.add(rotatingTextLabel);
 
-        Timer rotationTimer = new Timer(5, rotationEvent -> {
-            rotatingTextLabel.setAngle((rotatingTextLabel.getAngle() + 20) % 360);
+        JLabel growingTextLabel = new JLabel(String.valueOf(coinValue), SwingConstants.CENTER);
+        growingTextLabel.setFont(FontManager.loadFont(50f));
+        growingTextLabel.setForeground(Color.decode("#FD3D39"));
+        growingTextLabel.setBounds(350, 400, 350, 300);
+        contentPanel.add(growingTextLabel);
+
+
+        Timer growTimer = new Timer(20, e -> {
+            Font currentFont = growingTextLabel.getFont();
+            float newSize = currentFont.getSize2D() + 3;
+            if (newSize < 180f) {
+                growingTextLabel.setFont(currentFont.deriveFont(newSize));
+            } else {
+                ((Timer) e.getSource()).stop();
+            }
         });
-        rotationTimer.start();
+        growTimer.start();
 
-        Timer stopRotationTimer = new Timer(1500, stopEvent -> {
-            rotationTimer.stop();
-            rotatingTextLabel.setAngle(0);
-
+        Timer nextStageTimer = new Timer(1500, e -> {
             if (isFirstDay) {
-                // 첫날: Play 시작
+
                 Timer playTimer = new Timer(500, playEvent -> {
-                    dispose();
                     new Play();
+                    dispose();
+
                 });
                 playTimer.setRepeats(false);
                 playTimer.start();
             } else {
-                // 둘째 날 이후: 기존 게임 상태 유지
+
                 Timer resumeTimer = new Timer(500, resumeEvent -> {
-                    dispose(); // 창 닫고 기존 게임으로 돌아감
+                    dispose();
                 });
                 resumeTimer.setRepeats(false);
                 resumeTimer.start();
             }
         });
-        stopRotationTimer.setRepeats(false);
-        stopRotationTimer.start();
+        nextStageTimer.setRepeats(false);
+        nextStageTimer.start();
     }
+
+
 
     private void setupContentPanel() {
         contentPanel = new JPanel();
@@ -132,7 +143,6 @@ public class StartManager extends JDialog {
     private void updateImageSize() {
         if (imageLabel == null) return;
 
-        // ImageIcon originalIcon = (ImageIcon) imageLabel.getIcon();
         ImageIcon originalIcon = new ImageIcon("assets/img/GameStart.png");
 
         Image scaledImage = originalIcon.getImage().getScaledInstance(imageWidth, imageHeight, Image.SCALE_SMOOTH);
@@ -143,46 +153,12 @@ public class StartManager extends JDialog {
         imageLabel.setBounds(x, y, imageWidth, imageHeight);
     }
 
-    class RotatingTextLabel extends JLabel {
-        private double angle = 0;
 
-        public RotatingTextLabel(String text) {
-            super(text, SwingConstants.CENTER);
-            setFont(FontManager.loadFont(150f));
-            setForeground(Color.decode("#FD3D39"));
-        }
-
-        @Override
-        protected void paintComponent(Graphics g) {
-            Graphics2D g2d = (Graphics2D) g.create();
-            int centerX = getWidth() / 2;
-            int centerY = getHeight() / 2;
-            g2d.setFont(getFont());
-            g2d.setColor(getForeground());
-            g2d.translate(centerX, centerY);
-            g2d.rotate(Math.toRadians(angle));
-            g2d.translate(-centerX, -centerY);
-            g2d.drawString(getText(), centerX - g2d.getFontMetrics().stringWidth(getText()) / 2, centerY);
-            g2d.dispose();
-        }
-
-        public double getAngle() {
-            return angle;
-        }
-
-        public void setAngle(double angle) {
-            this.angle = angle;
-            repaint();
-        }
-    }
 
     public static void main(String[] args) {
         DayManager dayManager = DayManager.getInstance();
 
-        // Day 1 시작
         new StartManager(dayManager, true);
-
-        // Day 2 이후 (예시)
         new StartManager(dayManager, false);
     }
 }
