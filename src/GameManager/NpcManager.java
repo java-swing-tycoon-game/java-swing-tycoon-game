@@ -191,6 +191,14 @@ public class NpcManager {
     }
 
     private static Npc createNpc(Npc npc) {
+        boolean hasEmptyWaitRoom = waitRoom.stream()
+                .anyMatch(place -> !getMapNpc(waitRoomToNpcMap, place));
+
+        if (!hasEmptyWaitRoom) {
+            System.out.println("대기 구역이 모두 가득 찼습니다. NPC 생성 중지.");
+            return null;
+        }
+
         npc = new Npc();
 
         npcList.add(npc);
@@ -272,6 +280,10 @@ public class NpcManager {
                     .findFirst()
                     .orElse(null);
 
+            npc.moveToDest(targetRoom, true, () -> {
+                spawnTimer.start();
+            });
+
             if (currentRoom != null) {
                 roomToNpcMap.remove(currentRoom);
                 System.out.println("이전 룸 비워짐: " + currentRoom);
@@ -279,9 +291,7 @@ public class NpcManager {
 
             setNpcToMap(roomToNpcMap,targetRoom, npc); // 룸에 추가
 
-            npc.moveToDest(targetRoom, true, () -> {
-                spawnTimer.start();
-            });
+
         } else {
             System.out.println("대기 구역에서 계속 대기");
             moveRoomTimer.stop();
@@ -293,8 +303,10 @@ public class NpcManager {
     public static void clearAllNpcs() {
         executor.submit(() -> {
             for (Npc npc : new ArrayList<>(npcList)) {
+                npc.setActive(false); // NPC 비활성화
                 removeNpc(npc); // 모든 NPC를 제거
             }
+
             forceRemoveBlackConsumer();
 
             // 상태 초기화

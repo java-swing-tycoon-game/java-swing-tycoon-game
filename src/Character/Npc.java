@@ -87,13 +87,10 @@ public class Npc extends Move implements ClickEvent {
     // 요청 생성
     public void setupRequest() {
         request = new Request(this);
-        if (request != null && request.getRequestItem() != null) {
+        if (request.getRequestItem() != null) {
             System.out.println("요청 생성 완료: " + request.getRequestItem());
-        } else {
-            System.err.println("요청 생성 실패!");
         }
     }
-
 
     @Override // npc 범위만 클릭해서 요청 수행하도록
     public Rectangle setBounds() {

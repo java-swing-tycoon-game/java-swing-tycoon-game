@@ -37,13 +37,8 @@ public class ClickManager extends MouseAdapter {
             }
         } else {
             for (ClickEvent click : ClickEventList) {
-                if(click != null) {
-                    if (click.setBounds().contains(clickPoint)) {
-                        click.onClick(clickPoint);
-                    }
-                }
-                else{
-                    System.out.println("bc가 1빠로 발생");
+                if (click.setBounds().contains(clickPoint)) {
+                    click.onClick(clickPoint);
                 }
             }
         }
