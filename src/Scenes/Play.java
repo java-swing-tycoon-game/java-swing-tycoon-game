@@ -45,7 +45,7 @@ public class Play extends JFrame {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        dayManager = new DayManager(); // DayManager 초기화
+        dayManager = DayManager.getInstance();
         progressPaneManager = new ProgressPaneManager(dayManager); // ProgressPaneManager 초기화
 
         setMainPanel();
@@ -239,6 +239,12 @@ public class Play extends JFrame {
      */
 
     public static void main(String[] args) {
-        new StartManager();
+        DayManager dayManager = DayManager.getInstance();
+
+        // Day 1 시작
+        new StartManager(dayManager, true);
+
+        // Day 2 이후 (예시)
+        new StartManager(dayManager, false);
     }
 }

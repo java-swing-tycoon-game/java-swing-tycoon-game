@@ -11,7 +11,7 @@ import Scenes.Buy;
 import Scenes.Play;
 
 public class ProgressPaneManager {
-    private final int[] dayTimes = {6,6,6,6,6,6,6}; // 각 day의 초기 시간 final int 배열로 고정.. (디버깅용)
+    private final int[] dayTimes = {60, 50, 45, 40, 35, 30, 25}; // 각 day의 초기 시간 final int 배열로 고정..
     private int realTime; // 현재 남은 시간
     private Timer dayTimer; // 날짜 타이머
     private DayManager dayManager;
@@ -22,16 +22,15 @@ public class ProgressPaneManager {
     private ImageDayPanel dayPanel;
     private Play playInstance; // Play 인스턴스 추가
 
-
     public ProgressPaneManager(DayManager dayManager) {
         this.dayManager = dayManager;
         this.progressPane = new ImageProgressPane();
     }
 
-    public ProgressPaneManager() {
-        this.dayPanel = new ImageDayPanel(); // dayPanel 초기화
-        this.progressPane = new ImageProgressPane(); // progressPane 초기화
-    }
+//    public ProgressPaneManager() {
+//        this.dayPanel = new ImageDayPanel(); // dayPanel 초기화
+//        this.progressPane = new ImageProgressPane(); // progressPane 초기화
+//    }
 
     public JPanel getProgressPane() {
         return progressPane; // 시간바 관련
@@ -55,7 +54,18 @@ public class ProgressPaneManager {
 
                 if (realTime <= 0) {
                     dayTimer.cancel();
-                    showBuyScreen();
+
+                    if (coinManager.getCoinAmount() >= coinManager.coins[dayManager.getDay() - 1]) {
+                        if (dayManager.getDay() == dayTimes.length) {
+                            showEndingScreen();
+                        }
+                        else {
+                            showBuyScreen();
+                        }
+                    }
+                    else {
+                        showEndingScreen();
+                    }
                 }
             }
         }, 1000, 1000);
@@ -72,23 +82,23 @@ public class ProgressPaneManager {
 
             buyPopup.setOnDisposeAction(() -> {
                 isBuyPopupOpen = false;
+
                 if (buyPopup.isNextButtonClicked()) {
-                    dayManager.nextDay();
-                    startDayTimer();
+                    DayManager.getInstance().nextDay(); // DayManager의 상태를 증가
+                    if (dayManager.getDay() == 1) {new StartManager(DayManager.getInstance(), true);}
+                    else {new StartManager(DayManager.getInstance(), false);} // 증가된 상태로 StartManager 시작
+                    startDayTimer(); // 새로운 Day와 관련된 타이머 시작
                 }
             });
 
             buyPopup.setVisible(true);
         });
+
+
     }
 
     public JPanel getDayPanel() {
         return dayPanel; // 데이 이미지 관련
-    }
-
-    // day 값을 DayManager에서 가져옴
-    public int getDay() {
-        return dayManager.getDay();
     }
 
     // 엔딩 화면을 띄우는 함수
@@ -164,7 +174,7 @@ public class ProgressPaneManager {
             setOpaque(false);
 
             dayLabel = new JLabel();
-            updateDayImage(getDay());    // 데이 이미지 초기화
+            updateDayImage(dayManager.getDay());    // 데이 이미지 초기화
             add(dayLabel);
         }
 

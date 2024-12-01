@@ -10,6 +10,7 @@ public class Story extends JFrame {
         setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다");
         setSize(1024, 768);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
         setLayout(null);
         getContentPane().setBackground(Color.decode("#D5F2FF"));
 

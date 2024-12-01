@@ -52,6 +52,8 @@ public class Buy extends JFrame {
         buyPopup.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         buyPopup.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 
+        setUndecorated(true);
+
         // 배경 설정
         buyPopup.getContentPane().setBackground(Color.decode("#D5F2FF"));
         JLabel backgroundLabel = new JLabel(new ImageIcon("assets/img/panel/buy.png"));
