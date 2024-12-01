@@ -36,12 +36,6 @@ public class Move extends JPanel {
     public ArrayList<Place> getPlaces() {
         return places;
     }
-//    public void setMoveSpeed(int speed) {
-//        this.moveSpeed = speed;
-//    }
-//    public int getMoveSpeed() {
-//        return moveSpeed;
-//    }
 
     // 캐릭터 이동 시키는 함수
     protected void moveCharacter() {

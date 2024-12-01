@@ -48,8 +48,6 @@ public class TopLoader extends JPanel {
             deco.ending();
 
         });
-
-
     }
 
 
