@@ -17,7 +17,7 @@ public class StartManager extends JDialog {
     private JPanel contentPanel;
     private Timer animationTimer;
     private DayManager dayManager;
-    private boolean isFirstDay; // 첫날 여부 플래그
+    private boolean isFirstDay;
 
     public StartManager(DayManager dayManager, boolean isFirstDay) {
         this.dayManager = dayManager;
@@ -39,9 +39,9 @@ public class StartManager extends JDialog {
     }
 
     private void startAnimation() {
-        if(dayManager.getDay() >7)return;
+        if(dayManager.getDay() > 7) return;
         if (isFirstDay) {
-            // 첫날: GameStart.png 애니메이션 실행
+
             animationTimer = new Timer(animationSpeed, e -> {
                 if (imageWidth < targetWidth || imageHeight < targetHeight) {
                     imageWidth = Math.min(imageWidth + growthStep, targetWidth);
@@ -65,7 +65,6 @@ public class StartManager extends JDialog {
         contentPanel.setLayout(null);
         contentPanel.setBounds(0, 0, 1024, 768);
 
-        // coinGoal.png 배경 설정
         contentPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {

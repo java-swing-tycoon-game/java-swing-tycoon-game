@@ -20,7 +20,7 @@ public class Play extends JFrame {
     private JLabel time; // 시간바
     private JPanel timePanel;
 
-    private bgmManager bgm;
+    private static bgmManager bgm;
     private CoinManager coinManager;
     private NpcManager npcManager;
     private ClickManager clickManager;
@@ -65,7 +65,7 @@ public class Play extends JFrame {
         mainPanel.addMouseListener(clickManager); // MouseListener 등록
     }
 
-    void playBgm() {
+    public void playBgm() {
         bgm = new bgmManager("assets/bgm/playBgm.wav", true);
         bgm.toggleMusic(); // 음악 자동 재생
 
@@ -90,6 +90,7 @@ public class Play extends JFrame {
         });
 
         setFocusable(true);
+
         requestFocusInWindow();
     }
 

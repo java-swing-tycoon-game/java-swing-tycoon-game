@@ -88,6 +88,13 @@ public class Buy extends JFrame {
                 itemBox.setEnabled(false); // 비활성화하여 클릭할 수 없도록
             }
 
+            // 구매 아이템 초기화 함수
+            if (dayManager.getDay() == 1) {
+                for (int j = 1; j < 6; j++) {
+                    if (alreadyPurchased == true) {alreadyPurchased = false;}
+                }
+            }
+
             // 클릭 리스너 추가
             itemBox.addActionListener(e -> {
                 int selectedIndex = (int) itemBox.getClientProperty("itemIndex");

@@ -52,8 +52,8 @@ public class TopLoader extends JPanel {
 
 
     public void updateLayers() {
-        removeAll(); // 이전 레이어 제거
-        initialize(); // 기본 탑로더 추가
+        removeAll();
+        initialize();
 
         int frameWidth = deco.getWidth();
         int frameHeight = deco.getHeight();
@@ -82,11 +82,11 @@ public class TopLoader extends JPanel {
             add(pinkLayer, Integer.valueOf(4));
         } else if (deco.currentList[1] == 1) {
             JLabel blueLayer = new JLabel(new ImageIcon("assets/img/decoItem/blue.png"));
-            blueLayer.setBounds(xPosition - 10, yPosition - 10, 600, frameHeight + 180);
+            blueLayer.setBounds(xPosition - 5, yPosition - 10, 600, frameHeight + 180);
             add(blueLayer, Integer.valueOf(4));
         } else if (deco.currentList[1] == 2) {
             JLabel yellowLayer = new JLabel(new ImageIcon("assets/img/decoItem/yellow.png"));
-            yellowLayer.setBounds(xPosition - 20, yPosition - 10, 600, frameHeight + 180);
+            yellowLayer.setBounds(xPosition - 5, yPosition - 10, 600, frameHeight + 180);
             add(yellowLayer, Integer.valueOf(4));
         }
 
