@@ -15,13 +15,14 @@ public class ProgressPaneManager {
     private final int[] dayTimes = {6, 6, 6, 6, 6, 6, 6};
     private int realTime; // 현재 남은 시간
     private Timer dayTimer; // 날짜 타이머
+
     private DayManager dayManager;
-    private boolean isBuyPopupOpen = false; // Buy 팝업 중복 방지 플래그
+    private boolean isBuyPopupOpen = false;
     private CoinManager coinManager = new CoinManager();
     private ImageProgressPane progressPane;
+    private boolean isPaused = false;
 
-    private ImageDayPanel dayPanel;
-    private Play playInstance; // Play 인스턴스 추가
+    private Play playInstance;
 
     public ProgressPaneManager(DayManager dayManager) {
         this.dayManager = dayManager.getInstance();
@@ -32,9 +33,9 @@ public class ProgressPaneManager {
         this.dayPanel = new ImageDayPanel(); // dayPanel 초기화
         this.progressPane = new ImageProgressPane(); // progressPane 초기화
     }
-
+  
     public JPanel getProgressPane() {
-        return progressPane; // 시간바 관련
+        return progressPane;
     }
 
     public void startDayTimer() {
@@ -49,32 +50,37 @@ public class ProgressPaneManager {
         dayTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
+                if (isPaused) {
+                    return; // 타이머가 일시정지된 상태에서는 동작하지 않음
+                }
+
                 realTime--;
                 int progress = (int) ((realTime / (double) dayTimes[dayManager.getDay() - 1]) * 100);
                 progressPane.updateProgress(progress);
 
                 if (realTime <= 0) {
                     dayTimer.cancel();
-
-                    if (coinManager.getCoinAmount() >= coinManager.coins[dayManager.getDay() - 1]) {
-                        if (dayManager.getDay() == dayTimes.length) {
-                            showEndingScreen();
-                        }
-                        else {
-                            showBuyScreen();
-                        }
-                    }
-                    else {
-                        showEndingScreen();
-                    }
+                    handleTimerEnd();
                 }
             }
         }, 1000, 1000);
     }
 
+    private void handleTimerEnd() {
+        if (coinManager.getCoinAmount() >= coinManager.coins[dayManager.getDay() - 1]) {
+            if (dayManager.getDay() == dayTimes.length) {
+                showEndingScreen();
+            } else {
+                showBuyScreen();
+            }
+        } else {
+            showEndingScreen();
+        }
+    }
+
     private void showBuyScreen() {
         if (isBuyPopupOpen) {
-            return; // 중복 생성 방지
+            return;
         }
         isBuyPopupOpen = true;
 
@@ -90,35 +96,43 @@ public class ProgressPaneManager {
                     else {new StartManager(DayManager.getInstance(), false);} // 증가된 상태로 StartManager 시작
 
                     startDayTimer(); // 새로운 Day와 관련된 타이머 시작
+                    // new StartManager(DayManager.getInstance(), dayManager.getDay() == 1);
                 }
             });
 
             buyPopup.setVisible(true);
         });
-
     }
 
-    // 엔딩 화면을 띄우는 함수
     private void showEndingScreen() {
         SwingUtilities.invokeLater(() -> {
             if (playInstance != null) {
-                playInstance.dispose();  // Play 화면 닫기
+                playInstance.dispose();
             }
             EndingManager endingManager = new EndingManager(dayManager, coinManager);  // EndingManager 생성
             endingManager.setVisible(true);  // 게임 오버 화면 띄우기
         });
     }
 
-    // 시간바 관련 클래스
+    public void pauseTimerForSeconds(int seconds) {
+        isPaused = true;
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                isPaused = false;
+            }
+        }, seconds * 1000);
+    }
+
     public class ImageProgressPane extends JPanel {
-        private JProgressBar progressBar;   // 진행률을 표시할 JProgressBar
-        private BufferedImage progressImage;    // 진행률 이미지
-        private BufferedImage backgroundImage;  // 배경 이미지
+        private JProgressBar progressBar;
+        private BufferedImage progressImage;
+        private BufferedImage backgroundImage;
 
         public ImageProgressPane() {
-            setPreferredSize(new java.awt.Dimension(600, 60));  // 전체 영역 임의로 설정해두기
+            setPreferredSize(new Dimension(600, 60));
             setLayout(null);
-            setOpaque(false);   // 시간바 배경 투명도
+            setOpaque(false);
 
             try {
                 progressImage = ImageIO.read(new File("assets/img/timeBar.png"));
@@ -127,11 +141,9 @@ public class ProgressPaneManager {
                 ex.printStackTrace();
             }
 
-            // JProgressBar 설정
             progressBar = new JProgressBar(0, 100);
             progressBar.setValue(100);
 
-            // 이미지들 패널에 추가
             add(progressBar);
         }
 
@@ -146,12 +158,10 @@ public class ProgressPaneManager {
 
             Graphics2D g2d = (Graphics2D) g.create();
 
-            // 배경 이미지 그리기
             if (backgroundImage != null) {
                 g2d.drawImage(backgroundImage, 0, 0, getWidth(), getHeight() - 50, this);
             }
 
-            // 진행률 이미지 그리기
             if (progressImage != null) {
                 int width = (int) (getWidth() * progressBar.getPercentComplete());
                 g2d.drawImage(progressImage, 5, 6, width - 2, getHeight() - 64, this);

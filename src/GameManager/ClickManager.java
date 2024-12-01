@@ -32,13 +32,18 @@ public class ClickManager extends MouseAdapter {
             for (ClickEvent click : ClickEventList) {
                 if (click instanceof BlackConsumer && click.setBounds().contains(clickPoint)) {
                     click.onClick(clickPoint);
-                    break;
+                    return;
                 }
             }
         } else {
             for (ClickEvent click : ClickEventList) {
-                if (click.setBounds().contains(clickPoint)) {
-                    click.onClick(clickPoint);
+                if(click != null) {
+                    if (click.setBounds().contains(clickPoint)) {
+                        click.onClick(clickPoint);
+                    }
+                }
+                else{
+                    System.out.println("bc가 1빠로 발생");
                 }
             }
         }

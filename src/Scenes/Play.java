@@ -146,6 +146,7 @@ public class Play extends JFrame {
         SimplePlaceManager.setOpaque(false);
         SimplePlaceManager.setBounds(0, 0, 1024, 768); // 위치와 크기를 설정하여 mapPanel과 겹치도록 설정
         mainPanel.add(SimplePlaceManager, Integer.valueOf(50));  // 위쪽 레이어
+        SimplePlaceManager.setPlaceVisible(1, true);
 
         // top 패널을 layeredPane에 추가
         JPanel top = showTop();
@@ -178,7 +179,7 @@ public class Play extends JFrame {
         // 데이
         JPanel dayPanel = dayManager.getDayPanel();
 
-        itemPanel = new ItemPanel();
+        itemPanel = new ItemPanel(progressPaneManager);
         top.add(dayPanel, BorderLayout.WEST);
         top.add(itemPanel, BorderLayout.EAST);
 
@@ -220,7 +221,7 @@ public class Play extends JFrame {
     void updateCoinAmount(int amount) {
         CoinManager.updateCoinAmount(amount);  // CoinManager를 통해 코인 금액 업데이트
     }
-  
+
     /*
     추후에 수정해야 할 것 같아서! 그냥 냅둬주세요!!
     // 하단 시간바 크기 조정
