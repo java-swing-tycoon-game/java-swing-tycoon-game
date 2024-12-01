@@ -27,6 +27,7 @@ public class Play extends JFrame {
     private ClickManager clickManager;
     private DayManager dayManager;
     private ProgressPaneManager progressPaneManager;
+
     public static boolean[] itemArray = {true, false, false, false}; // 기본값 false
     private String[] itemIcons = {
             "assets/img/item/itemCircle.png",
@@ -140,8 +141,8 @@ public class Play extends JFrame {
         map.setBounds(0, 0, 1024, 768);
         mainPanel.add(map, Integer.valueOf(0));
 
-        // place 패널을 layeredPane에 추가
-        JPanel SimplePlaceManager = new SimplePlaceManager();
+        // place 패널을 layeredPane에 추가]
+        SimplePlaceManager SimplePlaceManager = DayManager.getInstance().getPlaceManager();
         SimplePlaceManager.setOpaque(false);
         SimplePlaceManager.setBounds(0, 0, 1024, 768); // 위치와 크기를 설정하여 mapPanel과 겹치도록 설정
         mainPanel.add(SimplePlaceManager, Integer.valueOf(50));  // 위쪽 레이어
