@@ -1,5 +1,6 @@
 package Character;
 
+import GameManager.ItemManager;
 import GameManager.NpcManager;
 
 import javax.imageio.ImageIO;
@@ -9,17 +10,15 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Request {
     protected Npc npc;
 
-    private static final String[] itemRequestList = {"assets/img/item/cup.png", "assets/img/item/photoCard.png", "assets/img/item/popcorn.png", "assets/img/item/doll.png", "assets/img/item/bag.png", "assets/img/item/album.png", "assets/img/item/deco.png"};
-
     protected BufferedImage requestImage;
-
-    protected BufferedImage requestItemImage;
     private Image requestItem; // 요청 말풍선에 뜨는 이미지
+
     private final ArrayList<Place> zone; // 요청과 연관된 장소
 
     protected Timer requestTimer; // 요청 발생 타이머
@@ -29,11 +28,13 @@ public class Request {
 
     protected boolean active; // 개별 요청의 완료 여부
     //public boolean fail = false;
+    private final ItemManager itemManager;
 
     public Request(Npc npc) {
         this.npc = npc;
         active = false;
         zone = new ArrayList<>();
+        this.itemManager = ItemManager.getInstance(); // 싱글톤 참조
         setZone();
 
         requestImage = loadImage("assets/img/npc/request.png");
@@ -158,13 +159,10 @@ public class Request {
             progressTimer.stop();   // 진행도 업데이트 중지
             failTimer.stop();       // 실패 타이머 중지
 
-            // 요청 실패 처리
-            //npc.requestCount = Npc.MAX_REQUESTS;
             npc.setActive(false);
             NpcManager.finishNpc(npc);
         }
     }
-
 
     // 요청 완료
     public void completeRequest() {
@@ -178,6 +176,20 @@ public class Request {
 
     public Image getRequestItem() {
         return requestItem;
+    }
+
+    // visible 상태인 아이템 중에서 랜덤 선택
+    private Image getRandomVisibleItem(int startIndex, int endIndex) {
+        List<Image> visibleItems = new ArrayList<>();
+        for (int i = startIndex; i < endIndex; i++) {
+            if (itemManager.getVisible(i)) {
+                visibleItems.add(itemManager.itemImages.get(i));
+            }
+        }
+        if (visibleItems.isEmpty()) {
+            return null;
+        }
+        return visibleItems.get(new Random().nextInt(visibleItems.size()));
     }
 
     // 장소에 맞춰 요청할 아이템 이미지 세팅
@@ -196,25 +208,22 @@ public class Request {
 
     // 대기 중 요청을 랜덤으로 선택
     private Image setWaitingRequest() {
-        Random random = new Random();
-        return new ImageIcon(itemRequestList[random.nextInt(2)]).getImage();
+        return getRandomVisibleItem(0, 2);
     }
 
     // 무비 중 요청을 랜덤으로 선택
     private Image setMovieRequest() {
-        Random random = new Random();
-        return new ImageIcon(itemRequestList[random.nextInt(2, 4)]).getImage();
+        return getRandomVisibleItem(0, 4);
     }
 
     // 굿즈 중 요청을 랜덤으로 선택
     private Image setGoodsRequest() {
-        Random random = new Random();
-        return new ImageIcon(itemRequestList[random.nextInt(4, 6)]).getImage();
+        return getRandomVisibleItem(3, 6);
     }
 
     // 데코 요청
     private Image setDecoRequest() {
-        return new ImageIcon(itemRequestList[6]).getImage();
+        return ItemManager.itemImages.get(6);
     }
 
     public void draw(Graphics2D g2d, int x, int y) {

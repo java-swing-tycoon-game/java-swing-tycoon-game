@@ -35,12 +35,23 @@ public class BlackConsumer extends Npc {
 
     @Override // bc만 클릭 되도록
     public Rectangle setBounds() {
-        clickBounds = new Rectangle(characterX, characterY, 1024, 800);
+        clickBounds = new Rectangle(characterX, characterY, 120, 150);
         return clickBounds;
     }
 
     @Override // 타자게임 시작
     public void onClick(Point clickPoint) {
+//        Play.player.moveToCenter(() -> {
+//            if (request != null && !ans.ansActive) {
+//                ans.ansActive = true;
+//
+//                requestFocusInWindow();
+//                repaint();
+//            }
+//        });
+    }
+
+    public void bcAuto() {
         Play.player.moveToCenter(() -> {
             if (request != null && !ans.ansActive) {
                 ans.ansActive = true;

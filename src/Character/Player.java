@@ -18,7 +18,7 @@ public class Player extends MovePlayer implements ClickEvent {
     private Image holdItemR = null; // 오른손
     private PickDrop pickDrop;
 
-    private boolean isMoving = false; // 이동 중인지
+    public boolean isMoving = false; // 이동 중인지
     private int lastVisitedCase = -1; // 이전 방문 장소(Num)을 저장
 
     public Player(ItemManager itemManager) {
