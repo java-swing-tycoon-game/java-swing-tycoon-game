@@ -5,7 +5,7 @@ import Scenes.Play;
 import javax.swing.*;
 import java.awt.*;
 
-public class StartManager extends JFrame {
+public class StartManager extends JDialog {
     private int imageWidth = 200;
     private int imageHeight = 75;
     private final int targetWidth = 800;
@@ -23,10 +23,10 @@ public class StartManager extends JFrame {
         this.dayManager = dayManager;
         this.isFirstDay = isFirstDay;
 
-        setTitle("Start Manager");
+        setUndecorated(true);
         setSize(1038, 805);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         setupContentPanel();
 
@@ -54,7 +54,6 @@ public class StartManager extends JFrame {
             animationTimer.start();
 
         } else {
-            // 둘째 날 이후 바로 coinGoal.png 실행
             showCoinGoalStage();
         }
     }
@@ -118,7 +117,7 @@ public class StartManager extends JFrame {
     private void setupContentPanel() {
         contentPanel = new JPanel();
         contentPanel.setLayout(null);
-        contentPanel.setBackground(Color.decode("#E3F6FF"));
+        contentPanel.setBackground(Color.decode("#FED9FC"));
         contentPanel.setBounds(0, 0, 1024, 768);
         add(contentPanel);
     }
