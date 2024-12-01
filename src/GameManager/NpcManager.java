@@ -144,8 +144,8 @@ public class NpcManager {
             }
         //}
 
-        // UI에서 NPC 제거
-        npc.removeFromParent();
+        npc.removeFromParent(); // NPC를 UI에서 제거
+        npc = null; // 객체 참조 해제
     }
 
     // 생성 시작
@@ -167,7 +167,7 @@ public class NpcManager {
     private void spawnNpc() {
         executor.submit(() -> {
             if(player.isMoving) {// 일반 npc
-                npc = createNpc(npc);
+                npc = createNpc();
                 bcChance += 0.05;
             }
             else {
@@ -177,7 +177,7 @@ public class NpcManager {
                     bcChance -= 0.07;
                 }
                 else {
-                    npc = createNpc(npc);
+                    npc = createNpc();
                     ClickManager.setClickEventList(npc);
                     bcChance += 0.05;
                 }
@@ -201,7 +201,7 @@ public class NpcManager {
         return bc;
     }
 
-    private static Npc createNpc(Npc npc) {
+    private static Npc createNpc() {
         boolean hasEmptyWaitRoom = waitRoom.stream()
                 .anyMatch(place -> !getMapNpc(waitRoomToNpcMap, place));
 
@@ -210,7 +210,7 @@ public class NpcManager {
             return null;
         }
 
-        npc = new Npc();
+        Npc npc = new Npc(); // 새 Npc 객체 생성
 
         npcList.add(npc);
         npcCount++;
@@ -334,6 +334,7 @@ public class NpcManager {
                 // NPC가 활성화되어 있더라도 강제 제거
                 npc.setActive(false); // 비활성화 처리
                 finishNpc(npc);       // 맵에서 삭제
+                removeNpc(npc);
             }
 
             // 블랙컨슈머 강제 종료
@@ -405,6 +406,13 @@ public class NpcManager {
         NpcManager.maxNpc = maxNpc;
 
         npcList = new ArrayList<>();
+
+        // Null 체크 및 초기화
+        if (Npc.places == null) {
+            System.err.println("Npc.places가 초기화되지 않았습니다.");
+            Npc.places = Place.createPlaces(); // Npc.places 초기화
+        }
+
         room = Npc.places.stream()
                 .filter(place -> place.getNum() == 2)
                 .collect(Collectors.toCollection(ArrayList::new));

@@ -10,6 +10,8 @@ import java.awt.image.BufferedImage;
 import java.util.Random;
 import Scenes.Play;
 
+import static GameManager.NpcManager.finishNpc;
+
 public class Npc extends Move implements ClickEvent {
     ////// 이미지 경로 //////
     // face와 leg는 모든 npc가 공통 사용
@@ -31,7 +33,7 @@ public class Npc extends Move implements ClickEvent {
     // 요청 클래스
     public Request request;
     public int requestCount = 0; // 요청 횟수
-    public static final int MAX_REQUESTS = 3; // 최대 요청 횟수
+    public static final int MAX_REQUESTS = 2; // 최대 요청 횟수
     protected boolean active; // npc 상태
     protected boolean isMoving = false; // 이동 중인지
 
@@ -40,7 +42,7 @@ public class Npc extends Move implements ClickEvent {
     // 생성자
     public Npc() {
         super(960, 600); // 초기 좌표 설정
-
+        resetNpc();
         randomSetNpc(); // npc 이미지 조합
         walkingAnimation();
         active = true;
@@ -60,7 +62,6 @@ public class Npc extends Move implements ClickEvent {
         setupRequest();             // 새로운 요청 설정
         System.out.println("resetNpc(): NPC 상태 초기화 완료");
     }
-
 
     ////////// NPC 이미지 관련 //////////
     // NPC 이미지 조합하기
@@ -137,13 +138,14 @@ public class Npc extends Move implements ClickEvent {
                     if (requestCount >= MAX_REQUESTS) {
                         active = false;
                         System.out.println("NPC가 비활성화되었습니다.");
-                        NpcManager.finishNpc(this);
+                        finishNpc(this);
 
                         // 돈을 벌었어요^^
-                        CoinManager.updateCoinAmount(5 + specialCoin);
+                        CoinManager.updateCoinAmount(7 + specialCoin);
                         new bgmManager("assets/bgm/finish.wav", false).toggleMusic();
                         showCoinImage();
-                        NpcManager.finishNpc(this);
+                        finishNpc(this);
+                        NpcManager.removeNpc(this);
                     }
                 }
             } else {
@@ -198,17 +200,22 @@ public class Npc extends Move implements ClickEvent {
     }
 
     private void showCoinImage() {
+        // NPC 위치 저장
+        int coinX = characterX;
+        int coinY = characterY;
+
         // parent가 null인 경우 Play 클래스의 mainPanel을 사용
         Container parent = getParent() != null ? getParent() : Play.instance.getMainPanel();
 
         if (parent == null) {
-            System.err.println("코인 이미지 불가");
+            System.err.println("코인 이미지 표시 불가: parent가 null입니다.");
             return;
         }
 
-        ImageIcon coinIcon = new ImageIcon("assets/img/coinImage.png"); // 이미지 경로
+        // 코인 이미지 생성 및 설정
+        ImageIcon coinIcon = new ImageIcon("assets/img/coinImage.png");
         JLabel coinLabel = new JLabel(coinIcon);
-        coinLabel.setBounds(characterX, characterY, 50, 50); // 캐릭터 위치에 맞게 조정
+        coinLabel.setBounds(coinX - 25, coinY - 25, 50, 50); // 코인의 중심이 NPC 위치에 오도록 조정
         coinLabel.setOpaque(false);
 
         // 코인 이미지를 부모 컨테이너에 추가
@@ -221,6 +228,7 @@ public class Npc extends Move implements ClickEvent {
             parent.remove(coinLabel);
             parent.revalidate();
             parent.repaint();
+            finishNpc(this);
         });
         timer.setRepeats(false);
         timer.start();

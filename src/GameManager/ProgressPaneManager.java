@@ -13,7 +13,7 @@ import Scenes.Buy;
 import Scenes.Play;
 
 public class ProgressPaneManager {
-    private final int[] dayTimes = {50, 70, 80, 80, 80, 80, 80}; // 각 day의 초기 시간 final int 배열로 고정..
+    private final int[] dayTimes = {40, 50, 50, 60, 60, 60, 60}; // 각 day의 초기 시간 final int 배열로 고정..
     private int realTime; // 현재 남은 시간
     private Timer dayTimer; // 날짜 타이머
 

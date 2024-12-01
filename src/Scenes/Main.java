@@ -56,9 +56,9 @@ public class Main extends JFrame {
                 DayManager dayManager = DayManager.getInstance();
                 dayManager.setDay();
                 dayManager.nextDay();
-                System.out.println(dayManager.getDay());    // 1로 제대로 출력
+                System.out.println(DayManager.getDay());    // 1로 제대로 출력
 
-                if (dayManager.getDay() == 7 || dayManager.getDay() == 1) {new StartManager(new DayManager(), true);}
+                if (DayManager.getDay() == 7 || DayManager.getDay() == 1) {new StartManager(new DayManager(), true);}
                 else {new StartManager(dayManager, false);}
                 dispose(); // 현재 창 닫기
 
