@@ -100,6 +100,17 @@ public class NpcManager {
         executor.submit(() -> {
             npcList.remove(npc);
 
+            // NPC가 룸 또는 대기실 맵에 있으면 제거
+            Place npcPlace = findNpc(roomToNpcMap, npc);
+            if (npcPlace != null) {
+                removeNpcFromMap(roomToNpcMap, npcPlace);
+            } else {
+                npcPlace = findNpc(waitRoomToNpcMap, npc);
+                if (npcPlace != null) {
+                    removeNpcFromMap(waitRoomToNpcMap, npcPlace);
+                }
+            }
+
             SwingUtilities.invokeLater(() -> {
                 parentPanel.remove(npc);
                 parentPanel.revalidate();
@@ -116,12 +127,6 @@ public class NpcManager {
 
                 // 디버깅용 로그
                 System.out.println("블랙컨슈머 제거됨. 클릭 복구");
-
-//                // 기존 클릭 이벤트 복구
-//                for (Npc otherNpc : npcList) {
-//                    ClickManager.setClickEventList(otherNpc);
-//                }
-//                ClickManager.setClickEventList(player); // 플레이어 클릭 복구
             }
 
             moveRoomTimer.start();
@@ -313,13 +318,23 @@ public class NpcManager {
         n++;
     }
 
-    // 모든 NPC 제거
+    /////////// 데이에 맞추어 변화 시도 ///////////
+    // 모든 NPC 상태 초기화
+    public static void resetAllNpcStates() {
+        for (Npc npc : npcList) {
+            npc.resetNpc(); // 모든 NPC 상태 초기화
+        }
+        System.out.println("모든 NPC 상태 초기화 완료");
+    }
+
     // 모든 NPC 제거
     public static void clearAllNpcs() {
         executor.submit(() -> {
             // NPC 제거
             for (Npc npc : new ArrayList<>(npcList)) {
-                removeNpc(npc); // NPC를 UI와 리스트에서 제거
+                // NPC가 활성화되어 있더라도 강제 제거
+                npc.setActive(false); // 비활성화 처리
+                finishNpc(npc);       // 맵에서 삭제
             }
 
             // 블랙컨슈머 강제 종료
@@ -350,14 +365,12 @@ public class NpcManager {
         });
     }
 
-
     // 블랙컨슈머 강제 종료 메서드
     public static void forceRemoveBlackConsumer() {
         if (bcActive && bc != null) {
             System.out.println("블랙컨슈머 게임 진행 중 강제 종료");
 
             SwingUtilities.invokeLater(() -> {
-                //parentPanel.remove(bc); // UI에서 블랙컨슈머 제거
                 parentPanel.revalidate(); // 레이아웃 갱신
                 parentPanel.repaint(); // 화면 다시 그리기
             });
@@ -369,7 +382,40 @@ public class NpcManager {
         }
     }
 
-    /////////// 데이에 맞추어 변화 시도 ///////////
+    // 데이 변경 시 호출
+    public static void onDayChange(int day) {
+        System.out.println("데이 변경: " + day);
+
+        // 기존 NPC 초기화
+        clearAllNpcs();
+
+        // 새로운 데이에 맞게 설정
+        int maxNpc;
+        switch (day) {
+            case 1 -> {
+                maxNpc = 5;
+                bcChance = 0.2;
+            }
+            case 2 -> {
+                maxNpc = 8;
+                bcChance = 0.3;
+            }
+            default -> {
+                maxNpc = 10;
+                bcChance = 0.5;
+            }
+        }
+
+        // NpcManager 설정 갱신
+        initializeManager(parentPanel, maxNpc);
+
+        // 새로운 NPC 생성 시작
+        //startNpcSpawnTimer();
+
+        System.out.println("데이 " + day + " 초기화 완료. 최대 NPC: " + maxNpc + ", 블랙컨슈머 확률: " + bcChance);
+    }
+
+
     // NpcManager 초기화 메서드
     public static void initializeManager(JLayeredPane panel, int maxNpc) {
         parentPanel = panel;
@@ -386,34 +432,5 @@ public class NpcManager {
         waitRoomToNpcMap = new HashMap<>();
 
         System.out.println("NpcManager 초기화 완료. 최대 NPC: " + maxNpc + ", 블랙컨슈머 확률: " + bcChance);
-    }
-
-    // 데이 변경 시 호출
-    public static void onDayChange(int day) {
-        System.out.println("데이 변경: " + day);
-
-        // 모든 NPC 제거
-        clearAllNpcs();
-
-        // 데이에 따른 설정
-        int maxNpc;
-        double bcChance;
-        switch (day) {
-            case 1 -> {
-                maxNpc = 5;
-            }
-            case 2 -> {
-                maxNpc = 8;
-            }
-            default -> {
-                maxNpc = 10;
-            }
-        }
-
-        // NpcManager 재초기화
-        initializeManager(parentPanel, maxNpc);
-
-        // 새로운 NPC 스폰 시작
-        //startNpcSpawnTimer();
     }
 }

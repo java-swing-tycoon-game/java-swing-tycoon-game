@@ -16,8 +16,9 @@ import java.util.Random;
 public class Request {
     protected Npc npc;
 
-    protected BufferedImage requestImage;
-    private Image requestItem; // 요청 말풍선에 뜨는 이미지
+    private String requestItemPath; // 요청 아이템의 경로
+    protected Image requestItemImage; // 요청 아이템의 이미지
+    private final BufferedImage requestImg; // 요청 말풍선 이미지
 
     private final ArrayList<Place> zone; // 요청과 연관된 장소
 
@@ -35,7 +36,7 @@ public class Request {
         zone = new ArrayList<>();
         setZone();
 
-        requestImage = loadImage("assets/img/npc/request.png");
+        requestImg = loadImage("assets/img/npc/request.png");
 
         // 60초 실패 여부 판단
         failTimer = new Timer(60000, e -> {
@@ -62,25 +63,28 @@ public class Request {
     {
         zone.clear();
 
-        for (int i = 0; i < Move.places.size(); i++)
-            if(Move.places.get(i).getNum() == 2)
-                zone.add(Move.places.get(i));
+        for (Place place : Move.places) {
+            if (place.getNum() == 2) zone.add(place);
+        }
     }
 
     public void makeRequest() {
         if (!active) {
-            requestItem = setRequestItem(npc.characterX, npc.characterY);
+            requestItemPath = setRequestItemPath(npc.characterX, npc.characterY);
+            requestItemImage = ItemManager.getImageByPath(requestItemPath);
 
             // 요청 아이템 확인
-            if (requestItem == null) {
-                System.err.println("makeRequest(): 요청 아이템이 null입니다.");
-                requestItem = ItemManager.getItemImage(0);
-                //return;
+            if (requestItemPath == null) {
+                System.err.println("makeRequest(): 요청 아이템 경로가 null입니다.");
+                requestItemPath = ItemManager.getItemPath(0); // 기본 경로 설정
             }
 
-            if(requestItem == ItemManager.getItemImage(3)) npc.specialCoin += 2;
-            if(requestItem == ItemManager.getItemImage(4)) npc.specialCoin += 5;
-            if(requestItem == ItemManager.getItemImage(5)) npc.specialCoin += 7;
+            requestItemImage = ItemManager.getImageByPath(requestItemPath);
+
+            if (requestItemPath.equals(ItemManager.getItemPath(3))) npc.specialCoin += 2;
+            if (requestItemPath.equals(ItemManager.getItemPath(4))) npc.specialCoin += 5;
+            if (requestItemPath.equals(ItemManager.getItemPath(5))) npc.specialCoin += 7;
+            System.out.println("makeRequest(): 요청 경로: " + requestItemPath + ", 이미지: " + requestItemImage);
 
             active = true;
 
@@ -91,24 +95,28 @@ public class Request {
             progressTimer.start();
             failTimer.start();
 
-            System.out.println("makeRequest(): 요청 활성화 완료, 아이템: " + requestItem);
+            System.out.println("makeRequest(): 요청 활성화 완료, 아이템 경로: " + requestItemPath);
         }
+    }
+
+    public Image getRequestItemImage() {
+        return requestItemImage;
     }
 
     private void updateProgressImage() {
         progress = Math.min(progress, 100); // progress 최대값 제한
         double progressRatio = progress / 100.0; // 0.0 ~ 1.0 비율 계산
 
-        if (requestImage == null) {
+        if (requestImg == null) {
             System.err.println("Request image is null.");
             return;
         }
 
         // 위에서부터 D24D82 색상으로 변환된 이미지 생성
-        BufferedImage customTintImage = createCustomTintImage(requestImage, progressRatio);
+        BufferedImage customTintImage = createCustomTintImage(requestImg, progressRatio);
 
         // 기존 이미지를 변환된 이미지로 교체
-        Graphics2D g2d = requestImage.createGraphics();
+        Graphics2D g2d = requestImg.createGraphics();
         g2d.drawImage(customTintImage, 0, 0, null);
         g2d.dispose();
     }
@@ -191,62 +199,54 @@ public class Request {
     }
 
     public Image getRequestItem() {
-        return requestItem;
+        return requestImg;
+    }
+
+    public String getRequestItemPath() {
+        return requestItemPath;
     }
 
     // visible 상태인 아이템 중에서 랜덤 선택
-    // visible 상태인 아이템 중에서 랜덤 선택
-    private Image getRandomVisibleItem(int startIndex, int endIndex) {
-        List<Integer> visibleItemIndices = new ArrayList<>();
-
+    private String getRandomVisibleItemPath(int startIndex, int endIndex) {
+        List<String> visiblePaths = new ArrayList<>();
         for (int i = startIndex; i < endIndex; i++) {
             if (ItemManager.getVisible(i)) {
-                visibleItemIndices.add(i);
+                visiblePaths.add(ItemManager.getItemPath(i));
             }
         }
-
-        if (visibleItemIndices.isEmpty()) {
-            return null;
-        }
-
-        int randomIndex = visibleItemIndices.get(new Random().nextInt(visibleItemIndices.size()));
-        Image selectedItem = ItemManager.getItemImage(randomIndex);
-
-        return selectedItem;
+        return visiblePaths.isEmpty() ? null : visiblePaths.get(new Random().nextInt(visiblePaths.size()));
     }
 
     // 장소에 맞춰 요청할 아이템 이미지 세팅
-    private Image setRequestItem(int x, int y) {
+    private String setRequestItemPath(int x, int y) {
         if (zone.get(0).contains(x, y)) {
             return setGoodsRequest();
-        }
-        else if (zone.get(1).contains(x, y)) {
+        } else if (zone.get(1).contains(x, y)) {
             return setDecoRequest();
-        }
-        else if(zone.get(2).contains(x, y)) {
+        } else if (zone.get(2).contains(x, y)) {
             return setMovieRequest();
         }
         return setWaitingRequest();
     }
 
     // 대기 중 요청을 랜덤으로 선택
-    private Image setWaitingRequest() {
-        return getRandomVisibleItem(0, 2);
+    private String setWaitingRequest() {
+        return getRandomVisibleItemPath(0, 2);
     }
 
     // 무비 중 요청을 랜덤으로 선택
-    private Image setMovieRequest() {
-        return getRandomVisibleItem(0, 4);
+    private String setMovieRequest() {
+        return getRandomVisibleItemPath(2, 4);
     }
 
     // 굿즈 중 요청을 랜덤으로 선택
-    private Image setGoodsRequest() {
-        return getRandomVisibleItem(3, 6);
+    private String setGoodsRequest() {
+        return getRandomVisibleItemPath(4, 6);
     }
 
     // 데코 요청
-    private Image setDecoRequest() {
-        return ItemManager.getItemImage(6);
+    private String setDecoRequest() {
+        return getRandomVisibleItemPath(6, 7);
     }
 
     public void draw(Graphics2D g2d, int x, int y) {
@@ -255,10 +255,10 @@ public class Request {
             int balloonY = y - 65;
 
             // 말풍선 이미지 그리기
-            g2d.drawImage(requestImage, balloonX, balloonY, null);
+            g2d.drawImage(requestImg, balloonX, balloonY, null);
 
             // 요청 아이템 이미지 표시
-            g2d.drawImage(requestItem, balloonX, balloonY, null);
+            g2d.drawImage(requestItemImage, balloonX, balloonY, null);
         }
     }
 }

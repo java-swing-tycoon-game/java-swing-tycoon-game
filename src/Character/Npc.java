@@ -48,10 +48,19 @@ public class Npc extends Move implements ClickEvent {
         setupRequest();
     }
 
-    public void setActive(boolean a) {active = a; System.out.println(active);}
+    public void setActive(boolean a) {active = a;}
 
     public boolean getActive() { return active; }
     public int getRequestCount() { return requestCount; }
+
+    public void resetNpc() {
+        this.requestCount = 0;      // 요청 횟수 초기화
+        this.specialCoin = 0;       // 특수 코인 초기화
+        this.active = true;         // NPC 활성화
+        setupRequest();             // 새로운 요청 설정
+        System.out.println("resetNpc(): NPC 상태 초기화 완료");
+    }
+
 
     ////////// NPC 이미지 관련 //////////
     // NPC 이미지 조합하기
@@ -94,15 +103,10 @@ public class Npc extends Move implements ClickEvent {
         // 새로운 요청 생성
         request = new Request(this);
         if (request.getRequestItem() != null) {
-            System.out.println("setupRequest(): 새로운 요청 생성 완료: " + request.getRequestItem());
+            System.out.println("요청 생성 완료");
         } else {
-            System.err.println("setupRequest(): 요청 아이템이 null입니다.");
+            System.err.println("요청 아이템이 null");
         }
-
-//        request = new Request(this);
-//        if (request.getRequestItem() != null) {
-//            System.out.println("요청 생성 완료: " + request.getRequestItem());
-//        }
     }
 
     @Override // npc 범위만 클릭해서 요청 수행하도록
@@ -153,34 +157,37 @@ public class Npc extends Move implements ClickEvent {
 
     // 플레이어가 가지고 있는 아이템과 요청을 비교
     protected boolean giveItem(Player player) {
-        Image leftItem = player.getHoldItemL();
-        Image rightItem = player.getHoldItemR();
-        Image requestedItem = request.getRequestItem();
+        String leftItemPath = ItemManager.getPathByImage(player.getHoldItemL());
+        String rightItemPath = ItemManager.getPathByImage(player.getHoldItemR());
+
+        // 요청 아이템 경로 및 이미지 가져오기
+        String requestItemPath = this.request.getRequestItemPath(); // 요청 아이템의 경로
+        Image requestItemImage = this.request.getRequestItemImage(); // 요청 아이템의 이미지
 
         // 요청 아이템 존재x
-        if (requestedItem == null) {
+        if (requestItemPath == null) {
             System.err.println("giveItem(): 요청 아이템이 null입니다.");
             return false;
         }
 
-        System.out.println("왼손 아이템: " + leftItem);
-        System.out.println("오른손 아이템: " + rightItem);
-        System.out.println("요청 아이템: " + requestedItem);
+        System.out.println("왼손 아이템: " + leftItemPath);
+        System.out.println("오른손 아이템: " + rightItemPath);
+        System.out.println("요청 아이템: " + requestItemPath);
 
         // 왼손과 요청 아이템 비교
-        if (requestedItem.equals(leftItem)) {
-            player.setHoldItemL(null); // 왼손 아이템 제거
+        if (requestItemPath.equals(leftItemPath)) {
+            player.setHoldItemL(null);
             return true;
         }
 
-        // 오른손과 요청 아이템 비교
-        if (requestedItem.equals(rightItem)) {
-            player.setHoldItemR(null); // 오른손 아이템 제거
+        if (requestItemPath.equals(rightItemPath)) {
+            player.setHoldItemR(null);
             return true;
         }
 
         // deco 게임 요청
-        if (requestedItem.equals(ItemManager.getItemImage(6))) {
+        if (request.getRequestItemPath().equals("assets/img/item/deco.png"))
+        {
             JFrame parentFrame = Play.instance;  // Play 클래스의 JFrame을 가져오기
             new Deco((JFrame) parentFrame, this); // 다이얼로그 방식으로 생성
         }

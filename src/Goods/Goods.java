@@ -21,7 +21,7 @@ public class Goods extends JPanel {
             if (ItemManager.getVisible(i)) {
                 // 맵에서 아이템 위치만 가져옴
                 Place place = Move.places.get(i + 1);
-                Image itemImage = ItemManager.getItemImage(i);
+                Image itemImage = ItemManager.getImageByPath(ItemManager.getItemPath(i));
 
                 // 아이템 이미지를 Place 위치에 맞게 그림
                 int drawX = place.getX() - place.getRadius();
