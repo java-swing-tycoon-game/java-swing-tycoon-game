@@ -61,7 +61,7 @@ public class ToploderEnd extends JPanel {
         JLabel photoCardLabel = new JLabel(new ImageIcon(photoCardPath));
         int photoCardWidth = 200;
         int photoCardHeight = 300;
-        int photoCardX = xPosition + (toploaderWidth - photoCardWidth) / 2; // 탑로더 중앙에 위치
+        int photoCardX = xPosition + (toploaderWidth - photoCardWidth) / 2;
         int photoCardY = yPosition;
         photoCardLabel.setBounds(photoCardX, photoCardY, photoCardWidth, photoCardHeight);
         add(photoCardLabel);
