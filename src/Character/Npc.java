@@ -30,11 +30,9 @@ public class Npc extends Move implements ClickEvent {
     // 요청 클래스
     public Request request;
     public int requestCount = 0; // 요청 횟수
-    public static final int MAX_REQUESTS = 1; // 최대 요청 횟수
+    public static final int MAX_REQUESTS = 3; // 최대 요청 횟수
     protected boolean active; // npc 상태
     protected boolean isMoving = false; // 이동 중인지
-
-    public Player player;
 
     // 생성자
     public Npc() {
@@ -194,7 +192,6 @@ public class Npc extends Move implements ClickEvent {
         timer.setRepeats(false);
         timer.start();
     }
-
 
     @Override
     public void moveToDest(Place place, boolean viaCenter, Runnable callback) {
