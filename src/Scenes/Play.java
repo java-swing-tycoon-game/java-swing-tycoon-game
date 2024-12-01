@@ -141,10 +141,10 @@ public class Play extends JFrame {
         mainPanel.add(map, Integer.valueOf(0));
 
         // place 패널을 layeredPane에 추가
-        JPanel SimplePlaceManager = new SimplePlaceManager();
+        SimplePlaceManager SimplePlaceManager = new SimplePlaceManager();
         SimplePlaceManager.setOpaque(false);
         SimplePlaceManager.setBounds(0, 0, 1024, 768); // 위치와 크기를 설정하여 mapPanel과 겹치도록 설정
-        mainPanel.add(SimplePlaceManager, Integer.valueOf(50));  // 위쪽 레이어
+        mainPanel.add(SimplePlaceManager, Integer.valueOf(50)); // 위쪽 레이어
 
         // top 패널을 layeredPane에 추가
         JPanel top = showTop();
