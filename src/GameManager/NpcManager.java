@@ -34,6 +34,7 @@ public class NpcManager {
 
     private static Npc npc = null;
     private static BlackConsumer bc = null;
+    private static double bcChance = 0; // 진상 생성 확률
 
     // 병렬 처리
     private static final ExecutorService executor = Executors.newFixedThreadPool(4);
@@ -159,16 +160,19 @@ public class NpcManager {
         executor.submit(() -> {
             if(player.isMoving) {// 일반 npc
                 npc = createNpc(npc);
+                bcChance += 0.02;
             }
             else {
-                // 플레이어 멈춰있고 50% 확률로 블랙 컨슈머 생성
-                if (Math.random() < 0.1 && !bcActive) {
+                // 플레이어 멈춰있고 동적 확률로 블랙 컨슈머 생성
+                if (Math.random() < bcChance && !bcActive) {
                     bc = createBc();
                     ClickManager.setClickEventList(bc);
+                    bcChance -= -0.01;
                 }
                 else {
                     npc = createNpc(npc);
                     ClickManager.setClickEventList(npc);
+                    bcChance += 0.02;
                 }
             }
             ClickManager.setClickEventList(npc);

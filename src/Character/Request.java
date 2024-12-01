@@ -70,6 +70,10 @@ public class Request {
     public void makeRequest() {
         if (!active) {
             requestItem = setRequestItem(npc.characterX, npc.characterY);
+            if(requestItem == ItemManager.itemImages.get(3)) npc.specialCoin += 2;
+            if(requestItem == ItemManager.itemImages.get(4)) npc.specialCoin += 5;
+            if(requestItem == ItemManager.itemImages.get(5)) npc.specialCoin += 7;
+
             active = true;
 
             progressTimer.stop();
