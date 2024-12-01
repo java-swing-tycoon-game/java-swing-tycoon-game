@@ -2,47 +2,60 @@ package Scenes;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class Howto extends JFrame {
+    private ArrayList<ImageIcon> howtoImages;
+    private JLabel imageLabel;
+    private int currentImageIndex = 0;
+
     public Howto() {
-        setTitle("How to Scenes.Play");
+        setTitle("How to Play");
         setSize(1024, 768);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLayout(null);
         getContentPane().setBackground(Color.decode("#D5F2FF"));
+        setLayout(new BorderLayout());
 
-        JPanel imagePanel = new JPanel();
-        int padding = 50; 
-        
-        imagePanel.setBounds(padding, padding-10, 924, 640);
-        imagePanel.setOpaque(false); 
-
-        ImageIcon howtoBg = new ImageIcon("assets/img/howtoBack.png");
-        Image scaledImage = howtoBg.getImage().getScaledInstance(924, 620, Image.SCALE_SMOOTH);
-        JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
-        
-        imagePanel.add(imageLabel);
-        add(imagePanel);
-
-        JLabel label = new JLabel("게임 방법 설명");
-        label.setBounds(100, 100, 700, 50);
-        label.setFont(new Font("Serif", Font.BOLD, 24));
-        add(label);
+        loadImages();
 
 
-        JButton backButton = new JButton("메인으로");
-        backButton.setBounds(400, 200, 200, 50);
-        backButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                new Main();
-                dispose();
-            }
-        });
-        add(backButton);
+        imageLabel = new JLabel(howtoImages.get(currentImageIndex));
+        imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        add(imageLabel, BorderLayout.CENTER);
+
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setBackground(Color.decode("#D5F2FF"));
+
+        JButton nextButton = new JButton("다음으로");
+        nextButton.addActionListener(e -> showNextImage());
+        buttonPanel.add(nextButton);
+
+        JButton closeButton = new JButton("닫기");
+        closeButton.addActionListener(e -> dispose());
+        buttonPanel.add(closeButton);
+
+        add(buttonPanel, BorderLayout.SOUTH);
 
         setVisible(true);
+    }
+
+    private void loadImages() {
+        howtoImages = new ArrayList<>();
+        howtoImages.add(new ImageIcon("assets/img/howtoplay1.png"));
+        howtoImages.add(new ImageIcon("assets/img/howtoplay2.png"));
+    }
+
+    private void showNextImage() {
+        currentImageIndex++;
+        if (currentImageIndex >= howtoImages.size()) {
+            currentImageIndex = 0;
+        }
+        imageLabel.setIcon(howtoImages.get(currentImageIndex));
+    }
+
+    public static void main(String[] args) {
+        new Howto();
     }
 }
