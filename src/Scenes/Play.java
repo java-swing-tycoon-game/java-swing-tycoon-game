@@ -5,10 +5,6 @@ import Character.Player;
 import GameManager.*;
 import Goods.Goods;
 import Items.ItemPanel;
-import Character.bcAns;
-import Character.MovePlayer;
-import Items.LightStick;
-import Items.Tshirt;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,7 +35,7 @@ public class Play extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         dayManager = DayManager.getInstance();
-        progressPaneManager = new ProgressPaneManager(dayManager); // ProgressPaneManager 초기화
+        progressPaneManager = new ProgressPaneManager(); // ProgressPaneManager 초기화
         itemManager = new ItemManager();
 
         setMainPanel();
@@ -106,7 +102,7 @@ public class Play extends JFrame {
         ClickManager.setClickEventList(player);
 
         // npc 생성
-        npcManager = new NpcManager(mainPanel, player, 5);
+        npcManager = new NpcManager(mainPanel, 5);
 
         // Goods 생성
         Goods goods = new Goods();

@@ -21,7 +21,7 @@ public class FontManager {
             return fontCache.get(cacheKey);
         }
 
-        Font customFont = null;
+        Font customFont;
         try {
             // 폰트 파일 로드
             customFont = Font.createFont(Font.TRUETYPE_FONT, new File("assets/font/ChangwonDangamAsac-Bold_0712.ttf"));
@@ -40,6 +40,7 @@ public class FontManager {
 
     public static void loadCustomFont() {
         try (InputStream is = FontManager.class.getResourceAsStream("/path/to/font.ttf")) {
+            assert is != null;
             customFont = Font.createFont(Font.TRUETYPE_FONT, is);
         } catch (Exception e) {
             customFont = new Font("assets/font/ChangwonDangamAsac-Bold_0712.ttf", Font.PLAIN, 12);

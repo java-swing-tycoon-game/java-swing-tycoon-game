@@ -20,7 +20,7 @@ public class Deco extends JDialog {
     private final String[] themes = { "공주", "바다", "진주" };
     private TopLoader topLoader;
 
-    private Npc npc;
+    private final Npc npc;
 
     public Deco(JFrame parentFrame, Npc npc) {
         super(parentFrame, "탑로더를 꾸며보아요!", true);

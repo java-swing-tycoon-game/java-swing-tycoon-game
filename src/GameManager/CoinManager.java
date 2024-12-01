@@ -23,7 +23,7 @@ public class CoinManager {
         // 코인 텍스트 설정
         Font font = FontManager.loadFont(30);
 
-        if (dayManager.getDay() == 1) coinAmount = 0;   // 초기화
+        if (DayManager.getDay() == 1) coinAmount = 0;   // 초기화
 
         coinTxt = new JLabel("x " + coinAmount + "만원");  // 코인 금액 표시
         coinTxt.setFont(font);

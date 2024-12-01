@@ -3,6 +3,7 @@ package Character;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class bcRequest extends Request {
@@ -22,7 +23,7 @@ public class bcRequest extends Request {
 
     // 대사 세팅
     public String setBcLog() {
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(PATH), "UTF-8"))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(PATH), StandardCharsets.UTF_8))) {
             ArrayList<String> lines = new ArrayList<>();
             String line;
 
@@ -41,9 +42,7 @@ public class bcRequest extends Request {
 
     // bc는 요청 생성 타이밍이 다름
     private void customizeTimer() {
-        requestTimer = new Timer(2000, e -> {
-            makeRequest();
-        });
+        requestTimer = new Timer(2000, _ -> makeRequest());
         requestTimer.start();
     }
 

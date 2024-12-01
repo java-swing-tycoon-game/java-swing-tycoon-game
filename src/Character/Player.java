@@ -2,7 +2,6 @@ package Character;
 
 import GameManager.ClickEvent;
 import Goods.PickDrop;
-import GameManager.ItemManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +17,7 @@ public class Player extends MovePlayer implements ClickEvent {
 
     private Image holdItemL = null; // 왼손
     private Image holdItemR = null; // 오른손
-    private PickDrop pickDrop;
+    private final PickDrop pickDrop;
 
     public boolean isMoving = false; // 이동 중인지
     private int lastVisitedCase = -1; // 이전 방문 장소(Num)을 저장
@@ -66,21 +65,17 @@ public class Player extends MovePlayer implements ClickEvent {
                 boolean viaCenter = lastVisitedCase != place.getNum();
 
                 switch (place.getNum()) {
-                    case 1 -> { // 아이템
-                        moveToDest(place, viaCenter, () -> {
-                            pickDrop.handleItemClick(clickPoint); // 아이템 자동 집기
-                            repaint();
-                        });
-                    }
-                    case 4 -> { // 쓰레기통
-                        moveToDest(place, viaCenter, () -> {
-                            pickDrop.dropItem(); // 아이템 자동 버리기
-                            repaint();
-                        });
-                    }
-                    default -> {
-                        System.out.println("장소 디폴트 실행 중");
-                    }
+                    case 1 -> // 아이템
+                            moveToDest(place, viaCenter, () -> {
+                                pickDrop.handleItemClick(clickPoint); // 아이템 자동 집기
+                                repaint();
+                            });
+                    case 4 -> // 쓰레기통
+                            moveToDest(place, viaCenter, () -> {
+                                pickDrop.dropItem(); // 아이템 자동 버리기
+                                repaint();
+                            });
+                    default -> System.out.println("장소 디폴트 실행 중");
                 }
                 lastVisitedCase = place.getNum();
                 break;
@@ -94,23 +89,19 @@ public class Player extends MovePlayer implements ClickEvent {
                 boolean viaCenter = lastVisitedCase != place.getNum();
 
                 switch (place.getNum()) {
-                    case 2 -> { // 룸 3곳
-                        moveToDest(place, viaCenter, () -> {
-                            if (callback != null) {
-                                callback.run();
-                            }
-                        });
-                    }
-                    case 3 -> { // 대기구역
-                        moveToDest(place, viaCenter, () -> {
-                            if (callback != null) {
-                                callback.run();
-                            }
-                        });
-                    }
-                    default -> {
-                        System.out.println("요청 디폴트 실행 중");
-                    }
+                    case 2 -> // 룸 3곳
+                            moveToDest(place, viaCenter, () -> {
+                                if (callback != null) {
+                                    callback.run();
+                                }
+                            });
+                    case 3 -> // 대기구역
+                            moveToDest(place, viaCenter, () -> {
+                                if (callback != null) {
+                                    callback.run();
+                                }
+                            });
+                    default -> System.out.println("요청 디폴트 실행 중");
                 }
                 lastVisitedCase = place.getNum();
                 break;
@@ -133,7 +124,7 @@ public class Player extends MovePlayer implements ClickEvent {
     }
 
     private void walkingAnimation() {
-            Timer walkingTimer = new Timer(200, e -> {
+            Timer walkingTimer = new Timer(200, _ -> {
             if(isMoving) {
                 walkingIndex = (walkingIndex + 1) % 2;
             }

@@ -24,7 +24,7 @@ public class Request {
 
     protected Timer requestTimer; // 요청 발생 타이머
     protected Timer failTimer; // 시간제한을 위한 타이머
-    private Timer progressTimer; // 요청 애니메이션을 위한 타이머
+    private final Timer progressTimer; // 요청 애니메이션을 위한 타이머
     private int progress = 0; // 진행도 (0~100)
 
     protected boolean active; // 개별 요청의 완료 여부
@@ -36,21 +36,19 @@ public class Request {
         zone = new ArrayList<>();
         setZone();
 
-        requestImg = loadImage("assets/img/npc/request.png");
+        requestImg = loadImage();
 
         // 60초 실패 여부 판단
-        failTimer = new Timer(60000, e -> {
+        failTimer = new Timer(60000, _ -> {
             failRequest(); // 요청 실패 처리
         });
 
-        progressTimer = new Timer(1000, e -> {
+        progressTimer = new Timer(1000, _ -> {
             progress = Math.min(progress + (100 / 60), 100);
             updateProgressImage();
         });
 
-        requestTimer = new Timer(5000, e -> {
-            makeRequest();
-        });
+        requestTimer = new Timer(5000, _ -> makeRequest());
         requestTimer.start();
     }
 
@@ -76,7 +74,7 @@ public class Request {
             // 요청 아이템 확인
             if (requestItemPath == null) {
                 //System.err.println("makeRequest(): 요청 아이템 경로가 null입니다.");
-                makeRequest(); // 기본 경로 설정
+                requestItemPath = "assets/img/item/popcorn.png";
             }
 
             do {
@@ -168,9 +166,9 @@ public class Request {
     }
 
     // BufferedImage 로드
-    private BufferedImage loadImage(String path) {
+    private BufferedImage loadImage() {
         try {
-            return ImageIO.read(new File(path));
+            return ImageIO.read(new File("assets/img/npc/request.png"));
         } catch (IOException e) {
             e.printStackTrace();
             return null;

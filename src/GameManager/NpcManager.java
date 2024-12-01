@@ -13,6 +13,7 @@ import java.util.concurrent.ExecutorService;
 
 import static Scenes.Play.player;
 
+@SuppressWarnings("ALL")
 public class NpcManager {
     private static JLayeredPane parentPanel = null;
 
@@ -20,7 +21,6 @@ public class NpcManager {
     private static List<Npc> npcList;
 
     private static int maxNpc; // 데이별로 maxNpc 다름
-    private static int npcCount = 0;
 
     // bc는 한 번에 1명만 등장
     private static boolean bcActive = false;
@@ -42,22 +42,22 @@ public class NpcManager {
     private static final ExecutorService executor = Executors.newFixedThreadPool(4);
 
     // 생성자
-    public NpcManager(JLayeredPane parentPanel, Player player, int maxNpc) {
-        this.parentPanel = parentPanel;
-        this.maxNpc = maxNpc;
+    public NpcManager(JLayeredPane parentPanel, int maxNpc) {
+        NpcManager.parentPanel = parentPanel;
+        NpcManager.maxNpc = maxNpc;
 
-        this.npcList = new ArrayList<>();
-        this.room = Npc.places
+        npcList = new ArrayList<>();
+        room = Npc.places
                 .stream()
                 .filter(place -> place.getNum() == 2) // 룸만 넣기
                 .collect(Collectors.toCollection(ArrayList::new));
-        this.waitRoom = Npc.places
+        waitRoom = Npc.places
                 .stream()
                 .filter(place -> place.getNum() == 3) // 대기존 2개
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        this.roomToNpcMap = new HashMap<>();
-        this.waitRoomToNpcMap = new HashMap<>();
+        roomToNpcMap = new HashMap<>();
+        waitRoomToNpcMap = new HashMap<>();
 
         startNpcSpawnTimer();
     }
@@ -90,9 +90,7 @@ public class NpcManager {
 
     // 맵에서 NPC 제거
     private static synchronized void removeNpcFromMap(Map<Place, Npc> map, Place place) {
-        if (map.containsKey(place)) {
-            map.remove(place);
-        }
+        map.remove(place);
     }
 
     // NPC를 맵에서 제거
@@ -229,7 +227,6 @@ public class NpcManager {
         Npc npc = new Npc(); // 새 Npc 객체 생성
 
         npcList.add(npc);
-        npcCount++;
 
         // 클릭 이벤트 등록
         ClickManager.setClickEventList(npc);
@@ -360,7 +357,6 @@ public class NpcManager {
             npcList.clear();
             roomToNpcMap.clear();
             waitRoomToNpcMap.clear();
-            npcCount = 0;
             bcActive = false;
 
             // parentPanel에서 NPC 컴포넌트만 제거

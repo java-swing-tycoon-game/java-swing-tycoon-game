@@ -17,16 +17,16 @@ public class ProgressPaneManager {
     private int realTime; // 현재 남은 시간
     private Timer dayTimer; // 날짜 타이머
 
-    private DayManager dayManager;
+    private final DayManager dayManager;
     private boolean isBuyPopupOpen = false;
-    private CoinManager coinManager = new CoinManager();
-    private ImageProgressPane progressPane;
+    private final CoinManager coinManager = new CoinManager();
+    private final ImageProgressPane progressPane;
     private boolean isPaused = false;
 
     private Play playInstance;
 
-    public ProgressPaneManager(DayManager dayManager) {
-        this.dayManager = dayManager.getInstance();
+    public ProgressPaneManager() {
+        this.dayManager = DayManager.getInstance();
         this.progressPane = new ImageProgressPane();
     }
 
@@ -39,11 +39,11 @@ public class ProgressPaneManager {
             dayTimer.cancel();
         }
 
-        if (dayManager.getDay() != 1) {
+        if (DayManager.getDay() != 1) {
             pauseTimerForSeconds(2);
         }
 
-        realTime = dayTimes[dayManager.getDay() - 1];
+        realTime = dayTimes[DayManager.getDay() - 1];
         progressPane.updateProgress(100);
 
         dayTimer = new Timer();
@@ -55,7 +55,7 @@ public class ProgressPaneManager {
                 }
 
                 realTime--;
-                int progress = (int) ((realTime / (double) dayTimes[dayManager.getDay() - 1]) * 100);
+                int progress = (int) ((realTime / (double) dayTimes[DayManager.getDay() - 1]) * 100);
                 progressPane.updateProgress(progress);
 
                 if (realTime <= 0) {
@@ -67,8 +67,8 @@ public class ProgressPaneManager {
     }
 
     private void handleTimerEnd() {
-        if (coinManager.getCoinAmount() >= coinManager.coins[dayManager.getDay() - 1]) {
-            if (dayManager.getDay() == dayTimes.length) {
+        if (CoinManager.getCoinAmount() >= coinManager.coins[DayManager.getDay() - 1]) {
+            if (DayManager.getDay() == dayTimes.length) {
                 showEndingScreen();
             } else {
                 showBuyScreen();
@@ -90,9 +90,9 @@ public class ProgressPaneManager {
                 isBuyPopupOpen = false;
 
                 if (buyPopup.isNextButtonClicked()) {
-                    if (dayManager.getDay() < 7) {
+                    if (DayManager.getDay() < 7) {
                         dayManager.nextDay();
-                        new StartManager(dayManager, dayManager.getDay() == 1);
+                        new StartManager(dayManager, DayManager.getDay() == 1);
                         startDayTimer();
                     }
                 }
@@ -118,11 +118,8 @@ public class ProgressPaneManager {
                 playInstance = null; // 참조 해제
             }
 
-            // 성공 여부 확인
-            boolean isSuccess = CoinManager.getCoinAmount() >= 100 && DayManager.getDay() == 7;
-
             // 성공/실패에 따라 엔딩 화면 표시
-            EndingManager endingManager = new EndingManager(null, dayManager, coinManager, isSuccess);
+            EndingManager endingManager = new EndingManager(null, dayManager, coinManager);
             endingManager.setVisible(true);
 
             // 엔딩 화면이 닫힌 후 메인 화면으로 이동
@@ -144,11 +141,11 @@ public class ProgressPaneManager {
             public void run() {
                 isPaused = false;
             }
-        }, seconds * 1000);
+        }, seconds * 1000L);
     }
 
-    public class ImageProgressPane extends JPanel {
-        private JProgressBar progressBar;
+    public static class ImageProgressPane extends JPanel {
+        private final JProgressBar progressBar;
         private BufferedImage progressImage;
         private BufferedImage backgroundImage;
 

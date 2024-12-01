@@ -9,12 +9,12 @@ import javax.imageio.ImageIO;
 
 public class DayManager {
     private static DayManager instance; // 싱글톤 인스턴스
-    private SimplePlaceManager placeManager; // 장소 관리
+    private final SimplePlaceManager placeManager; // 장소 관리
     private static int day = 1; // 현재 날짜 (1부터 시작)
-    private ImageDayPanel dayPanel;
+    private final ImageDayPanel dayPanel;
 
-    private boolean[] itemPurchased; // 아이템 구매 상태 배열
-    private boolean hasPurchasedToday[]; // 하루에 하나만 구매 가능 플래그
+    private final boolean[] itemPurchased; // 아이템 구매 상태 배열
+    private final boolean[] hasPurchasedToday; // 하루에 하나만 구매 가능 플래그
 
     public DayManager() {
 
@@ -54,7 +54,7 @@ public class DayManager {
         System.out.println("새로운 날 시작: Day " + day);
 
         System.out.println("Current day: " + day); // day 값 출력
-        dayPanel.updateDayImage(day);             // day 값으로 이미지 업데이트
+        dayPanel.updateDayImage();             // day 값으로 이미지 업데이트
 
         // Day 변경에 따라 장소 띄우기
         if (day == 2 || day == 3) {
@@ -91,22 +91,22 @@ public class DayManager {
     }
 
     // 데이 이미지 관련 클래스
-    public class ImageDayPanel extends JPanel {
-        private JLabel dayLabel;
+    public static class ImageDayPanel extends JPanel {
+        private final JLabel dayLabel;
 
         public ImageDayPanel() {
             setLayout(new FlowLayout(FlowLayout.LEFT));
             dayLabel = new JLabel();
             setOpaque(false);
-            updateDayImage(getDay());    // 데이 이미지 초기화
+            updateDayImage();    // 데이 이미지 초기화
             add(dayLabel);
         }
 
         // Day 변경 시 데이 이미지 변경
-        public void updateDayImage(int day) {
+        public void updateDayImage() {
             try {
                 // Day 이미지 업데이트
-                day = getDay();
+                int day = getDay();
                 String dayImagePath = "assets/img/day" + day + ".png";
                 if (day == 1) dayImagePath = "assets/img/day1.png";
                 BufferedImage dayImage = ImageIO.read(new File(dayImagePath));

@@ -3,7 +3,6 @@ package GameManager;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.*;
 
 public class RankingManager {
     private static final String RANKING_FILE = "assets/txt/ranking.txt";

@@ -1,32 +1,24 @@
 package GameManager;
 
-import Scenes.Main;
-import GameManager.RankingManager;
-
 import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.File;
-import GameManager.bgmManager;
-import Scenes.Play;
 
 public class EndingManager extends JDialog {
     private JLabel endingLabel;
-    private int totalCoin;
-    private boolean isSuccess; // 성공 여부
+    private final int totalCoin;
 
-    private DayManager dayManager;  // DayManager 인스턴스
-    private CoinManager coinManager;  // CoinManager 인스턴스
-    private RankingManager rankingManager; // 랭킹 관리
-    private Play play; // Play 객체를 멤버 변수로 선언
+    private final DayManager dayManager;  // DayManager 인스턴스
+    private final CoinManager coinManager;  // CoinManager 인스턴스
+    private final RankingManager rankingManager; // 랭킹 관리
 
-    public EndingManager(JFrame parent, DayManager dayManager, CoinManager coinManager, boolean isSuccess) {
+    public EndingManager(JFrame parent, DayManager dayManager, CoinManager coinManager) {
         super(parent, true); // Modal Dialog로 설정
-        this.isSuccess = isSuccess;
+        // 성공 여부
         this.dayManager = dayManager;
         this.coinManager = coinManager;
-        this.totalCoin = coinManager.getCoinAmount(); // 총 코인 금액
+        this.totalCoin = CoinManager.getCoinAmount(); // 총 코인 금액
         this.rankingManager = new RankingManager();
 
         setSize(1038, 805);
@@ -53,7 +45,7 @@ public class EndingManager extends JDialog {
         JButton saveRankingButton = new JButton("저장");
         saveRankingButton.setBounds(260, getHeight() - 250, 100, 30);
 
-        saveRankingButton.addActionListener((ActionEvent e) -> {
+        saveRankingButton.addActionListener((ActionEvent _) -> {
             String nickname = nicknameField.getText().trim();
 
             // 빈 닉네임 확인
@@ -102,7 +94,7 @@ public class EndingManager extends JDialog {
         backToMainButton.setBounds(getWidth() / 2 - 125, getHeight() - 150, 250, 70);
 
         // 버튼 클릭 리스너 설정
-        backToMainButton.addActionListener((ActionEvent e) -> {
+        backToMainButton.addActionListener((ActionEvent _) -> {
             closeAllWindowsAndRestart(); // 애플리케이션을 새로 시작
         });
 
@@ -114,8 +106,8 @@ public class EndingManager extends JDialog {
     }
 
     private void updateEndingImage() {
-        String imagePath = "";
-        int day = dayManager.getDay(); // 현재 Day
+        String imagePath;
+        int day = DayManager.getDay(); // 현재 Day
         boolean isSuccess = (totalCoin >= 100 && day == 7); // 성공 조건 변경
 
         if (isSuccess) {
@@ -172,9 +164,5 @@ public class EndingManager extends JDialog {
         coinManager.setCoinAmount(0); // CoinManager 상태 초기화
 
         // 새로운 Main 실행
-//        SwingUtilities.invokeLater(() -> {
-//            Main mainScreen = new Main();
-//            mainScreen.setVisible(true);
-//        });
     }
 }

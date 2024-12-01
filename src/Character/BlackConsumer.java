@@ -43,20 +43,12 @@ public class BlackConsumer extends Npc {
     @Override // 타자게임 시작
     public void onClick(Point clickPoint) {
         System.out.println("bc");
-//        Play.player.moveToCenter(() -> {
-//            if (request != null && !ans.ansActive) {
-//                ans.ansActive = true;
-//
-//                requestFocusInWindow();
-//                repaint();
-//            }
-//        });
     }
 
     public void bcAuto() {
         Play.player.moveToCenter(() -> {
-            if (request != null && !ans.ansActive) {
-                ans.ansActive = true;
+            if (request != null && !bcAns.ansActive) {
+                bcAns.ansActive = true;
 
                 requestFocusInWindow();
                 repaint();
@@ -68,11 +60,11 @@ public class BlackConsumer extends Npc {
     public int getPriority() { return 3; }
 
     public void processKeyTyped(char keyChar) {
-        if (ans.ansActive) {
+        if (bcAns.ansActive) {
             ans.processInput(keyChar);
 
             // 답장을 성공해야 타자게임 끝
-            if (!ans.ansActive) {
+            if (!bcAns.ansActive) {
                 request.completeRequest(); // 요청 완료
                 active = false;
                 NpcManager.removeNpc(this);
@@ -102,8 +94,6 @@ public class BlackConsumer extends Npc {
         ClickManager.removeClickEventList(this);
 
         // NpcManager의 블랙 컨슈머 추가 처리
-        if (this instanceof BlackConsumer) {
-            NpcManager.setBcActive(false); // 블랙 컨슈머 플래그 초기화
-        }
+        NpcManager.setBcActive(false); // 블랙 컨슈머 플래그 초기화
     }
 }

@@ -3,11 +3,12 @@ package GameManager;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class SimplePlaceManager extends JPanel {
-    private ArrayList<Image> placeImages;
+    private final ArrayList<Image> placeImages;
     private boolean[] visiblePlaces;
-    private ArrayList<Point> placePositions;
+    private final ArrayList<Point> placePositions;
     private DayManager dayManager;
 
     public SimplePlaceManager() {
@@ -18,9 +19,8 @@ public class SimplePlaceManager extends JPanel {
 
         // 각 장소의 초기 가시성 설정
         visiblePlaces = new boolean[placeImages.size()];
-        for (int i = 0; i < visiblePlaces.length; i++) {
-            visiblePlaces[i] = false; // 모든 장소 초기에는 보이지 않도록 설정
-        }
+        // 모든 장소 초기에는 보이지 않도록 설정
+        Arrays.fill(visiblePlaces, false);
 
         // 각 장소의 좌표 설정
         placePositions = new ArrayList<>();

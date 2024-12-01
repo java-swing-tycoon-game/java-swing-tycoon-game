@@ -8,7 +8,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Random;
-import Scenes.Play;
 
 import static GameManager.NpcManager.finishNpc;
 
@@ -85,7 +84,7 @@ public class Npc extends Move implements ClickEvent {
 
     // 걷기 애니메이션
     private void walkingAnimation() {
-        Timer walkingTimer = new Timer(200, e -> {
+        Timer walkingTimer = new Timer(200, _ -> {
             if(isMoving)
             { walkingIndex = (walkingIndex + 1) % 2; }
             else { walkingIndex = 2; }
@@ -167,7 +166,7 @@ public class Npc extends Move implements ClickEvent {
 
         // 요청 아이템 경로 및 이미지 가져오기
         String requestItemPath = this.request.getRequestItemPath(); // 요청 아이템의 경로
-        Image requestItemImage = this.request.getRequestItemImage(); // 요청 아이템의 이미지
+        // 요청 아이템의 이미지
 
         // 요청 아이템 존재x
         if (requestItemPath == null) {
@@ -194,7 +193,8 @@ public class Npc extends Move implements ClickEvent {
         if (request.getRequestItemPath().equals("assets/img/item/deco.png"))
         {
             JFrame parentFrame = Play.instance;  // Play 클래스의 JFrame을 가져오기
-            new Deco((JFrame) parentFrame, this); // 다이얼로그 방식으로 생성
+            new Deco(parentFrame, this); // 다이얼로그 방식으로 생성
+            requestCount = MAX_REQUESTS;
         }
 
         // 요청 아이템과 양 손 모두 불일치
@@ -227,7 +227,7 @@ public class Npc extends Move implements ClickEvent {
         parent.repaint();
 
         // 1.5초 후 코인 이미지 제거
-        Timer timer = new Timer(1500, e -> {
+        Timer timer = new Timer(1500, _ -> {
             parent.remove(coinLabel);
             parent.revalidate();
             parent.repaint();
@@ -249,9 +249,7 @@ public class Npc extends Move implements ClickEvent {
         if(isMoving) return;
 
         isMoving = true;
-        super.moveToTarget(place, () -> {
-            isMoving = false;
-        });
+        super.moveToTarget(place, () -> isMoving = false);
     }
 
     ////// 그리기 및 지우기 //////
