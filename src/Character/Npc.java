@@ -233,10 +233,6 @@ public class Npc extends Move implements ClickEvent {
         g2d.drawImage(hairImg, imageX, imageY, null);
         g2d.drawImage(eyeImg, imageX, imageY, null);
 
-        // 디버깅용
-        g2d.setColor(Color.RED);
-        g2d.drawRect(imageX, imageY, faceImg.getWidth(null), faceImg.getHeight(null));
-
         // 요청 있으면 요청 그리기
         if (request != null && request.getActive()) {
             request.draw(g2d, imageX, imageY);
@@ -274,5 +270,4 @@ public class Npc extends Move implements ClickEvent {
             parent.getComponent(0).requestFocusInWindow(); // 첫 번째 컴포넌트에 포커스 설정
         }
     }
-
 }
