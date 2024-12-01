@@ -1,6 +1,7 @@
 package Character;
 
 import GameManager.ClickManager;
+import GameManager.CoinManager;
 import GameManager.NpcManager;
 import Scenes.Play;
 
@@ -76,7 +77,7 @@ public class BlackConsumer extends Npc {
                 active = false;
                 NpcManager.removeNpc(this);
                 removeFromParent();
-
+                CoinManager.updateCoinAmount(20);
                 repaint();
             }
         }

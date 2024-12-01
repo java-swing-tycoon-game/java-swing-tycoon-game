@@ -144,7 +144,7 @@ public class Npc extends Move implements ClickEvent {
                         finishNpc(this);
 
                         // 돈을 벌었어요^^
-                        CoinManager.updateCoinAmount(7 + specialCoin);
+                        CoinManager.updateCoinAmount(20 + specialCoin);
                         new bgmManager("assets/bgm/finish.wav", false).toggleMusic();
                         showCoinImage();
                         finishNpc(this);

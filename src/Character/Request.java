@@ -249,7 +249,7 @@ public class Request {
 
     // 데코 요청
     private String setDecoRequest() {
-        return getRandomVisibleItemPath(6, 7);
+        return "assets/img/item/deco.png";
     }
 
     public void draw(Graphics2D g2d, int x, int y) {

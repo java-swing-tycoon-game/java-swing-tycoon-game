@@ -168,9 +168,9 @@ public class Deco extends JDialog {
         if (gameResult != null) {
             System.out.println(gameResult ? "맞았습니다" : "틀렸습니다");
         }
-        if(gameResult){
-            CoinManager.updateCoinAmount(10);
-            npc.requestCount = npc.MAX_REQUESTS;
+        if(Boolean.TRUE.equals(gameResult)){
+            CoinManager.updateCoinAmount(20);
+            npc.requestCount = Npc.MAX_REQUESTS;
         }
     }
 
