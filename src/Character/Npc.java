@@ -31,11 +31,9 @@ public class Npc extends Move implements ClickEvent {
     // 요청 클래스
     public Request request;
     public int requestCount = 0; // 요청 횟수
-    public static final int MAX_REQUESTS = 1; // 최대 요청 횟수
+    public static final int MAX_REQUESTS = 3; // 최대 요청 횟수
     protected boolean active; // npc 상태
     protected boolean isMoving = false; // 이동 중인지
-
-    public Player player;
 
     // 생성자
     public Npc() {
@@ -196,7 +194,6 @@ public class Npc extends Move implements ClickEvent {
         timer.start();
     }
 
-
     @Override
     public void moveToDest(Place place, boolean viaCenter, Runnable callback) {
         // 요청 완료 전에는 이동 불가, 위치 유지
@@ -237,10 +234,6 @@ public class Npc extends Move implements ClickEvent {
         g2d.drawImage(hairImg, imageX, imageY, null);
         g2d.drawImage(eyeImg, imageX, imageY, null);
 
-        // 디버깅용
-        g2d.setColor(Color.RED);
-        g2d.drawRect(imageX, imageY, faceImg.getWidth(null), faceImg.getHeight(null));
-
         // 요청 있으면 요청 그리기
         if (request != null && request.getActive()) {
             request.draw(g2d, imageX, imageY);
@@ -278,5 +271,4 @@ public class Npc extends Move implements ClickEvent {
             parent.getComponent(0).requestFocusInWindow(); // 첫 번째 컴포넌트에 포커스 설정
         }
     }
-
 }

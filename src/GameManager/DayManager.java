@@ -36,6 +36,12 @@ public class DayManager {
     public void nextDay() {
         day++; // Day 증가
         dayPanel.updateDayImage(day); // 새로운 Day 이미지로 업데이트
+
+        // Npc 초기화
+        NpcManager.clearAllNpcs();
+
+        // 새로운 데이의 NPC 스폰 시작
+        NpcManager.startNpcSpawnTimer();
     }
 
     // 데이 이미지 관련 클래스
