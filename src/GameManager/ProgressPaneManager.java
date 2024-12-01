@@ -7,11 +7,13 @@ import java.util.TimerTask;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import javax.imageio.ImageIO;
+
+import Scenes.Main;
 import Scenes.Buy;
 import Scenes.Play;
 
 public class ProgressPaneManager {
-    private final int[] dayTimes = {60, 70, 80, 90, 90, 90, 90}; // 각 day의 초기 시간 final int 배열로 고정..
+    private final int[] dayTimes = {50, 70, 80, 80, 80, 80, 80}; // 각 day의 초기 시간 final int 배열로 고정..
     private int realTime; // 현재 남은 시간
     private Timer dayTimer; // 날짜 타이머
 
@@ -100,14 +102,38 @@ public class ProgressPaneManager {
         });
     }
 
+    private boolean isEndingScreenShown = false; // 엔딩 화면 중복 호출 방지 플래그
+
     private void showEndingScreen() {
+        if (isEndingScreenShown) {
+            return; // 이미 엔딩 화면이 표시된 경우 중복 호출 방지
+        }
+
+        isEndingScreenShown = true; // 플래그 설정
+
         SwingUtilities.invokeLater(() -> {
+            // Play 창이 열려 있다면 닫기
             if (playInstance != null) {
                 playInstance.dispose();
+                playInstance = null; // 참조 해제
             }
-            JFrame parentFrame = playInstance != null ? playInstance : new JFrame();
-            EndingManager endingManager = new EndingManager(parentFrame, dayManager, coinManager); // EndingManager 생성
-            endingManager.setVisible(true); // 게임 오버 화면 띄우기
+
+            // 성공 여부 확인
+            boolean isSuccess = CoinManager.getCoinAmount() >= 100 && DayManager.getDay() == 7;
+
+            // 성공/실패에 따라 엔딩 화면 표시
+            EndingManager endingManager = new EndingManager(null, dayManager, coinManager, isSuccess);
+            endingManager.setVisible(true);
+
+            // 엔딩 화면이 닫힌 후 메인 화면으로 이동
+            goToMainScreen();
+        });
+    }
+
+    private void goToMainScreen() {
+        SwingUtilities.invokeLater(() -> {
+            Main mainScreen = new Main();
+            mainScreen.setVisible(true);
         });
     }
 
