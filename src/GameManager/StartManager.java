@@ -39,7 +39,7 @@ public class StartManager extends JDialog {
     }
 
     private void startAnimation() {
-        if(dayManager.getDay() >7)return;
+        if(dayManager.getDay() > 7) return;
         if (isFirstDay) {
             // 첫날: GameStart.png 애니메이션 실행
             animationTimer = new Timer(animationSpeed, e -> {
