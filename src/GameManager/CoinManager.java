@@ -38,6 +38,8 @@ public class CoinManager {
         return coinAmount;
     }
 
+    public void setCoinAmount(int n) {coinAmount = n;}
+
     // 코인 금액 업데이트
     public static void updateCoinAmount(int amount) {
         coinAmount += amount;  // 코인 금액 +/- 업데이트
