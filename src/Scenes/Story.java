@@ -27,14 +27,10 @@ public class Story extends JFrame {
         imagePanel.add(imageLabel);
         add(imagePanel);
 
-        JLabel label = new JLabel("스토리 설명");
-        label.setBounds(100, 100, 700, 50);
-        label.setFont(new Font("Serif", Font.BOLD, 24));
-        add(label);
-
-
+        // 버튼 설정
         JButton backButton = new JButton("메인으로");
-        backButton.setBounds(400, 200, 200, 50);
+        backButton.setBounds(412, 700, 200, 30); // 하단에 작게 배치
+        backButton.setFont(new Font("Serif", Font.PLAIN, 14));
         backButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 new Main();
