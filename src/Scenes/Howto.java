@@ -33,7 +33,8 @@ public class Howto extends JFrame {
         buttonPanel.add(nextButton);
 
         JButton closeButton = new JButton("닫기");
-        closeButton.addActionListener(e -> dispose());
+        closeButton.addActionListener(e -> {dispose(); new Main();});
+
         buttonPanel.add(closeButton);
 
         add(buttonPanel, BorderLayout.SOUTH);
