@@ -143,7 +143,7 @@ public class Npc extends Move implements ClickEvent {
                         CoinManager.updateCoinAmount(5 + specialCoin);
                         new bgmManager("assets/bgm/finish.wav", false).toggleMusic();
                         showCoinImage();
-                        removeFromParent();
+                        NpcManager.finishNpc(this);
                     }
                 }
             } else {
@@ -216,8 +216,8 @@ public class Npc extends Move implements ClickEvent {
         parent.revalidate();
         parent.repaint();
 
-        // 2.5초 후 코인 이미지 제거
-        Timer timer = new Timer(2500, e -> {
+        // 1.5초 후 코인 이미지 제거
+        Timer timer = new Timer(1500, e -> {
             parent.remove(coinLabel);
             parent.revalidate();
             parent.repaint();
