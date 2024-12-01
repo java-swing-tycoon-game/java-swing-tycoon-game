@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import GameManager.FontManager;
 
-import static Scenes.Deco.customFont;
 
 public class GameInfo extends JPanel {
     private final Deco parent; // 부모 Deco 클래스 참조

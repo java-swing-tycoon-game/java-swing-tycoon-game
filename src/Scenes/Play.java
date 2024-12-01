@@ -219,7 +219,7 @@ public class Play extends JFrame {
     void updateCoinAmount(int amount) {
         CoinManager.updateCoinAmount(amount);  // CoinManager를 통해 코인 금액 업데이트
     }
-  
+
     /*
     추후에 수정해야 할 것 같아서! 그냥 냅둬주세요!!
     // 하단 시간바 크기 조정

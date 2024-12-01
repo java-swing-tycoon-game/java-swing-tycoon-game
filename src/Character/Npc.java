@@ -1,13 +1,14 @@
 package Character;
 
 import GameManager.*;
-import Scenes.Deco;
+import Deco.Deco;
 import Scenes.Play;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Random;
+import Scenes.Play;
 
 public class Npc extends Move implements ClickEvent {
     ////// 이미지 경로 //////
