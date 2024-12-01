@@ -24,6 +24,7 @@ public class EndingManager extends JFrame {
         setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다 - Ending");
         setSize(1038, 805);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
         // 엔딩 이미지를 담을 JLayeredPane 생성
