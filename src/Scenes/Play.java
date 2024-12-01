@@ -1,7 +1,7 @@
 package Scenes;
 
 import Character.Player;
-import GameManager.StartManager;
+
 import GameManager.*;
 import Goods.Goods;
 import Items.ItemPanel;
@@ -59,7 +59,8 @@ public class Play extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
 
-        progressPaneManager.startDayTimer(); // 게임 시작과 함께 Day 타이머 시작
+        progressPaneManager.startDayTimer();
+ // 게임 시작과 함께 Day 타이머 시작
     }
 
     public JLayeredPane getMainPanel() {
@@ -221,31 +222,10 @@ public class Play extends JFrame {
         CoinManager.updateCoinAmount(amount);  // CoinManager를 통해 코인 금액 업데이트
     }
 
-    /*
-    추후에 수정해야 할 것 같아서! 그냥 냅둬주세요!!
-    // 하단 시간바 크기 조정
-    void updateTimeBar() {
 
-    }
 
-    // 응원봉 추가했을 때 타이머 변동
-    void useLStick() {
-        if (realTime + LStick.getTimeIncrease() <= 60) { // 최대 60초 = realTime으로 정해둔 거
-            LStick.use();
-            realTime += LStick.getTimeIncrease();
-            updateTimeBar();
-        }
-        else realTime = 60;
-
-     */
 
     public static void main(String[] args) {
-        DayManager dayManager = DayManager.getInstance();
 
-        // Day 1 시작
-        new StartManager(dayManager, true);
-
-        // Day 2 이후 (예시)
-        new StartManager(dayManager, false);
     }
 }

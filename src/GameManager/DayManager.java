@@ -11,7 +11,7 @@ public class DayManager {
     private static DayManager instance; // 싱글톤 인스턴스
     CoinManager coinManager = new CoinManager();
     private SimplePlaceManager placeManager; // 장소 관리
-    private int day = 1; // 현재 날짜 (1부터 시작)
+    private static int day = 1; // 현재 날짜 (1부터 시작)
     private ImageDayPanel dayPanel;
 
     private boolean[] itemPurchased; // 아이템 구매 상태 배열
@@ -47,6 +47,7 @@ public class DayManager {
     public int getDay() {
         return day;
     }
+    public void setDay() {day = 1;}
 
     // 다음 Day로 이동하고 이미지 업데이트
     public void nextDay() {
