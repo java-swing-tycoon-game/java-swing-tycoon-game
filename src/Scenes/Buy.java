@@ -23,7 +23,7 @@ public class Buy extends JFrame {
     private ItemManager itemManager; // ItemManager 인스턴스 변수 추가
     private Goods goodsPanel;
 
-    private int[] itemPrices = {0, 10, 300, 400, 10, 600}; // 각 아이템의 가격
+    private int[] itemPrices = {0, 10, 20, 12, 10, 15}; // 각 아이템의 가격
 
     public Buy() {
         showPopup();

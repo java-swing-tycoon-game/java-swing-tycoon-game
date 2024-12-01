@@ -56,7 +56,6 @@ public class ItemManager {
     }
 
     // 특정 경로에 해당하는 이미지 반환
-    // 특정 경로에 해당하는 이미지를 반환 (BufferedImage로 변환)
     public static Image getImageByPath(String path) {
         return imageMap.get(path);
     }

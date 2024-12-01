@@ -68,11 +68,12 @@ public class NpcManager {
     }
 
     // 맵에 NPC 추가
-    private static void setNpcToMap(Map<Place, Npc> map, Place place, Npc npc) {
-        if (!map.containsKey(place)) { // 중복 방지
+    private static synchronized void setNpcToMap(Map<Place, Npc> map, Place place, Npc npc) {
+        if (!map.containsKey(place)) {
             map.put(place, npc);
         }
     }
+
     // 맵이 차있는지 리턴
     private static boolean getMapNpc(Map<Place, Npc> map, Place place) {
         return map.containsKey(place);
@@ -88,65 +89,80 @@ public class NpcManager {
     }
 
     // 맵에서 NPC 제거
-    private static void removeNpcFromMap(Map<Place, Npc> map, Place place) {
+    private static synchronized void removeNpcFromMap(Map<Place, Npc> map, Place place) {
         if (map.containsKey(place)) {
             map.remove(place);
-            System.out.println("NPC 제거 완료: " + place);
         }
     }
 
-    // npc 삭제
-    public static void removeNpc(Npc npc) {
-        executor.submit(() -> {
-            npcList.remove(npc);
-
-            // NPC가 룸 또는 대기실 맵에 있으면 제거
-            Place npcPlace = findNpc(roomToNpcMap, npc);
+    // NPC를 맵에서 제거
+    private static synchronized void removeNpcFromAllMaps(Npc npc) {
+        Place npcPlace = findNpc(roomToNpcMap, npc);
+        if (npcPlace != null) {
+            removeNpcFromMap(roomToNpcMap, npcPlace);
+        } else {
+            npcPlace = findNpc(waitRoomToNpcMap, npc);
             if (npcPlace != null) {
-                removeNpcFromMap(roomToNpcMap, npcPlace);
-            } else {
-                npcPlace = findNpc(waitRoomToNpcMap, npc);
-                if (npcPlace != null) {
-                    removeNpcFromMap(waitRoomToNpcMap, npcPlace);
-                }
+                removeNpcFromMap(waitRoomToNpcMap, npcPlace);
             }
+        }
+    }
 
+    // NPC UI 및 리스트에서 완전히 제거
+    public static synchronized void removeNpc(Npc npc) {
+        executor.submit(() -> {
+            // 맵에서 NPC 제거
+            removeNpcFromAllMaps(npc);
+
+            // UI 및 리스트에서 NPC 제거
             SwingUtilities.invokeLater(() -> {
-                parentPanel.remove(npc);
-                parentPanel.revalidate();
-                parentPanel.repaint();
+                if (npcList.contains(npc)) {
+                    npcList.remove(npc);
+                }
+                if (parentPanel != null) {
+                    parentPanel.remove(npc);
+                    parentPanel.revalidate();
+                    parentPanel.repaint();
+                }
+
+                // 클릭 이벤트 리스트에서 제거
+                ClickManager.removeClickEventList(npc);
+
+                // 블랙 컨슈머 관련 상태 초기화
+                if (npc instanceof BlackConsumer) {
+                    bcActive = false;
+                    ClickManager.onlyBcClick = false;
+                    ClickManager.enableAllEvents();
+                    bc = null;
+                    System.out.println("블랙컨슈머 제거됨. 클릭 복구");
+                }
             });
 
-            ClickManager.removeClickEventList(npc);
-
-            if (npc instanceof BlackConsumer) {
-                bcActive = false; // 블랙 컨슈머 플래그 초기화
-                ClickManager.onlyBcClick = false; // 다른거 클릭 복원
-                ClickManager.enableAllEvents(); // 다른 이벤트 복원
-                bc = null;
-
-                // 디버깅용 로그
-                System.out.println("블랙컨슈머 제거됨. 클릭 복구");
+            // 타이머 재시작
+            if (moveRoomTimer != null) {
+                moveRoomTimer.start();
             }
-
-            moveRoomTimer.start();
         });
     }
 
-    // npc 완료 후 맵에서 삭제하고 사라지기, npc class용
+    // NPC 완료 처리 (맵에서 제거 후 UI 삭제 호출)
     public static void finishNpc(Npc npc) {
-        //if(!npc.getActive()) {
-            if(findNpc(roomToNpcMap, npc) != null) {
-                removeNpcFromMap(roomToNpcMap, findNpc(roomToNpcMap, npc));
+        synchronized (npcList) {
+            removeNpcFromAllMaps(npc);
+            if (npcList.contains(npc)) {
+                npcList.remove(npc);
             }
-            else {
-                removeNpcFromMap(waitRoomToNpcMap, findNpc(waitRoomToNpcMap, npc));
-            }
-        //}
+        }
 
-        npc.removeFromParent(); // NPC를 UI에서 제거
-        npc = null; // 객체 참조 해제
+        SwingUtilities.invokeLater(() -> {
+            if (npc.getParent() != null) {
+                npc.removeFromParent();
+                parentPanel.revalidate();
+                parentPanel.repaint();
+            }
+        });
     }
+
 
     // 생성 시작
     public void startNpcSpawnTimer() {

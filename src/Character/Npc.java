@@ -56,10 +56,13 @@ public class Npc extends Move implements ClickEvent {
     public int getRequestCount() { return requestCount; }
 
     public void resetNpc() {
-        this.requestCount = 0;      // 요청 횟수 초기화
-        this.specialCoin = 0;       // 특수 코인 초기화
-        this.active = true;         // NPC 활성화
-        setupRequest();             // 새로운 요청 설정
+        this.requestCount = 0;
+        this.specialCoin = 0;
+        this.active = true;
+        if (request != null) {
+            request.completeRequest(); // 이전 요청 종료
+        }
+        setupRequest();
         System.out.println("resetNpc(): NPC 상태 초기화 완료");
     }
 

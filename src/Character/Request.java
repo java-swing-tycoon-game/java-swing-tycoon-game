@@ -75,10 +75,13 @@ public class Request {
 
             // 요청 아이템 확인
             if (requestItemPath == null) {
-                System.err.println("makeRequest(): 요청 아이템 경로가 null입니다.");
-                requestItemPath = ItemManager.getItemPath(0); // 기본 경로 설정
+                //System.err.println("makeRequest(): 요청 아이템 경로가 null입니다.");
+                makeRequest(); // 기본 경로 설정
             }
 
+            do {
+                requestItemPath = setRequestItemPath(npc.characterX, npc.characterY);
+            } while (requestItemPath == null);
             requestItemImage = ItemManager.getImageByPath(requestItemPath);
 
             if (requestItemPath.equals(ItemManager.getItemPath(3))) npc.specialCoin += 2;
@@ -86,6 +89,7 @@ public class Request {
             if (requestItemPath.equals(ItemManager.getItemPath(5))) npc.specialCoin += 7;
 
             active = true;
+            progress = 0;
 
             progressTimer.stop();
             failTimer.stop();
