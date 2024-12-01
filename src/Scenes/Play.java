@@ -19,7 +19,6 @@ public class Play extends JFrame {
 
     private JLabel time; // 시간바
     private JPanel timePanel;
-    private int coinAmount = 0;  // 초기 코인 금액
 
     private bgmManager bgm;
     private CoinManager coinManager;
@@ -28,12 +27,6 @@ public class Play extends JFrame {
     private DayManager dayManager;
     private ProgressPaneManager progressPaneManager;
     public static boolean[] itemArray = {true, false, false, false}; // 기본값 false
-    private String[] itemIcons = {
-            "assets/img/item/itemCircle.png",
-            "assets/img/item/sloganItem.png",
-            "assets/img/item/stickItem.png",
-            "assets/img/item/tshirtItem.png"
-    };
     private ItemPanel itemPanel;
 
     public static Player player;
@@ -220,24 +213,6 @@ public class Play extends JFrame {
     void updateCoinAmount(int amount) {
         CoinManager.updateCoinAmount(amount);  // CoinManager를 통해 코인 금액 업데이트
     }
-
-    /*
-    추후에 수정해야 할 것 같아서! 그냥 냅둬주세요!!
-    // 하단 시간바 크기 조정
-    void updateTimeBar() {
-
-    }
-
-    // 응원봉 추가했을 때 타이머 변동
-    void useLStick() {
-        if (realTime + LStick.getTimeIncrease() <= 60) { // 최대 60초 = realTime으로 정해둔 거
-            LStick.use();
-            realTime += LStick.getTimeIncrease();
-            updateTimeBar();
-        }
-        else realTime = 60;
-
-     */
 
     public static void main(String[] args) {
         DayManager dayManager = DayManager.getInstance();

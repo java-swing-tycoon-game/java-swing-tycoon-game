@@ -62,6 +62,8 @@ public class Request {
     // room 3곳 저장
     protected void setZone()
     {
+        zone.clear();
+
         for (int i = 0; i < Move.places.size(); i++)
             if(Move.places.get(i).getNum() == 2)
                 zone.add(Move.places.get(i));

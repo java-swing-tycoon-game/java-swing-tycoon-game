@@ -85,7 +85,15 @@ public class Npc extends Move implements ClickEvent {
 
     ////// NPC 요청 //////
     // 요청 생성
-    public void setupRequest() { request = new Request(this); }
+    public void setupRequest() {
+        request = new Request(this);
+        if (request != null && request.getRequestItem() != null) {
+            System.out.println("요청 생성 완료: " + request.getRequestItem());
+        } else {
+            System.err.println("요청 생성 실패!");
+        }
+    }
+
 
     @Override // npc 범위만 클릭해서 요청 수행하도록
     public Rectangle setBounds() {
@@ -160,7 +168,7 @@ public class Npc extends Move implements ClickEvent {
         if (requestedItem.equals(ItemManager.itemImages.getLast())) {
            // new Deco();
             JFrame parentFrame = Play.instance;  // Play 클래스의 JFrame을 가져오기
-            new Deco((JFrame) parentFrame); // 다이얼로그 방식으로 생성
+            new Deco((JFrame) parentFrame, this); // 다이얼로그 방식으로 생성
         }
 
         // 요청 아이템과 양 손 모두 불일치

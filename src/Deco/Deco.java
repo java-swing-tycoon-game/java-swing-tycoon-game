@@ -7,6 +7,7 @@ import java.util.Random;
 import GameManager.CoinManager;
 
 import GameManager.FontManager;
+import Character.Npc;
 
 public class Deco extends JDialog {
     public Boolean gameResult = null;
@@ -19,11 +20,13 @@ public class Deco extends JDialog {
     private final String[] themes = { "공주", "바다", "진주" };
     private TopLoader topLoader;
 
+    private Npc npc;
 
-    public Deco(JFrame parentFrame) {
+    public Deco(JFrame parentFrame, Npc npc) {
         super(parentFrame, "탑로더를 꾸며보아요!", true);
         Arrays.fill(currentList, 3);
         setUndecorated(true);
+        this.npc = npc;
 
         setTitle("탑로더를 꾸며보아요!");
         setSize(800, 600);
@@ -167,7 +170,7 @@ public class Deco extends JDialog {
         }
         if(gameResult){
             CoinManager.updateCoinAmount(10);
-
+            npc.requestCount = npc.MAX_REQUESTS;
         }
     }
 
@@ -178,7 +181,7 @@ public class Deco extends JDialog {
         parent.setSize(800, 600);
         parent.setVisible(false);
 
-        new Deco(parent);
+        //new Deco(parent, );
     }
 
 

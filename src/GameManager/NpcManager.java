@@ -195,6 +195,10 @@ public class NpcManager {
 
         npcList.add(npc);
         npcCount++;
+
+        // 클릭 이벤트 등록
+        ClickManager.setClickEventList(npc);
+
         addNpcPanel(npc, 100);
         moveNpcToWait(npc);
 
