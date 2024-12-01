@@ -27,7 +27,7 @@ public class ProgressPaneManager {
         this.dayManager = dayManager.getInstance();
         this.progressPane = new ImageProgressPane();
     }
-  
+
     public JPanel getProgressPane() {
         return progressPane;
     }
@@ -35,6 +35,10 @@ public class ProgressPaneManager {
     public void startDayTimer() {
         if (dayTimer != null) {
             dayTimer.cancel();
+        }
+
+        if (dayManager.getDay() != 1) {
+            pauseTimerForSeconds(2);
         }
 
         realTime = dayTimes[dayManager.getDay() - 1];
@@ -84,13 +88,11 @@ public class ProgressPaneManager {
                 isBuyPopupOpen = false;
 
                 if (buyPopup.isNextButtonClicked()) {
-                    DayManager.getInstance().nextDay(); // DayManager의 상태를 증가
-
-                    if (dayManager.getDay() == 1) {new StartManager(DayManager.getInstance(), true);}
-                    else {new StartManager(DayManager.getInstance(), false);} // 증가된 상태로 StartManager 시작
-
-                    startDayTimer(); // 새로운 Day와 관련된 타이머 시작
-                    // new StartManager(DayManager.getInstance(), dayManager.getDay() == 1);
+                    if (dayManager.getDay() < 7) {
+                        dayManager.nextDay();
+                        new StartManager(dayManager, dayManager.getDay() == 1);
+                        startDayTimer();
+                    }
                 }
             });
 
@@ -103,8 +105,9 @@ public class ProgressPaneManager {
             if (playInstance != null) {
                 playInstance.dispose();
             }
-            EndingManager endingManager = new EndingManager(dayManager, coinManager);  // EndingManager 생성
-            endingManager.setVisible(true);  // 게임 오버 화면 띄우기
+            JFrame parentFrame = playInstance != null ? playInstance : new JFrame();
+            EndingManager endingManager = new EndingManager(parentFrame, dayManager, coinManager); // EndingManager 생성
+            endingManager.setVisible(true); // 게임 오버 화면 띄우기
         });
     }
 
@@ -163,33 +166,5 @@ public class ProgressPaneManager {
 
             g2d.dispose();
         }
-    }
-
-    // 데이 이미지 관련
-    public class ImageDayPanel extends JPanel {
-        private JLabel dayLabel;
-
-        public ImageDayPanel() {
-            setLayout(new FlowLayout(FlowLayout.LEFT));
-            setOpaque(false);
-
-            dayLabel = new JLabel();
-            updateDayImage(dayManager.getDay());    // 데이 이미지 초기화
-            add(dayLabel);
-        }
-
-        // Day 변경 시 데이 이미지와 장소 가시성을 함께 변경
-        public void updateDayImage(int day) {
-            try {
-                // Day 이미지 업데이트
-                String dayImagePath = "assets/img/day" + day + ".png";
-                BufferedImage dayImage = ImageIO.read(new File(dayImagePath));
-                dayLabel.setIcon(new ImageIcon(dayImage));
-            } catch (IOException ex) {
-                System.err.println("이미지 로드 실패: " + ex.getMessage());
-                dayLabel.setIcon(null); // 이미지 로드 실패 시 초기화
-            }
-        }
-
     }
 }

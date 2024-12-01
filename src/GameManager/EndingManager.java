@@ -1,34 +1,32 @@
 package GameManager;
 
 import Scenes.Main;
-import Scenes.Play;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.io.File;
 
-public class EndingManager extends JFrame {
+public class EndingManager extends JDialog {
     private JLabel endingLabel;
     private int totalCoin;
 
     private DayManager dayManager;  // DayManager 인스턴스
     private CoinManager coinManager;  // CoinManager 인스턴스
 
-    public EndingManager(DayManager dayManager, CoinManager coinManager) {
+    public EndingManager(JFrame parent, DayManager dayManager, CoinManager coinManager) {
+        super(parent, true); // Modal Dialog로 설정
         this.dayManager = dayManager;
         this.coinManager = coinManager;
-        this.totalCoin = coinManager.getCoinAmount();  // 총 코인 금액
+        this.totalCoin = coinManager.getCoinAmount(); // 총 코인 금액
 
-        // 엔딩 화면 설정
-        setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다 - Ending");
         setSize(1038, 805);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+        setLocationRelativeTo(null); // 화면 중앙에 표시
         setLayout(new BorderLayout());
 
         // 엔딩 이미지를 담을 JLayeredPane 생성
         JLayeredPane layeredPane = new JLayeredPane();
+        layeredPane.setPreferredSize(new Dimension(getWidth(), getHeight()));
 
         // 엔딩 이미지 로딩
         updateEndingImage();
@@ -43,24 +41,18 @@ public class EndingManager extends JFrame {
         backToMainButton.setContentAreaFilled(false);
 
         // 버튼 크기 조정
-        backToMainButton.setPreferredSize(new Dimension(150, 60));  // 예시로 크기를 설정
-        backToMainButton.setBounds(getWidth() / 2 + 200, getHeight() - 150, 250, 70);  // 버튼 위치 설정
+        backToMainButton.setBounds(getWidth() / 2 - 125, getHeight() - 150, 250, 70);
 
         // 버튼 클릭 리스너 설정
-        backToMainButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // 버튼 클릭 시 Main 화면으로
-                goToMainScreen();
-            }
+        backToMainButton.addActionListener((ActionEvent e) -> {
+            closeAllWindowsAndRestart(); // 애플리케이션을 새로 시작
         });
 
         // 버튼을 JLayeredPane에 추가
         layeredPane.add(backToMainButton, JLayeredPane.POPUP_LAYER);
 
-        // JLayeredPane을 JFrame에 추가
-        add(layeredPane);
-
+        // JLayeredPane을 JDialog에 추가
+        add(layeredPane, BorderLayout.CENTER);
     }
 
     private void updateEndingImage() {
@@ -74,15 +66,24 @@ public class EndingManager extends JFrame {
             imagePath = "assets/img/ending-fail.png";
         }
 
-        // Game Over 시 출력
+        // 엔딩 이미지를 설정
         endingLabel = new JLabel(new ImageIcon(imagePath));
+        endingLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        endingLabel.setVerticalAlignment(SwingConstants.CENTER);
     }
 
-    // 메인 화면으로 돌아가는 메서드
-    private void goToMainScreen() {
-        // EndingManager 창을 닫고 Main 화면을 띄움
-        this.dispose();
-        Scenes.Main mainScreen = new Main();
-        mainScreen.setVisible(true);
+
+    private void closeAllWindowsAndRestart() {
+        // 모든 창 닫기
+        Window[] windows = Window.getWindows();
+        for (Window window : windows) {
+            window.dispose();
+        }
+
+        // 새로운 Main 실행
+        SwingUtilities.invokeLater(() -> {
+            Main mainScreen = new Main();
+            mainScreen.setVisible(true);
+        });
     }
 }

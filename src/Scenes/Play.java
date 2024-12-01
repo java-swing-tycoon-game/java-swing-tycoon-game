@@ -1,7 +1,7 @@
 package Scenes;
 
 import Character.Player;
-import GameManager.StartManager;
+
 import GameManager.*;
 import Goods.Goods;
 import Items.ItemPanel;
@@ -52,7 +52,8 @@ public class Play extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
 
-        progressPaneManager.startDayTimer(); // 게임 시작과 함께 Day 타이머 시작
+        progressPaneManager.startDayTimer();
+ // 게임 시작과 함께 Day 타이머 시작
     }
 
     public JLayeredPane getMainPanel() {
@@ -212,12 +213,6 @@ public class Play extends JFrame {
     }
 
     public static void main(String[] args) {
-        DayManager dayManager = DayManager.getInstance();
 
-        // Day 1 시작
-        new StartManager(dayManager, true);
-
-        // Day 2 이후 (예시)
-        new StartManager(dayManager, false);
     }
 }

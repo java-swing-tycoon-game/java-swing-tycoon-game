@@ -47,6 +47,7 @@ public class DayManager {
     public static int getDay() {
         return day;
     }
+    public void setDay() {day = 1;}
 
     // 다음 Day로 이동하고 이미지 업데이트
     public void nextDay() {

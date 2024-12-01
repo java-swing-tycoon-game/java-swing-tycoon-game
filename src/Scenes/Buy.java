@@ -19,7 +19,8 @@ public class Buy extends JFrame {
 
     private boolean nextButtonClicked = false; // 버튼 클릭 상태
     private Runnable onDisposeAction; // dispose 시 실행할 동작
-    CoinManager coinManager = new CoinManager();
+    //CoinManager coinManager = new CoinManager();
+    private ItemManager itemManager; // ItemManager 인스턴스 변수 추가
     private Goods goodsPanel;
 
     private int[] itemPrices = {0, 10, 300, 400, 10, 600}; // 각 아이템의 가격
@@ -115,7 +116,7 @@ public class Buy extends JFrame {
         JLabel coinImgLabel = new JLabel(new ImageIcon("assets/img/coinImage.png"));
 
         Font font = FontManager.loadFont(40);
-        JLabel coinTxt = new JLabel(coinManager.getCoinAmount() + "만원");
+        JLabel coinTxt = new JLabel(CoinManager.getCoinAmount() + "만원");
         coinTxt.setFont(font);
 
         haveCoinPanel.add(coinImgLabel);
@@ -138,7 +139,7 @@ public class Buy extends JFrame {
                 int selectedIndex = selectedItemIndex[0];
                 DayManager dayManager = DayManager.getInstance();
 
-                if (coinManager.getCoinAmount() >= itemPrices[selectedIndex]) {
+                if (CoinManager.getCoinAmount() >= itemPrices[selectedIndex]) {
                     // 하루에 하나만 구매
                     if (dayManager.hasPurchasedToday(selectedIndex)) {
                         JOptionPane.showMessageDialog(this, "이미 아이템을 구매하셨습니다.", "알림", JOptionPane.WARNING_MESSAGE);
@@ -184,8 +185,8 @@ public class Buy extends JFrame {
                                 }
                             }
                         }
-                        coinManager.updateCoinAmount(-itemPrices[selectedIndex]);
-                        coinTxt.setText(coinManager.getCoinAmount() + "만원");  // 새로운 코인 금액 표시
+                        CoinManager.updateCoinAmount(-itemPrices[selectedIndex]);
+                        coinTxt.setText(CoinManager.getCoinAmount() + "만원");  // 새로운 코인 금액 표시
                     }
                 }
                 else{
