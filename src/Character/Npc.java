@@ -86,10 +86,23 @@ public class Npc extends Move implements ClickEvent {
     ////// NPC 요청 //////
     // 요청 생성
     public void setupRequest() {
+        // 기존 요청이 있다면 초기화
+        if (request != null && request.getActive()) {
+            request.completeRequest();
+        }
+
+        // 새로운 요청 생성
         request = new Request(this);
         if (request.getRequestItem() != null) {
-            System.out.println("요청 생성 완료: " + request.getRequestItem());
+            System.out.println("setupRequest(): 새로운 요청 생성 완료: " + request.getRequestItem());
+        } else {
+            System.err.println("setupRequest(): 요청 아이템이 null입니다.");
         }
+
+//        request = new Request(this);
+//        if (request.getRequestItem() != null) {
+//            System.out.println("요청 생성 완료: " + request.getRequestItem());
+//        }
     }
 
     @Override // npc 범위만 클릭해서 요청 수행하도록
@@ -146,8 +159,13 @@ public class Npc extends Move implements ClickEvent {
 
         // 요청 아이템 존재x
         if (requestedItem == null) {
+            System.err.println("giveItem(): 요청 아이템이 null입니다.");
             return false;
         }
+
+        System.out.println("왼손 아이템: " + leftItem);
+        System.out.println("오른손 아이템: " + rightItem);
+        System.out.println("요청 아이템: " + requestedItem);
 
         // 왼손과 요청 아이템 비교
         if (requestedItem.equals(leftItem)) {
@@ -162,13 +180,13 @@ public class Npc extends Move implements ClickEvent {
         }
 
         // deco 게임 요청
-        if (requestedItem.equals(ItemManager.itemImages.getLast())) {
-           // new Deco();
+        if (requestedItem.equals(ItemManager.getItemImage(6))) {
             JFrame parentFrame = Play.instance;  // Play 클래스의 JFrame을 가져오기
             new Deco((JFrame) parentFrame, this); // 다이얼로그 방식으로 생성
         }
 
         // 요청 아이템과 양 손 모두 불일치
+        System.out.println("giveItem(): 요청 아이템과 플레이어의 아이템이 일치하지 않습니다.");
         return false;
     }
 
@@ -177,7 +195,7 @@ public class Npc extends Move implements ClickEvent {
         Container parent = getParent() != null ? getParent() : Play.instance.getMainPanel();
 
         if (parent == null) {
-            System.err.println("Cannot show coin image because both parent and mainPanel are null.");
+            System.err.println("코인 이미지 불가");
             return;
         }
 

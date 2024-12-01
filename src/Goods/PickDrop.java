@@ -13,10 +13,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class PickDrop extends JPanel {
-    private final ItemManager itemManager;
 
-    public PickDrop(ItemManager itemManager) {
-        this.itemManager = itemManager;
+    public PickDrop() {
 
         // 마우스 클릭 이벤트 추가
         addMouseListener(new MouseAdapter() {
@@ -46,12 +44,12 @@ public class PickDrop extends JPanel {
     }
 
     public void handleItemClick(Point clickPoint) {
-        for (Place place : itemManager.getPlaces()) {
+        for (Place place : ItemManager.getPlaces()) {
             if (place.contains(clickPoint.x, clickPoint.y)) {
-                Image item = itemManager.getItemForPlace(place);
+                Image item = ItemManager.getItemForPlace(place);
 
                 // 아이템이 존재하고 visible 상태인지 확인
-                if (item != null && itemManager.getVisible(itemManager.getPlaces().indexOf(place)-1)) {
+                if (item != null && ItemManager.getVisible(ItemManager.getPlaces().indexOf(place)-1)) {
                     // 왼손이 비어 있으면 왼손에 들기
                     if (Play.player.getHoldItemL() == null) {
                         pickUpItemLeft(item);

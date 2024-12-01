@@ -28,24 +28,22 @@ public class Request {
 
     protected boolean active; // 개별 요청의 완료 여부
     //public boolean fail = false;
-    private final ItemManager itemManager;
 
     public Request(Npc npc) {
         this.npc = npc;
         active = false;
         zone = new ArrayList<>();
-        this.itemManager = ItemManager.getInstance(); // 싱글톤 참조
         setZone();
 
         requestImage = loadImage("assets/img/npc/request.png");
 
         // 60초 실패 여부 판단
-        failTimer = new Timer(30000, e -> {
+        failTimer = new Timer(60000, e -> {
             failRequest(); // 요청 실패 처리
         });
 
         progressTimer = new Timer(1000, e -> {
-            progress = Math.min(progress + (100 / 30), 100); // 최대 100까지 증가
+            progress = Math.min(progress + (100 / 60), 100);
             updateProgressImage();
         });
 
@@ -72,9 +70,17 @@ public class Request {
     public void makeRequest() {
         if (!active) {
             requestItem = setRequestItem(npc.characterX, npc.characterY);
-            if(requestItem == ItemManager.itemImages.get(3)) npc.specialCoin += 2;
-            if(requestItem == ItemManager.itemImages.get(4)) npc.specialCoin += 5;
-            if(requestItem == ItemManager.itemImages.get(5)) npc.specialCoin += 7;
+
+            // 요청 아이템 확인
+            if (requestItem == null) {
+                System.err.println("makeRequest(): 요청 아이템이 null입니다.");
+                requestItem = ItemManager.getItemImage(0);
+                //return;
+            }
+
+            if(requestItem == ItemManager.getItemImage(3)) npc.specialCoin += 2;
+            if(requestItem == ItemManager.getItemImage(4)) npc.specialCoin += 5;
+            if(requestItem == ItemManager.getItemImage(5)) npc.specialCoin += 7;
 
             active = true;
 
@@ -84,6 +90,8 @@ public class Request {
 
             progressTimer.start();
             failTimer.start();
+
+            System.out.println("makeRequest(): 요청 활성화 완료, 아이템: " + requestItem);
         }
     }
 
@@ -167,6 +175,8 @@ public class Request {
 
             npc.setActive(false);
             NpcManager.finishNpc(npc);
+
+            npc.setupRequest();
         }
     }
 
@@ -185,17 +195,24 @@ public class Request {
     }
 
     // visible 상태인 아이템 중에서 랜덤 선택
+    // visible 상태인 아이템 중에서 랜덤 선택
     private Image getRandomVisibleItem(int startIndex, int endIndex) {
-        List<Image> visibleItems = new ArrayList<>();
+        List<Integer> visibleItemIndices = new ArrayList<>();
+
         for (int i = startIndex; i < endIndex; i++) {
-            if (itemManager.getVisible(i)) {
-                visibleItems.add(itemManager.itemImages.get(i));
+            if (ItemManager.getVisible(i)) {
+                visibleItemIndices.add(i);
             }
         }
-        if (visibleItems.isEmpty()) {
+
+        if (visibleItemIndices.isEmpty()) {
             return null;
         }
-        return visibleItems.get(new Random().nextInt(visibleItems.size()));
+
+        int randomIndex = visibleItemIndices.get(new Random().nextInt(visibleItemIndices.size()));
+        Image selectedItem = ItemManager.getItemImage(randomIndex);
+
+        return selectedItem;
     }
 
     // 장소에 맞춰 요청할 아이템 이미지 세팅
@@ -229,7 +246,7 @@ public class Request {
 
     // 데코 요청
     private Image setDecoRequest() {
-        return ItemManager.itemImages.get(6);
+        return ItemManager.getItemImage(6);
     }
 
     public void draw(Graphics2D g2d, int x, int y) {

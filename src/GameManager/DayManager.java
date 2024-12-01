@@ -11,7 +11,7 @@ public class DayManager {
     private static DayManager instance; // 싱글톤 인스턴스
     CoinManager coinManager = new CoinManager();
     private SimplePlaceManager placeManager; // 장소 관리
-    private int day = 1; // 현재 날짜 (1부터 시작)
+    private static int day = 1; // 현재 날짜 (1부터 시작)
     private ImageDayPanel dayPanel;
 
     private boolean[] itemPurchased; // 아이템 구매 상태 배열
@@ -44,30 +44,30 @@ public class DayManager {
         return placeManager; // 장소 매니저 반환
     }
 
-    public int getDay() {
+    public static int getDay() {
         return day;
     }
 
     // 다음 Day로 이동하고 이미지 업데이트
     public void nextDay() {
         day++; // Day 증가
+        System.out.println("새로운 날 시작: Day " + day);
 
+        // Day 이미지 업데이트
         dayPanel.updateDayImage(day);
-        // Day 변경에 따라 장소 가시성 갱신
-        if (day == 2 || day == 3) {
-            placeManager.setPlaceVisible(day - 2, true); // Day 2부터 장소 보이기
-        }
-        dayPanel.updateDayImage(day); // 새로운 Day 이미지로 업데이트
 
-      for(int i=0; i < 6; i++) {
+        // 데이에 따른 장소 설정
+        if (day == 2 || day == 3) {
+            placeManager.setPlaceVisible(day - 2, true);
+        }
+
+        // 아이템 구매 초기화
+        for (int i = 0; i < 6; i++) {
             hasPurchasedToday[i] = false;
         }
-      
-       // Npc 초기화
-        NpcManager.clearAllNpcs();
 
-        // 새로운 데이의 NPC 스폰 시작
-        NpcManager.startNpcSpawnTimer();
+        // NPC 초기화 및 스폰 시작
+        NpcManager.onDayChange(day);
     }
 
     public boolean hasPurchasedToday(int index) {

@@ -14,8 +14,10 @@ public class ClickManager extends MouseAdapter {
 
     // 클릭 가능한 이벤트들 우선 순위 두고 저장
     public static void setClickEventList(ClickEvent event) {
-        ClickEventList.add(event);
-        ClickEventList.sort((a, b) -> b.getPriority() - a.getPriority());
+        if (event != null) {
+            ClickEventList.add(event);
+            ClickEventList.sort((a, b) -> b.getPriority() - a.getPriority());
+        }
     }
 
     // 클릭 가능한 이벤트 삭제
@@ -37,10 +39,26 @@ public class ClickManager extends MouseAdapter {
             }
         } else {
             for (ClickEvent click : ClickEventList) {
-                if (click.setBounds().contains(clickPoint)) {
+                if (click != null && click.isEnabled() && click.setBounds().contains(clickPoint)) {
                     click.onClick(clickPoint);
                 }
             }
+        }
+    }
+
+    // 블랙컨슈머 등장 시 다른 클릭 이벤트 비활성화
+    public static void disableAllExceptBlackConsumer() {
+        for (ClickEvent event : ClickEventList) {
+            if (!(event instanceof BlackConsumer)) {
+                event.setEnabled(false);
+            }
+        }
+    }
+
+    // 블랙컨슈머 제거 후 클릭 이벤트 복원
+    public static void enableAllEvents() {
+        for (ClickEvent event : ClickEventList) {
+            event.setEnabled(true);
         }
     }
 }

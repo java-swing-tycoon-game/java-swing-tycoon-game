@@ -26,13 +26,12 @@ public class Play extends JFrame {
     private ClickManager clickManager;
     private DayManager dayManager;
     private ProgressPaneManager progressPaneManager;
+    private ItemManager itemManager;
 
     public static boolean[] itemArray = {true, false, false, false}; // 기본값 false
     private ItemPanel itemPanel;
 
     public static Player player;
-
-    private ItemManager itemManager; // ItemManager 인스턴스를 여기에 추가
 
     public Play() {
         setTitle("청춘 소녀는 콘서트의 꿈을 꾸지 않는다");
@@ -41,6 +40,7 @@ public class Play extends JFrame {
 
         dayManager = DayManager.getInstance();
         progressPaneManager = new ProgressPaneManager(dayManager); // ProgressPaneManager 초기화
+        itemManager = new ItemManager();
 
         setMainPanel();
         showCharacter();
@@ -96,21 +96,18 @@ public class Play extends JFrame {
     {
         setupClickManager();
 
-        // ItemManager 생성
-        ItemManager itemManager = ItemManager.getInstance();
-
         // Player 생성
-        player = new Player(itemManager);
+        player = new Player();
         player.setBounds(0, 0, 1024, 768);
         player.setOpaque(false);
-        mainPanel.add(player, Integer.valueOf(110));
+        mainPanel.add(player, Integer.valueOf(100));
         ClickManager.setClickEventList(player);
 
         // npc 생성
         npcManager = new NpcManager(mainPanel, player, 5);
 
         // Goods 생성
-        Goods goods = new Goods(itemManager);
+        Goods goods = new Goods();
         goods.setBounds(0, 0, 1024, 768);
         goods.setOpaque(false);
         mainPanel.add(goods, Integer.valueOf(100));

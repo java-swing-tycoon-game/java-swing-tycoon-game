@@ -8,24 +8,20 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Goods extends JPanel {
-    private final ItemManager itemManager;
 
-    public Goods(ItemManager itemManager) {
-        this.itemManager = itemManager;
-        System.out.println("Goods에서의 itemManager: " + itemManager);
-
+    public Goods() {
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        for (int i = 0; i < ItemManager.itemImages.size(); i++) {
+        for (int i = 0; i < 7; i++) {
             // visible 상태인 아이템만 화면에 표시
-            if (itemManager.getVisible(i)) {
+            if (ItemManager.getVisible(i)) {
                 // 맵에서 아이템 위치만 가져옴
                 Place place = Move.places.get(i + 1);
-                Image itemImage = ItemManager.itemImages.get(i);
+                Image itemImage = ItemManager.getItemImage(i);
 
                 // 아이템 이미지를 Place 위치에 맞게 그림
                 int drawX = place.getX() - place.getRadius();

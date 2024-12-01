@@ -20,7 +20,6 @@ public class Buy extends JFrame {
     private boolean nextButtonClicked = false; // 버튼 클릭 상태
     private Runnable onDisposeAction; // dispose 시 실행할 동작
     CoinManager coinManager = new CoinManager();
-    private ItemManager itemManager; // ItemManager 인스턴스 변수 추가
     private Goods goodsPanel;
 
     private int[] itemPrices = {0, 10, 300, 400, 10, 600}; // 각 아이템의 가격
@@ -58,9 +57,7 @@ public class Buy extends JFrame {
         itemPanel.setOpaque(false); // 배경 투명화
         itemPanel.setBounds(100, 150, 520, 340);
 
-        // 추가
-        itemManager = ItemManager.getInstance(); // 동일 인스턴스 사용
-        goodsPanel = new Goods(itemManager); // Goods 패널 생성
+        goodsPanel = new Goods(); // Goods 패널 생성
 
         int[] selectedItemIndex = {-1}; // 선택된 아이템 인덱스를 저장 (-1: 선택 없음)
 
@@ -169,7 +166,7 @@ public class Buy extends JFrame {
                         } else {
                             dayManager.setItemPurchased(selectedIndex, true);
                             dayManager.setHasPurchasedToday(selectedIndex, true);
-                            itemManager.setVisibleItem(selectedIndex, true);
+                            ItemManager.setVisibleItem(selectedIndex, true);
                             System.out.println("아이템 인덱스 " + selectedIndex + "이(가) 화면에 보이도록 설정되었습니다.");
                         }
 

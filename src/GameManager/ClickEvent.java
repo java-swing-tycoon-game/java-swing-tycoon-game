@@ -8,4 +8,6 @@ public interface ClickEvent {
     default int getPriority() { // 우선순위 기본값
         return 0;
     }
+    boolean isEnabled(); // 추가
+    void setEnabled(boolean enabled); // 추가
 }

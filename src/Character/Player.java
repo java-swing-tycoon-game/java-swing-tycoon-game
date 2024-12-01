@@ -21,11 +21,11 @@ public class Player extends MovePlayer implements ClickEvent {
     public boolean isMoving = false; // 이동 중인지
     private int lastVisitedCase = -1; // 이전 방문 장소(Num)을 저장
 
-    public Player(ItemManager itemManager) {
+    public Player() {
         super(512, 330); // 초기 좌표 설정
         setOpaque(false);
         walkingAnimation();
-        pickDrop = new PickDrop(itemManager);
+        pickDrop = new PickDrop();
     }
 
     public void setHoldItemL(Image item) {
@@ -88,7 +88,6 @@ public class Player extends MovePlayer implements ClickEvent {
         for (Place place : getPlaces()) {
             if (place.contains(clickPoint.x, clickPoint.y)) {
                 boolean viaCenter = lastVisitedCase != place.getNum();
-                System.out.println("같은 장소 방문: " + !viaCenter);
 
                 switch (place.getNum()) {
                     case 2 -> { // 룸 3곳
