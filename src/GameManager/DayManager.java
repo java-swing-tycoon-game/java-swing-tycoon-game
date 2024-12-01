@@ -42,9 +42,16 @@ public class DayManager {
     public void nextDay() {
         day++; // Day 증가
         dayPanel.updateDayImage(day); // 새로운 Day 이미지로 업데이트
-        for(int i=0; i < 6; i++) {
+
+      for(int i=0; i < 6; i++) {
             hasPurchasedToday[i] = false;
         }
+      
+       // Npc 초기화
+        NpcManager.clearAllNpcs();
+
+        // 새로운 데이의 NPC 스폰 시작
+        NpcManager.startNpcSpawnTimer();
     }
 
     public boolean hasPurchasedToday(int index) {

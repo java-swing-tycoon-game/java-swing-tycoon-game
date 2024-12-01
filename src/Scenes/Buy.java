@@ -188,12 +188,11 @@ public class Buy extends JFrame {
                             }
                         }
                         coinManager.updateCoinAmount(-itemPrices[selectedIndex]);
-                        coinTxt.setText(coinManager.getCoinAmount() + "만원");
+                        coinTxt.setText(coinManager.getCoinAmount() + "만원");  // 새로운 코인 금액 표시
                     }
-                }
-                else{
-                    JOptionPane.showMessageDialog(this, "코인이 부족합니다.", "알림", JOptionPane.WARNING_MESSAGE);
-                }
+                    else{
+                        JOptionPane.showMessageDialog(this, "돈이 부족합니다.", "알림", JOptionPane.WARNING_MESSAGE);
+                      }
             }
         });
 

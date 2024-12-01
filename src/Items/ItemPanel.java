@@ -1,12 +1,16 @@
 package Items;
 
+import GameManager.NpcManager;
+import GameManager.ProgressPaneManager;
 import Scenes.Play;
 import Character.bcAns;
+
 
 import javax.swing.*;
 import java.awt.*;
 
 public class ItemPanel extends JPanel {
+    private ProgressPaneManager progressPaneManager;
     public static ItemPanel instance;
     public static final boolean[] itemArray = {true, false, false, false}; // 기본값
     private static final String[] itemIcons = {
@@ -16,7 +20,9 @@ public class ItemPanel extends JPanel {
             "assets/img/item/stickItem.png"
     };
 
-    public ItemPanel() {
+    public ItemPanel(ProgressPaneManager progressPaneManager) {
+        this.progressPaneManager = progressPaneManager;
+
         setOpaque(false);
         instance = this;
 
@@ -55,14 +61,18 @@ public class ItemPanel extends JPanel {
         // 클릭된 아이템에 대한 로직 추가
         if (index == 1) {
             System.out.println("슬로건 아이템 활성화!");
-            bcAns.stop();
+            NpcManager.forceRemoveBlackConsumer();
             itemArray[1] = false;
         } else if (index == 2) {
             System.out.println("티셔츠 아이템 활성화!");
             Tshirt.applyEffect(Play.player);
         } else if (index == 3) {
-            System.out.println("스틱 아이템 활성화!");
-            LightStick.use();
+            if(progressPaneManager != null){
+
+                progressPaneManager.pauseTimerForSeconds(5);
+                System.out.println("스틱 아이템 활성화!");
+            }
+
             itemArray[3] = false;
         }
 

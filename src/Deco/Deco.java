@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.Random;
+import GameManager.CoinManager;
 
 import GameManager.FontManager;
 
@@ -20,14 +21,14 @@ public class Deco extends JDialog {
 
 
     public Deco(JFrame parentFrame) {
-        super(parentFrame, "탑로더를 꾸며보아요!", true); // 다이얼로그로 설정 (모달)
+        super(parentFrame, "탑로더를 꾸며보아요!", true);
         Arrays.fill(currentList, 3);
         setUndecorated(true);
 
         setTitle("탑로더를 꾸며보아요!");
         setSize(800, 600);
         setResizable(false);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
 
         ImageIcon originalIcon = new ImageIcon("assets/img/decoItem/Frame2.png");
@@ -78,18 +79,16 @@ public class Deco extends JDialog {
             topLoader = new TopLoader(this); // TopLoader 초기화
             topLoader.setBounds(0, 0, 600, 600);
             layeredPane.add(topLoader, Integer.valueOf(1));
-            // ColorLayer 추가
+
             ColorLayer colorLayer = new ColorLayer(this);
-            colorLayer.setBounds(100, 50, 250, 250); // ColorLayer의 크기와 위치 설정
+            colorLayer.setBounds(100, 50, 250, 250);
 
-
-            // PartsLayer 추가
             PartsLayer partsLayer = new PartsLayer(this);
-            partsLayer.setBounds(500, 50, 130, 500); // PartsLayer의 크기와 위치 설정
+            partsLayer.setBounds(500, 50, 130, 500);
 
 
             FilmLayer FilmLayer = new FilmLayer(this);
-            FilmLayer.setBounds(50, 50, 200, 400); // PartsLayer의 크기와 위치 설정
+            FilmLayer.setBounds(50, 50, 200, 400);
 
             decoItem();
 
@@ -155,7 +154,7 @@ public class Deco extends JDialog {
         ToploderEnd endPanel = new ToploderEnd(gameResult, selectedItems, this);
 
         endPanel.setBounds(0, 0, getWidth(), getHeight());
-        layeredPane.add(endPanel, Integer.valueOf(5)); // 최상위 레이어
+        layeredPane.add(endPanel, Integer.valueOf(5));
         layeredPane.revalidate();
         layeredPane.repaint();
     }
@@ -166,14 +165,18 @@ public class Deco extends JDialog {
         if (gameResult != null) {
             System.out.println(gameResult ? "맞았습니다" : "틀렸습니다");
         }
+        if(gameResult){
+            CoinManager.updateCoinAmount(10);
+
+        }
     }
 
     public static void main(String[] args) {
 
-        JFrame parent = new JFrame(); // 부모 프레임 (숨겨놓을 수도 있음)
+        JFrame parent = new JFrame();
         parent.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         parent.setSize(800, 600);
-        parent.setVisible(false); // 부모는 보이지 않도록 설정
+        parent.setVisible(false);
 
         new Deco(parent);
     }

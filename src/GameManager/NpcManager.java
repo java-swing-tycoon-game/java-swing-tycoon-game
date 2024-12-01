@@ -17,22 +17,24 @@ public class NpcManager {
     // npc(여러명이라 리스트)
     private static List<Npc> npcList;
 
-    private int maxNpc; // 데이별로 maxNpc 다름
-    private int npcCount = 0;
+    private static int maxNpc; // 데이별로 maxNpc 다름
+    private static int npcCount = 0;
 
     // bc는 한 번에 1명만 등장
     private static boolean bcActive = false;
 
     // 장소와 들어간 npc 관리
     private static ArrayList<Place> room = null;
-    private final ArrayList<Place> waitRoom;
+    private static ArrayList<Place> waitRoom = null;
     private static Map<Place, Npc> roomToNpcMap = Map.of();
     private static Map<Place, Npc> waitRoomToNpcMap = Map.of();
 
     private static Timer spawnTimer;
     private static Timer moveRoomTimer;
 
-    private Npc npc = null;
+    private static Npc npc = null;
+    private static BlackConsumer bc = null;
+    private static double bcChance = 0; // 진상 생성 확률
 
     // 병렬 처리
     private static final ExecutorService executor = Executors.newFixedThreadPool(4);
@@ -95,6 +97,7 @@ public class NpcManager {
     public static void removeNpc(Npc npc) {
         executor.submit(() -> {
             npcList.remove(npc);
+
             SwingUtilities.invokeLater(() -> {
                 parentPanel.remove(npc);
                 parentPanel.revalidate();
@@ -107,9 +110,9 @@ public class NpcManager {
                 bcActive = false; // 블랙 컨슈머 플래그 초기화
                 // 다른거 클릭 복원
                 ClickManager.onlyBcClick = false;
-
+                bc = null;
                 // 디버깅용 로그
-                System.out.println("블랙컨슈머 제거됨. 클릭 상태 복구 중...");
+                System.out.println("블랙컨슈머 제거됨. 클릭 복구");
 
                 // 기존 클릭 이벤트 복구
                 for (Npc otherNpc : npcList) {
@@ -117,6 +120,7 @@ public class NpcManager {
                 }
                 ClickManager.setClickEventList(player); // 플레이어 클릭 복구
             }
+
             moveRoomTimer.start();
         });
     }
@@ -137,7 +141,11 @@ public class NpcManager {
     }
 
     // 생성 시작
-    private void startNpcSpawnTimer() {
+    static void startNpcSpawnTimer() {
+        if (spawnTimer != null) {
+            spawnTimer.stop(); // 기존 타이머 중지
+        }
+
         spawnNpc(); // 첫 1회는 바로 등장
         spawnTimer = new Timer(15000, e -> {
             if (npcList.size() < maxNpc) {
@@ -148,36 +156,38 @@ public class NpcManager {
     }
 
     // 생성
-    private void spawnNpc() {
+    private static void spawnNpc() {
         executor.submit(() -> {
-            // 10% 확률로 블랙 컨슈머 생성
-            if (Math.random() < 0.8 && !bcActive) {
-                npc = createBc(npc);
-            }
-            // 일반 npc
-            else {
+            if(player.isMoving) {// 일반 npc
                 npc = createNpc(npc);
+            }
+            else {
+                // 플레이어 멈춰있고 50% 확률로 블랙 컨슈머 생성
+                if (Math.random() < 0.1 && !bcActive) {
+                    bc = createBc();
+                    ClickManager.setClickEventList(bc);
+                }
+                else {
+                    npc = createNpc(npc);
+                    ClickManager.setClickEventList(npc);
+                }
             }
             ClickManager.setClickEventList(npc);
         });
     }
 
-    private Npc createBc(Npc npc) {
-//        if (bcActive) {
-//            return null; // 기존 블랙 컨슈머가 있을 경우 생성 중단
-//        }
-
-        npc = new BlackConsumer();
+    private static BlackConsumer createBc() {
+        BlackConsumer bc = new BlackConsumer();
         bcActive = true;
         ClickManager.onlyBcClick = true;
-        addNpcPanel(npc, 200);
-        moveBcToPlayer(npc);
-        player.moveToCenter(null); // 플레이어가 블랙컨슈머와 상호작용
+        addNpcPanel(bc, 200);
+        moveBcToPlayer(bc);
+        bc.bcAuto();
 
-        return npc;
+        return bc;
     }
 
-    private Npc createNpc(Npc npc) {
+    private static Npc createNpc(Npc npc) {
         npc = new Npc();
 
         npcList.add(npc);
@@ -189,7 +199,7 @@ public class NpcManager {
     }
 
     // npc를 화면에 띄운다
-    private void addNpcPanel(Npc npc , int zIndex)
+    private static void addNpcPanel(Npc npc, int zIndex)
     {
         SwingUtilities.invokeLater(() -> {
             npc.setBounds(0, 0, 1024, 768);
@@ -199,14 +209,14 @@ public class NpcManager {
     }
 
     // bc를 화면 중앙 bc위치로 이동
-    private void moveBcToPlayer(Npc npc) {
+    private static void moveBcToPlayer(Npc npc) {
         executor.submit(() -> npc.moveToDest(Move.places.getLast(), false, ()-> {
             npc.setupRequest();
         }));
     }
 
     // 대기 구역으로 이동
-    private void moveNpcToWait(Npc npc) {
+    private static void moveNpcToWait(Npc npc) {
         // 빈 대기 구역 찾기
         Optional<Place> emptyWaitRoom = waitRoom.stream()
                 .filter(place -> !getMapNpc(waitRoomToNpcMap, place))
@@ -228,7 +238,7 @@ public class NpcManager {
     }
 
     // 대기 했는지 확인 후 룸으로 보내기 시도
-    private void checkAndMoveToRoom(Npc npc, Place targetWaitRoom) {
+    private static void checkAndMoveToRoom(Npc npc, Place targetWaitRoom) {
         moveRoomTimer = new Timer(5000, e -> {
             if (npc.getRequestCount() >= 1) { // 요청이 1번 이상 발생 후
                 removeNpcFromMap(waitRoomToNpcMap, targetWaitRoom);
@@ -272,4 +282,45 @@ public class NpcManager {
         n++;
     }
 
+    // 모든 NPC 제거
+    public static void clearAllNpcs() {
+        executor.submit(() -> {
+            for (Npc npc : new ArrayList<>(npcList)) {
+                removeNpc(npc); // 모든 NPC를 제거
+            }
+            forceRemoveBlackConsumer();
+
+            // 상태 초기화
+            npcList.clear();
+            roomToNpcMap.clear();
+            waitRoomToNpcMap.clear();
+            npcCount = 0;
+            bcActive = false;
+
+            SwingUtilities.invokeLater(() -> {
+                parentPanel.revalidate();
+                parentPanel.repaint();
+            });
+
+            System.out.println("모든 NPC 제거 완료");
+        });
+    }
+
+    // 블랙컨슈머 강제 종료 메서드
+    public static void forceRemoveBlackConsumer() {
+        if (bcActive && bc != null) {
+            System.out.println("블랙컨슈머 게임 진행 중 강제 종료");
+
+            SwingUtilities.invokeLater(() -> {
+                //parentPanel.remove(bc); // UI에서 블랙컨슈머 제거
+                parentPanel.revalidate(); // 레이아웃 갱신
+                parentPanel.repaint(); // 화면 다시 그리기
+            });
+
+            removeNpc(bc); // BC 객체를 리스트와 상태에서 제거
+            bcActive = false; // 상태 초기화
+            ClickManager.onlyBcClick = false;
+            bc = null; // BC 객체 초기화
+        }
+    }
 }
