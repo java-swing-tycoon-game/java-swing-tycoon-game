@@ -69,7 +69,7 @@ public class Deco extends JDialog {
         // 게임설명창
         JLabel textLabel = new JLabel(
                 "<html><center>탑로더를 손님이 원하는 테마에 맞춰 꾸며주세요! <br/> 손님이 원하지 않은 파츠를 올리면 추가" +
-                        " <br/><font color='#E8D241'>코인 ZERO!!</font></center></html>",
+                        " <br/><font color='#E8D241'>소지금 ZERO!!</font></center></html>",
                 SwingConstants.CENTER);
         textLabel.setOpaque(false);
         textLabel.setSize(700, 200);
