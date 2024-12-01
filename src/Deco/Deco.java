@@ -28,7 +28,7 @@ public class Deco extends JDialog {
         setTitle("탑로더를 꾸며보아요!");
         setSize(800, 600);
         setResizable(false);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
 
         ImageIcon originalIcon = new ImageIcon("assets/img/decoItem/Frame2.png");
@@ -167,6 +167,7 @@ public class Deco extends JDialog {
         }
         if(gameResult){
             CoinManager.updateCoinAmount(10);
+
         }
     }
 

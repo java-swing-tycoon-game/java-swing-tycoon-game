@@ -162,7 +162,7 @@ public class NpcManager {
             }
             else {
                 // 플레이어 멈춰있고 50% 확률로 블랙 컨슈머 생성
-                if (Math.random() < 0.5 && !bcActive) {
+                if (Math.random() < 0.1 && !bcActive) {
                     bc = createBc();
                     ClickManager.setClickEventList(bc);
                 }
