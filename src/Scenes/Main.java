@@ -53,7 +53,9 @@ public class Main extends JFrame {
         // 게임시작 버튼 클릭 시 이벤트
         button2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new StartManager();
+                DayManager dayManager = DayManager.getInstance();
+                if (dayManager.getDay() == 1) {new StartManager(dayManager, true);}
+                else {new StartManager(dayManager, false);}
                 dispose(); // 현재 창 닫기
             }
         });

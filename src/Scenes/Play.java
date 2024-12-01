@@ -45,7 +45,7 @@ public class Play extends JFrame {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        dayManager = new DayManager(); // DayManager 초기화
+        dayManager = DayManager.getInstance();
         progressPaneManager = new ProgressPaneManager(dayManager); // ProgressPaneManager 초기화
 
         setMainPanel();
@@ -140,6 +140,12 @@ public class Play extends JFrame {
         map.setBounds(0, 0, 1024, 768);
         mainPanel.add(map, Integer.valueOf(0));
 
+        // place 패널을 layeredPane에 추가
+        JPanel SimplePlaceManager = new SimplePlaceManager();
+        SimplePlaceManager.setOpaque(false);
+        SimplePlaceManager.setBounds(0, 0, 1024, 768); // 위치와 크기를 설정하여 mapPanel과 겹치도록 설정
+        mainPanel.add(SimplePlaceManager, Integer.valueOf(50));  // 위쪽 레이어
+
         // top 패널을 layeredPane에 추가
         JPanel top = showTop();
         top.setBounds(65, 0, 900, 100); // 위치와 크기를 설정하여 mapPanel과 겹치도록 설정
@@ -233,6 +239,12 @@ public class Play extends JFrame {
      */
 
     public static void main(String[] args) {
-        new StartManager();
+        DayManager dayManager = DayManager.getInstance();
+
+        // Day 1 시작
+        new StartManager(dayManager, true);
+
+        // Day 2 이후 (예시)
+        new StartManager(dayManager, false);
     }
 }

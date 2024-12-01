@@ -8,11 +8,20 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class DayManager {
+    private static DayManager instance; // 싱글톤 인스턴스
     private int day = 1; // 현재 날짜 (1부터 시작)
     private ImageDayPanel dayPanel;
 
     public DayManager() {
         this.dayPanel = new ImageDayPanel(); // dayPanel 초기화
+    }
+
+    // 싱글톤 인스턴스를 가져오는 메서드
+    public static synchronized DayManager getInstance() {
+        if (instance == null) {
+            instance = new DayManager();
+        }
+        return instance;
     }
 
     public JPanel getDayPanel() {
