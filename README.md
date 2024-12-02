@@ -6,6 +6,11 @@
 
 ---
 
+## 👾 '청춘소녀는 콘서트의 꿈을 꾸지 않는다' 게임 데모 영상
+[데모 영상](https://www.youtube.com/watch?v=KyCikSzB6Zs)
+
+---
+
 ## 🎤 Game story
 
 우주 최강 아이들 "빈티진스"를 사랑하는 **성소녀**
@@ -59,8 +64,3 @@
 - **GUI**: Java Swing
 - **프로그래밍 언어**: Java
 - **이미지 및 리소스**: Figma
-
----
-
-## 👾 '청춘소녀는 콘서트의 꿈을 꾸지 않는다' 게임 데모 영상
-[데모 영상](https://www.youtube.com/watch?v=KyCikSzB6Zs)
