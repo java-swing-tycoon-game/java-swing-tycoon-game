@@ -64,3 +64,11 @@
 - **GUI**: Java Swing
 - **프로그래밍 언어**: Java
 - **이미지 및 리소스**: Figma
+
+---
+
+## 👉🏻 엔딩 두 가지 버전
+![image](https://github.com/user-attachments/assets/b7183de3-acb3-48ff-8a77-b97cfde5fe9e)
+
+![스크린샷 2024-12-02 115546](https://github.com/user-attachments/assets/5ca24ebf-d671-4e44-97aa-f6c9d094dc1c)
+
