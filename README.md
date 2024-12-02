@@ -55,6 +55,7 @@
 
 ## 🛠️ 기술 스택
 
+- **IntelliJ
 - **프로그래밍 언어**: Java
 - **GUI**: Java Swing
 - **이미지 및 리소스**: Figma
