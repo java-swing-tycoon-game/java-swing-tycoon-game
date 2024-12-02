@@ -60,5 +60,5 @@
 - **이미지 및 리소스**: Figma
 
 ---
-## 👾 '청춘소녀는 콘서트의 꿈을 꾸지 않는다' 게임 영상 👾
+## 👾 '청춘소녀는 콘서트의 꿈을 꾸지 않는다' 게임 영상
 [GO TO PLAY!](https://www.youtube.com/watch?v=KyCikSzB6Zs)
