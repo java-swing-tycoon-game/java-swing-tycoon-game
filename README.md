@@ -55,8 +55,12 @@
 
 ## 🛠️ 기술 스택
 
-- **IntelliJ
-- **프로그래밍 언어**: Java
+- **IntelliJ**
 - **GUI**: Java Swing
-- **모 영상
+- **프로그래밍 언어**: Java
+- **이미지 및 리소스**: Figma
+
+---
+
+## 👾 '청춘소녀는 콘서트의 꿈을 꾸지 않는다' 게임 데모 영상
 [데모 영상](https://www.youtube.com/watch?v=KyCikSzB6Zs)
